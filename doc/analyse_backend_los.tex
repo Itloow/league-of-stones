@@ -1,0 +1,431 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+\geometry{margin=2.5cm}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.95}
+
+\lstdefinestyle{codestyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{codepurple},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numbersep=5pt,
+    tabsize=2
+}
+\lstset{style=codestyle}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{League Of Stones -- Analyse Backend}
+\lhead{Projet WEB2}
+\cfoot{\thepage}
+
+\title{
+    \textbf{Analyse du Backend} \\
+    \Large{League Of Stones -- Projet WEB2} \\
+    \vspace{0.5cm}
+    \large{Université Toulouse 2 -- Jean Jaurès}
+}
+\author{Rôle : Architecte}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction}
+
+Ce document présente l'analyse complète du backend du projet League Of Stones. Le backend est un serveur \textbf{Express.js} (Node.js) couplé à une base de données \textbf{MongoDB}. Il expose un ensemble de Web Services (API REST) que notre client React doit consommer pour permettre aux joueurs de s'affronter.
+
+Le code backend est fourni et \textbf{ne doit pas être modifié}. L'objectif de cette analyse est de comprendre son fonctionnement afin de développer un client capable d'exploiter correctement chaque endpoint.
+
+% ============================================================
+\section{Structure des fichiers}
+
+\subsection{Arborescence du backend}
+
+\begin{lstlisting}[language=bash, title=Structure du dossier League-Of-Stones/]
+League-Of-Stones/
+|-- app.js                    # Point d'entree du serveur
+|-- package.json              # Dependances npm
+|-- package-lock.json         # Versions exactes des dependances
+|-- Dockerfile                # Configuration Docker
+|-- docker-compose.yml        # Orchestration Docker (app + MongoDB)
+|-- championsLight.json       # Donnees des cartes (champions LoL)
+|-- LICENSE                   # Licence CC BY-NC-SA 4.0
+|-- README.md                 # Instructions d'installation
+|-- .gitignore
+|-- .prettierrc
+|-- .vscode/
+|   |-- launch.json           # Config debug VS Code
+|-- modules/
+    |-- tools.js              # Fonctions utilitaires (envoi reponses/erreurs)
+    |-- server.js             # Route de reinitialisation du serveur
+    |-- users.js              # Gestion utilisateurs (CRUD, auth)
+    |-- matchmaking.js        # Systeme de recherche de match
+    |-- match.js              # Logique de jeu (match en cours)
+    |-- cards.js              # Recuperation des cartes
+    |-- champion.json         # Donnees completes des champions (non utilise)
+\end{lstlisting}
+
+\subsection{Rôle de chaque fichier}
+
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Fichier} & \textbf{Description} \\
+\midrule
+\texttt{app.js} & Point d'entrée. Connecte MongoDB, configure Express (CORS, sessions), enregistre les routes de chaque module. \\
+\texttt{tools.js} & Fonctions utilitaires partagées : \texttt{sendData} pour les réponses réussies, \texttt{sendError} pour les erreurs, gestion de la session. \\
+\texttt{users.js} & Inscription, connexion, déconnexion, suppression de compte. Hashage des mots de passe avec \texttt{bcrypt}. \\
+\texttt{matchmaking.js} & File d'attente des joueurs, envoi et acceptation de demandes de match. \\
+\texttt{match.js} & Toute la logique de jeu : constitution du deck, pioche, pose de carte, attaque, fin de tour, fin de match. \\
+\texttt{cards.js} & Retourne la liste de toutes les cartes disponibles depuis MongoDB (insérées depuis \texttt{championsLight.json} si la collection est vide). \\
+\texttt{server.js} & Route \texttt{/resetServer} qui supprime toute la base de données. \\
+\bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Technologies et dépendances}
+
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Package} & \textbf{Version} & \textbf{Rôle} \\
+\midrule
+\texttt{express} & 4.16.4 & Framework web Node.js \\
+\texttt{mongodb} & 3.6.3 & Driver MongoDB natif pour Node.js \\
+\texttt{express-session} & 1.15.6 & Gestion des sessions côté serveur \\
+\texttt{bcrypt} & 5.0.0 & Hashage sécurisé des mots de passe \\
+\texttt{cors} & 2.8.5 & Autorisation des requêtes cross-origin \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.3cm}
+Le serveur écoute par défaut sur le \textbf{port 3001}. La base MongoDB utilisée s'appelle \texttt{League\_Of\_Stones}.
+
+% ============================================================
+\section{Système d'authentification}
+
+\subsection{Principe}
+
+Le backend utilise un système de sessions en mémoire (\texttt{MemoryStore}). Le flux est le suivant :
+
+\begin{enumerate}
+    \item Le client envoie un \texttt{POST /login} avec email et mot de passe.
+    \item Le serveur vérifie les identifiants (comparaison bcrypt).
+    \item Si valide, une session est créée et un \textbf{token} est retourné.
+    \item Pour toutes les requêtes suivantes, le client doit inclure ce token dans le header \texttt{WWW-Authenticate}.
+    \item Le middleware dans \texttt{app.all('*', ...)} intercepte chaque requête, lit le header et recharge la session correspondante.
+\end{enumerate}
+
+\subsection{Exemple de header}
+
+\begin{lstlisting}[language=bash]
+GET /matchmaking/getAll HTTP/1.1
+Host: localhost:3001
+WWW-Authenticate: <token_recu_au_login>
+\end{lstlisting}
+
+\subsection{Durée de session}
+
+Les sessions expirent après \textbf{2 heures} (\texttt{maxAge: 7200000} ms). Elles sont stockées en mémoire et sont donc \textbf{perdues au redémarrage} du serveur.
+
+% ============================================================
+\section{API -- Référence complète}
+
+\subsection{Routes générales}
+
+\begin{tabularx}{\textwidth}{l l l X}
+\toprule
+\textbf{Méthode} & \textbf{Route} & \textbf{Auth} & \textbf{Description} \\
+\midrule
+GET & \texttt{/} & Non & Vérifie que le serveur est actif. \\
+GET & \texttt{/resetServer} & Non & Supprime toute la base de données. \\
+GET & \texttt{/cards} & Non & Retourne toutes les cartes disponibles. \\
+GET & \texttt{/users/getAll} & Non & Retourne tous les utilisateurs inscrits (email, nom). \\
+\bottomrule
+\end{tabularx}
+
+% -----------------------------------------------------------
+\subsection{Gestion utilisateur}
+
+\subsubsection{Inscription -- \texttt{PUT /user}}
+
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Paramètre} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{email} & body (JSON) & Email de l'utilisateur (identifiant unique). \\
+\texttt{name} & body (JSON) & Nom affiché (entre 3 et 28 caractères). \\
+\texttt{password} & body (JSON) & Mot de passe (sera hashé côté serveur avec bcrypt). \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+\textbf{Retour :} \texttt{\{"id": "...\}}
+
+\textbf{Erreurs possibles :} Utilisateur déjà existant (code 409), paramètres manquants.
+
+\textbf{Note :} Le body doit être envoyé en JSON (\texttt{Content-Type: application/json}).
+
+\subsubsection{Connexion -- \texttt{POST /login}}
+
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Paramètre} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{email} & body (JSON) & Email de l'utilisateur. \\
+\texttt{password} & body (JSON) & Mot de passe en clair. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+\textbf{Retour :}
+\begin{lstlisting}[language=json]
+{
+  "id": "identifiant_utilisateur",
+  "token": "token_de_session",
+  "email": "email@example.com",
+  "name": "NomAffiche"
+}
+\end{lstlisting}
+
+\subsubsection{Déconnexion -- \texttt{POST /logout}}
+
+Nécessite le header \texttt{WWW-Authenticate} avec le token. Aucun paramètre requis. Supprime la session et retire le joueur du matchmaking.
+
+\subsubsection{Suppression de compte -- \texttt{GET /users/unsubscribe}}
+
+Paramètres : \texttt{email} et \texttt{password} en query string. L'utilisateur doit être connecté et les identifiants doivent correspondre.
+
+\subsubsection{Vérification de connexion -- \texttt{GET /users/amIConnected}}
+
+Retourne les informations de l'utilisateur connecté ou \texttt{null}.
+
+% -----------------------------------------------------------
+\subsection{Matchmaking}
+
+Toutes les routes de matchmaking nécessitent d'être connecté (header \texttt{WWW-Authenticate}).
+
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Méthode/Route} & \textbf{Paramètres} & \textbf{Description} \\
+\midrule
+GET \texttt{/matchmaking/participate} & Aucun & Ajoute le joueur à la file d'attente. Retourne \texttt{matchmakingId} et les requêtes reçues. À appeler régulièrement (polling) pour mettre à jour les demandes. \\
+\midrule
+GET \texttt{/matchmaking/getAll} & Aucun & Retourne la liste des joueurs en attente (sauf soi-même) avec leur \texttt{matchmakingId}. \\
+\midrule
+GET \texttt{/matchmaking/request} & \texttt{matchmakingId} (query) & Envoie une demande de match au joueur identifié par son \texttt{matchmakingId}. \\
+\midrule
+GET \texttt{/matchmaking/acceptRequest} & \texttt{matchmakingId} (query) & Accepte une demande reçue. Crée un match et retourne les informations des deux joueurs. \\
+\midrule
+GET \texttt{/matchmaking/unparticipate} & Aucun & Retire le joueur de la file d'attente (impossible si un match est en cours). \\
+\bottomrule
+\end{tabularx}
+
+% -----------------------------------------------------------
+\subsection{Match}
+
+Toutes les routes de match nécessitent d'être connecté.
+
+\subsubsection{Récupération de l'état du match -- \texttt{GET /match/getMatch}}
+
+Aucun paramètre. Retourne l'état complet du match. Doit être appelé régulièrement (polling) pour suivre l'évolution.
+
+\vspace{0.2cm}
+\textbf{Champs importants de la réponse :}
+\begin{itemize}[noitemsep]
+    \item \texttt{status} : état du match (\texttt{"Deck is pending"}, \texttt{"Turn : player 1"}, \texttt{"Player X won"}).
+    \item \texttt{player1} / \texttt{player2} : chacun contient \texttt{hp}, \texttt{hand}, \texttt{board}, \texttt{deck}, \texttt{cardPicked}, \texttt{turn}.
+\end{itemize}
+
+\textbf{Règles de visibilité :}
+\begin{itemize}[noitemsep]
+    \item Le joueur voit ses propres cartes en main (tableau d'objets).
+    \item La main de l'adversaire est un \textbf{nombre} (pas le contenu).
+    \item Les decks des deux joueurs sont des \textbf{nombres}.
+    \item Les boards des deux joueurs sont visibles (tableaux d'objets).
+\end{itemize}
+
+\subsubsection{Constitution du deck -- \texttt{GET /match/initDeck}}
+
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Paramètre} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{deck} & query (JSON encodé) & Tableau d'objets \texttt{[\{"key":"Jax"\}, \{"key":"Sona"\}, ...]}. Maximum 20 cartes, toutes différentes. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+\textbf{Important :} Le paramètre doit être encodé pour l'URL (\texttt{encodeURIComponent}).
+
+Le match démarre automatiquement (statut change, 4 cartes piochées) dès que les deux joueurs ont défini leur deck. Chaque joueur commence avec \textbf{150 points de vie}.
+
+\subsubsection{Piocher une carte -- \texttt{GET /match/pickCard}}
+
+Aucun paramètre. Conditions : c'est votre tour et vous n'avez pas encore pioché ce tour. Retourne les informations de la carte piochée.
+
+\subsubsection{Jouer une carte -- \texttt{GET /match/playCard}}
+
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Paramètre} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{card} & query & La valeur du champ \texttt{key} de la carte à poser (ex: \texttt{Jax}). \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+Pose une carte de la main sur le board. Maximum 5 cartes sur le board. Une carte posée ce tour ne peut pas attaquer avant le tour suivant (son attribut \texttt{attack} est à \texttt{true}).
+
+\subsubsection{Attaquer un champion -- \texttt{GET /match/attack}}
+
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Paramètre} & \textbf{Type} & \textbf{Description} \\
+\midrule
+\texttt{card} & query & \texttt{key} de votre carte attaquante. \\
+\texttt{ennemyCard} & query & \texttt{key} de la carte adverse ciblée. \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.2cm}
+\textbf{Résolution du combat :}
+\begin{itemize}[noitemsep]
+    \item Si \texttt{attaque > défense adverse} : carte adverse détruite, dégâts excédentaires retirés des HP adverses.
+    \item Si \texttt{attaque == défense adverse} : les deux cartes sont détruites.
+    \item Si \texttt{attaque < défense adverse} : votre carte est détruite.
+\end{itemize}
+
+\textbf{Formule :} \texttt{ennemy.hp = ennemy.hp - (card.info.attack - ennemyCard.info.defense)}
+
+\subsubsection{Attaquer le joueur -- \texttt{GET /match/attackPlayer}}
+
+Paramètre : \texttt{card} (query). Condition : le board adverse doit être \textbf{vide}. Les dégâts correspondent à la valeur d'attaque de la carte.
+
+\subsubsection{Fin de tour -- \texttt{GET /match/endTurn}}
+
+Aucun paramètre. Réinitialise les attributs \texttt{attack} de vos cartes à \texttt{false} et passe le tour à l'adversaire.
+
+\subsubsection{Fin de match -- \texttt{GET /match/finishMatch}}
+
+Aucun paramètre. Condition : le match doit être terminé (les deux \texttt{turn} à \texttt{false}). Supprime le match et retire les joueurs du matchmaking.
+
+% ============================================================
+\section{Structure d'une carte}
+
+Chaque carte champion possède la structure suivante :
+
+\begin{lstlisting}[language=json, title=Exemple : Jax]
+{
+  "id": 24,
+  "key": "Jax",
+  "name": "Jax",
+  "title": "Maitre d'armes",
+  "image": {
+    "full": "Jax.png",
+    "sprite": "champion1.png",
+    "group": "champion",
+    "x": 144, "y": 48, "w": 48, "h": 48
+  },
+  "info": {
+    "attack": 7,
+    "defense": 5,
+    "magic": 7,
+    "difficulty": 5
+  }
+}
+\end{lstlisting}
+
+\vspace{0.2cm}
+\textbf{Champs utilisés dans le jeu :}
+\begin{itemize}[noitemsep]
+    \item \texttt{key} : identifiant unique de la carte (utilisé dans les appels API).
+    \item \texttt{info.attack} : valeur d'attaque (utilisée pour le combat).
+    \item \texttt{info.defense} : valeur de défense (utilisée pour le combat).
+    \item \texttt{name}, \texttt{title} : affichage.
+    \item \texttt{image} : données pour afficher le sprite du champion.
+\end{itemize}
+
+% ============================================================
+\section{Collections MongoDB}
+
+Le backend utilise 4 collections :
+
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Collection} & \textbf{Contenu} \\
+\midrule
+\texttt{Users} & Comptes utilisateurs (\texttt{email}, \texttt{name}, \texttt{password} hashé). \\
+\texttt{Cards} & Cartes de champions (insérées depuis \texttt{championsLight.json} au premier appel). \\
+\texttt{Matchmaking} & Entrées de matchmaking : joueur, demandes reçues, référence au match créé. \\
+\texttt{Match} & Matchs en cours : état complet (joueurs, HP, mains, boards, decks, tours). \\
+\bottomrule
+\end{tabularx}
+
+% ============================================================
+\section{Flux de jeu complet}
+
+Voici la séquence complète des appels API pour une partie :
+
+\begin{enumerate}
+    \item \texttt{PUT /user} -- Création de compte (une seule fois).
+    \item \texttt{POST /login} -- Connexion, récupération du token.
+    \item \texttt{GET /matchmaking/participate} -- Rejoindre la file d'attente.
+    \item \texttt{GET /matchmaking/getAll} -- Lister les joueurs disponibles.
+    \item \texttt{GET /matchmaking/request?matchmakingId=...} -- Envoyer une demande.
+    \item \texttt{GET /matchmaking/participate} -- (polling) Vérifier les demandes reçues.
+    \item \texttt{GET /matchmaking/acceptRequest?matchmakingId=...} -- Accepter une demande.
+    \item \texttt{GET /cards} -- Récupérer toutes les cartes pour choisir son deck.
+    \item \texttt{GET /match/initDeck?deck=[...]} -- Envoyer son deck (max 20 cartes).
+    \item \texttt{GET /match/getMatch} -- (polling) Attendre que les deux decks soient prêts.
+    \item \textbf{Boucle de jeu} (polling sur \texttt{getMatch}) :
+    \begin{itemize}[noitemsep]
+        \item \texttt{GET /match/pickCard} -- Piocher (1 fois par tour).
+        \item \texttt{GET /match/playCard?card=...} -- Poser des cartes.
+        \item \texttt{GET /match/attack?card=...\&ennemyCard=...} -- Attaquer.
+        \item \texttt{GET /match/attackPlayer?card=...} -- Attaquer les HP (si board vide).
+        \item \texttt{GET /match/endTurn} -- Fin du tour.
+    \end{itemize}
+    \item \texttt{GET /match/finishMatch} -- Terminer le match (HP adverses $\leq$ 0).
+    \item \texttt{POST /logout} -- Déconnexion.
+\end{enumerate}
+
+% ============================================================
+\section{Points d'attention pour le développement client}
+
+\begin{itemize}
+    \item \textbf{Header d'authentification :} Toujours inclure \texttt{WWW-Authenticate: <token>} après la connexion.
+    \item \textbf{Polling :} Les endpoints \texttt{/matchmaking/participate} et \texttt{/match/getMatch} doivent être appelés régulièrement (toutes les 2 à 5 secondes) pour mettre à jour l'état.
+    \item \textbf{Encodage URL :} Le paramètre \texttt{deck} de \texttt{initDeck} est un JSON en query string, il faut utiliser \texttt{encodeURIComponent}.
+    \item \textbf{Méthodes HTTP :} L'inscription utilise \texttt{PUT}, la connexion et déconnexion utilisent \texttt{POST}, tout le reste utilise \texttt{GET}.
+    \item \textbf{Body vs Query :} \texttt{PUT /user} et \texttt{POST /login} envoient les données dans le body (JSON). Les autres routes utilisent des query parameters.
+    \item \textbf{Attribut \texttt{attack} des cartes :} Quand une carte est posée, \texttt{attack = true} (elle ne peut pas attaquer ce tour). Après \texttt{endTurn}, \texttt{attack} repasse à \texttt{false}.
+    \item \textbf{Gestion d'erreurs :} Les erreurs retournent un message texte avec un code HTTP 500 (sauf inscription dupliquée : 409).
+\end{itemize}
+
+\end{document}
