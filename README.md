@@ -1,93 +1,62 @@
-# LeagueOfStones
+# Rapport de Projet : League of Stones
+## Phase 3 (Authentification) et Phase 4 (Matchmaking)
 
+**Auteur :** Hyacinthe — Responsable Mobile  
+**Date :** 22 Mars 2026
 
+---
 
-## Getting started
+### 1. Introduction
+Ce document récapitule les travaux effectués durant la première semaine du projet League of Stones. En tant que responsable mobile et support sur l'authentification, j'ai implémenté la logique d'inscription et l'intégralité du système de matchmaking (Lobby) en respectant l'architecture Next.js Pages Router et les contraintes du cahier des charges.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### 2. Arborescence du Projet
+Le projet suit une structure modulaire permettant de séparer la logique d'état, les services API et les vues. Voici l'état actuel des fichiers créés ou modifiés lors de mes interventions :
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+'src/'  
+'├── pages/'  
+'│   ├── index.js      (Page d'accueil)'  
+'│   ├── register.jsx  (Créé pour la Tâche 13)'  
+'│   ├── lobby.jsx     (Créé pour les Tâches 18 à 22)'  
+'│   └── _app.js       (Configuration globale)'  
+'├── store/'  
+'│   └── user-store.js (Gestion de l'état utilisateur)'  
+'├── styles/'  
+'│   └── globals.css   (Styles CSS globaux)'  
+'└── services/         (Logique d'appel API centralisée)'
 
-## Add your files
+### 3. Détails des Tâches Effectuées
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+#### Tâche 13 : Inscription Utilisateur (register.jsx)
+L'objectif était de permettre la création d'un compte via le Web Service PUT /user.
+* **Fonctionnement :** Un formulaire React récupère l'email, le nom et le mot de passe.
+* **Validations :** Avant l'envoi, le code vérifie que l'email se termine par '@univ-tlse2.fr' et que le nom d'utilisateur contient entre 3 et 28 caractères.
+* **Appel API :** Utilisation de la méthode fetch asynchrone avec un corps JSON. En cas de succès, l'utilisateur est redirigé vers la page de connexion.
 
-```
-cd existing_repo
-git remote add origin https://mi-git.univ-tlse2.fr/olti.mjeku/leagueofstones.git
-git branch -M main
-git push -uf origin main
-```
+#### Phase 4 : Système de Matchmaking (lobby.jsx)
+Cette phase cruciale gère la mise en relation des joueurs. Elle regroupe les tâches 18 à 22.
 
-## Integrate with your tools
+**Tâches 18 & 19 : Participation et Liste des Joueurs**
+Le fichier lobby.jsx utilise un état local pour suivre si l'utilisateur participe au matchmaking.
+* **Participation :** L'appel à /matchmaking/participate enregistre le joueur sur le serveur.
+* **Polling :** Un système de rafraîchissement automatique (Polling) a été mis en place via un intervalle de 5 secondes. Il interroge /matchmaking/getAll pour mettre à jour la liste des adversaires disponibles en temps réel sans recharger la page.
 
-- [ ] [Set up project integrations](https://mi-git.univ-tlse2.fr/olti.mjeku/leagueofstones/-/settings/integrations)
+**Tâches 20 & 21 : Gestion des Défis**
+* **Envoi de requête :** Au clic sur le bouton 'Défier', le client envoie une requête GET incluant l'identifiant de matchmaking de la cible en paramètre d'URL.
+* **Acceptation :** Le polling récupère également les demandes reçues. Si l'utilisateur clique sur 'Accepter', le service acceptRequest est appelé, créant officiellement le match côté serveur.
 
-## Collaborate with your team
+**Tâche 22 : Redirection Automatique**
+Pour assurer une expérience fluide, une fonction de vérification d'arrière-plan a été ajoutée. Elle interroge régulièrement /match/getMatch. Dès qu'un match est détecté (si l'adversaire a accepté notre défi pendant que nous étions dans le lobby), l'application redirige automatiquement l'utilisateur vers l'URL /match.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+### 4. Fonctionnement Technique Global
+Tous les appels effectués vers le matchmaking et le jeu nécessitent une authentification.
+* **Sécurité :** Le jeton (token) récupéré lors de la connexion est stocké dans le localStorage.
+* **Headers :** Chaque requête AJAX inclut un header spécifique www-authenticate contenant ce token, conformément aux spécifications du backend.
+* **Nettoyage :** Pour éviter les fuites de mémoire et les appels inutiles, les intervalles de polling sont systématiquement détruits (clearInterval) lorsque le composant est démonté.
 
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+### 5. Documentation de l'utilisation de l'IA
+Conformément aux règles du projet, voici la documentation liée à l'assistance par l'IA :
+* **Outil :** Gemini 3.1 Pro (Web, Paid Tier).
+* **Utilisateur :** Hyacinthe.
+* **Prompt(s) significatif(s) :** Demandes de structuration des composants register.jsx et lobby.jsx selon l'arborescence Pages Router et implémentation du polling pour le matchmaking.
+* **Contexte :** Support technique pour la gestion des appels API asynchrones et la synchronisation de l'état du lobby.
+* **Analyse personnelle :** L'IA a permis d'implémenter rapidement une structure robuste pour le polling et la gestion des erreurs HTTP. J'ai dû modifier les suggestions initiales pour les adapter strictement à l'arborescence spécifique de notre projet et à la méthode d'authentification par header imposée par le sujet.
