@@ -13,17 +13,18 @@ Ce document récapitule les travaux effectués durant la première semaine du pr
 Le projet suit une structure modulaire permettant de séparer la logique d'état, les services API et les vues. Voici l'état actuel des fichiers créés ou modifiés lors de mes interventions :
 
 ```text
-'src/'  
-'├── pages/'  
-'│   ├── index.js      (Page d'accueil)'  
-'│   ├── register.jsx  (Créé pour la Tâche 13)'  
-'│   ├── lobby.jsx     (Créé pour les Tâches 18 à 22)'  
-'│   └── _app.js       (Configuration globale)'  
-'├── store/'  
-'│   └── user-store.js (Gestion de l'état utilisateur)'  
-'├── styles/'  
-'│   └── globals.css   (Styles CSS globaux)'  
-'└── services/         (Logique d'appel API centralisée)'
+src/  
+├── pages/
+│   ├── index.js      (Page d'accueil)
+│   ├── register.jsx  (Créé pour la Tâche 13)
+│   ├── lobby.jsx     (Créé pour les Tâches 18 à 22)
+│   └── _app.js       (Configuration globale) 
+├── store/ 
+│   └── user-store.js (Gestion de l'état utilisateur)
+├── styles/
+│   └── globals.css   (Styles CSS globaux) 
+└── services/         (Logique d'appel API centralisée)
+```
 
 ### 3. Détails des Tâches Effectuées
 
