@@ -1,8 +1,8 @@
-import { useState } from 'react'; // Import du hook d'état (CM3-React-I)
+import { useState } from 'react'; // Import du hook d'état
 import { useRouter } from 'next/router'; // Attention, dans le Pages Router, c'est next/router !
 
 export default function Register() {
-  // 1. Définition des états locaux avec useState (CM3-React-I, diapo 3)
+  // 1. Définition des états locaux avec useState
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -12,7 +12,7 @@ export default function Register() {
   
   const router = useRouter();
 
-  // 2. Fonction asynchrone pour l'appel API (CM1, syntaxe async/await avec try/catch)
+  // 2. Fonction asynchrone pour l'appel API
   const handleSubmit = async (e) => {
     e.preventDefault(); 
     setError(''); 
@@ -29,7 +29,7 @@ export default function Register() {
 
     setIsLoading(true);
     
-    // Bloc try/catch vu dans le CM1 (diapo 66)
+    // Bloc try/catch
     try {
       const response = await fetch('http://localhost:3000/user', {
         method: 'PUT',
