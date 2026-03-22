@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react'; // Hooks (CM3-React-I et II)
+import { useState, useEffect } from 'react'; // Hooks
 import { useRouter } from 'next/router';
 
 export default function Lobby() {
     const router = useRouter();
 
-    // 1. Nos états locaux (CM3-React-I)
+    // 1. Nos états locaux
     const [isParticipating, setIsParticipating] = useState(false);
     const [matchmakingId, setMatchmakingId] = useState(null);
     const [playersList, setPlayersList] = useState([]); // Liste des adversaires potentiels
     const [requestsReceived, setRequestsReceived] = useState([]); // Demandes de match reçues
     const [error, setError] = useState('');
 
-    // Fonction utilitaire pour récupérer le token (CM4)
+    // Fonction utilitaire pour récupérer le token
     const getToken = () => {
         if (typeof window !== 'undefined') {
             return localStorage.getItem('token');
@@ -71,7 +71,7 @@ export default function Lobby() {
         }
     };
 
-    // NOUVEAU : 1. Fonction pour envoyer une demande de match (Tâche 20)
+    // 4. Fonction pour envoyer une demande de match (Tâche 20)
     const handleSendRequest = async (targetId) => {
         const token = getToken();
         if (!token) return;
@@ -97,7 +97,7 @@ export default function Lobby() {
         }
     };
 
-    // NOUVEAU : 2. Fonction pour accepter une demande reçue (Tâche 21)
+    // 5. Fonction pour accepter une demande reçue (Tâche 21)
     const handleAcceptRequest = async (requesterId) => {
         const token = getToken();
         if (!token) return;
@@ -127,7 +127,7 @@ export default function Lobby() {
         }
     };
 
-    // Fonction pour la Tâche 22 : Vérifier si un match a commencé en arrière-plan
+    // 6. Fonction pour la Tâche 22 : Vérifier si un match a commencé en arrière-plan
     const checkIfMatchStarted = async () => {
         const token = getToken();
         if (!token) return;
@@ -151,7 +151,7 @@ export default function Lobby() {
         }
     };
 
-    // 4. Le Polling avec useEffect (CM3-React-II)
+    // 7. Le Polling avec useEffect
     useEffect(() => {
         let intervalId;
 
