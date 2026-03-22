@@ -12,6 +12,7 @@ Ce document récapitule les travaux effectués durant la première semaine du pr
 ### 2. Arborescence du Projet
 Le projet suit une structure modulaire permettant de séparer la logique d'état, les services API et les vues. Voici l'état actuel des fichiers créés ou modifiés lors de mes interventions :
 
+```text
 'src/'  
 '├── pages/'  
 '│   ├── index.js      (Page d'accueil)'  
