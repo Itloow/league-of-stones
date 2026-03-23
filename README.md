@@ -52,14 +52,18 @@ Ce projet est "Full-Stack". Il faut donc ouvrir **deux terminaux séparés** pou
 ### 1. Lancer le Serveur (Backend)
 
 Ouvrez un premier terminal et placez-vous dans le dossier principal du serveur :
+```bash 
 cd league-of-stones
-
+```
 Installez les dépendances (nécessaire uniquement la première fois) :
+```bash
 npm install
+```
 
 Démarrez le serveur :
+```bash 
 node app.js
-
+```
 > Le serveur est prêt lorsqu'il affiche "MONGO DB initialised" et tourne sur le port 3001. Ne fermez pas ce terminal.
 
 ---
@@ -67,14 +71,17 @@ node app.js
 ### 2. Lancer l'Interface (Frontend)
 
 Ouvrez un deuxième terminal et placez-vous dans le dossier de l'interface React :
+```bash
 cd leagueofront
-
+```
 Installez les dépendances (nécessaire uniquement la première fois) :
+```bash
 npm install
-
+```
 Démarrez le site :
+```bash
 npm run dev
-
+```
 > Le frontend est prêt lorsqu'il indique "Ready" et tourne sur le port 3000.
 
 ---
