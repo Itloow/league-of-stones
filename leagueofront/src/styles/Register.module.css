@@ -1,0 +1,109 @@
+/* src/styles/Register.module.css */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh; /* Centrage vertical grossier en attendant le layout global */
+  color: white;
+  font-family: sans-serif; /* À remplacer par la police du projet plus tard */
+}
+
+.registerBox {
+  background-color: rgba(0, 10, 20, 0.9); /* Fond très sombre transparent */
+  padding: 40px;
+  border-radius: 8px;
+  border: 1px solid #00c8ff; /* Bordure néon bleu */
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
+}
+
+.title {
+  text-align: center;
+  color: #f0e6d2; /* Couleur dorée type LoL */
+  text-transform: uppercase;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  position: relative;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #00c8ff;
+  opacity: 0.7;
+}
+
+.inputField {
+  width: 100%;
+  padding: 12px 15px 12px 45px; /* Padding gauche pour l'icône */
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 200, 255, 0.5);
+  border-radius: 4px;
+  color: white;
+  font-size: 16px;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #00c8ff;
+  box-shadow: 0 0 5px rgba(0, 200, 255, 0.5);
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.checkboxGroup a {
+  color: #00c8ff;
+  text-decoration: none;
+}
+
+.submitBtn {
+  background-color: #0070f3; /* Bleu plein LoL */
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.submitBtn:hover {
+  background-color: #0056b3;
+}
+
+.submitBtn:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.footerLink {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.footerLink a {
+  color: #00c8ff;
+  text-decoration: none;
+  font-weight: bold;
+}

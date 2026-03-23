@@ -1,23 +1,27 @@
-import { useState } from 'react'; // Import du hook d'état
-import { useRouter } from 'next/router'; // Attention, dans le Pages Router, c'est next/router !
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link'; // Import pour le lien de navigation interne
+// Import du Module CSS (CM3-React-II)
+import styles from '../styles/Register.module.css';
 
 export default function Register() {
-  // 1. Définition des états locaux avec useState
-  const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // NOUVEAU : Etats pour la confirmation et la checkbox
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptCGU, setAcceptCGU] = useState(false);
   
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   const router = useRouter();
 
-  // 2. Fonction asynchrone pour l'appel API
   const handleSubmit = async (e) => {
     e.preventDefault(); 
     setError(''); 
 
-    // Validation stricte du cahier des charges (Tâche 13)
+    // Validations mises à jour selon la maquette et le cahier des charges
     if (!email.endsWith('@univ-tlse2.fr')) {
       setError("L'email doit se terminer par @univ-tlse2.fr");
       return; 
@@ -26,10 +30,19 @@ export default function Register() {
       setError("Le nom d'utilisateur doit contenir entre 3 et 28 caractères.");
       return;
     }
+    // NOUVEAU : Validation concordance mots de passe
+    if (password !== confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+    // NOUVEAU : Validation acceptation CGU
+    if (!acceptCGU) {
+      setError("Vous devez accepter les conditions générales.");
+      return;
+    }
 
     setIsLoading(true);
     
-    // Bloc try/catch
     try {
       const response = await fetch('http://localhost:3000/user', {
         method: 'PUT',
@@ -39,75 +52,108 @@ export default function Register() {
         body: JSON.stringify({ email, name, password }),
       });
 
-      // On attend que la réponse JSON soit parsée
       const data = await response.json(); 
 
-      // Si le Web Service retourne une erreur (ex: email déjà pris)
       if (!response.ok) {
         throw new Error(data.message || 'Erreur lors de l\'inscription');
       }
 
-      // Succès ! Le WS renvoie l'ID
       alert('Compte créé avec succès !');
-      router.push('/login'); // Redirection vers la future page de connexion
+      router.push('/login'); 
 
     } catch (err) {
-      // Affichage de l'erreur interceptée dans le catch
       setError(err.message); 
     } finally {
       setIsLoading(false); 
     }
   };
 
-  // 3. Rendu du composant (JSX)
   return (
-    <main style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
-      <h2>Créer un compte</h2>
-      
-      {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
+    // Application des classes CSS Module
+    <div className={styles.container}>
+      <main className={styles.registerBox}>
+        <h2 className={styles.title}>Créer un compte</h2>
+        
+        {error && <div style={{ color: '#ff4444', textAlign: 'center', marginBottom: '15px', fontSize: '14px' }}>{error}</div>}
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <div>
-          <label>Email universitaire :</label>
-          <input 
-            type="email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            required 
-            style={{ width: '100%', padding: '8px' }}
-          />
-        </div>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          {/* Champ Nom */}
+          <div className={styles.inputGroup}>
+            <span className={styles.inputIcon}>[👤]</span> {/* Placeholder Icône */}
+            <input 
+              type="text" 
+              placeholder="Nom d'utilisateur"
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
+              required 
+              className={styles.inputField}
+            />
+          </div>
 
-        <div>
-          <label>Nom d'utilisateur :</label>
-          <input 
-            type="text" 
-            value={name} 
-            onChange={(e) => setName(e.target.value)} 
-            required 
-            style={{ width: '100%', padding: '8px' }}
-          />
-        </div>
+          {/* Champ Email */}
+          <div className={styles.inputGroup}>
+            <span className={styles.inputIcon}>[✉️]</span>
+            <input 
+              type="email" 
+              placeholder="Email universitaire (@univ-tlse2.fr)"
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+              className={styles.inputField}
+            />
+          </div>
 
-        <div>
-          <label>Mot de passe :</label>
-          <input 
-            type="password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            required 
-            style={{ width: '100%', padding: '8px' }}
-          />
-        </div>
+          {/* Champ Password */}
+          <div className={styles.inputGroup}>
+            <span className={styles.inputIcon}>[🔒]</span>
+            <input 
+              type="password" 
+              placeholder="Mot de passe"
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+              className={styles.inputField}
+            />
+          </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          style={{ padding: '10px', backgroundColor: isLoading ? '#ccc' : '#0070f3', color: 'white', border: 'none', cursor: 'pointer' }}
-        >
-          {isLoading ? 'Inscription...' : "S'inscrire"}
-        </button>
-      </form>
-    </main>
+          {/* Champ Confirmation Password */}
+          <div className={styles.inputGroup}>
+            <span className={styles.inputIcon}>[🔒]</span>
+            <input 
+              type="password" 
+              placeholder="Confirmer le mot de passe"
+              value={confirmPassword} 
+              onChange={(e) => setConfirmPassword(e.target.value)} 
+              required 
+              className={styles.inputField}
+            />
+          </div>
+
+          {/* Checkbox CGU */}
+          <div className={styles.checkboxGroup}>
+            <input 
+              type="checkbox" 
+              id="cgu"
+              checked={acceptCGU}
+              onChange={(e) => setAcceptCGU(e.target.checked)}
+              required
+            />
+            <label htmlFor="cgu">J'accepte les <a href="#">conditions générales d'utilisation</a></label>
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={isLoading}
+            className={styles.submitBtn}
+          >
+            {isLoading ? 'Inscription...' : "S'inscrire"}
+          </button>
+        </form>
+
+        <p className={styles.footerLink}>
+          Déjà inscrit ? <Link href="/login">Se connecter</Link>
+        </p>
+      </main>
+    </div>
   );
 }
