@@ -1,0 +1,159 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #ffffff; /* Fond purement blanc */
+  font-family: sans-serif;
+  padding-top: 10vh;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 50px;
+}
+
+.logoText {
+  background-color: #3b00b3; /* Violet foncé maquette */
+  color: white;
+  font-size: 28px;
+  font-weight: 900;
+  padding: 8px 15px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 400px;
+  gap: 15px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.inputField {
+  border: 1px solid #333;
+  border-radius: 50px; /* Forme de pilule */
+  padding: 12px 20px;
+  font-size: 14px;
+  width: 100%;
+  text-align: center; /* Texte centré comme sur l'image */
+  outline: none;
+  background-color: #ffffff;
+  color: #000000; 
+}
+
+.inputField:focus {
+  border-color: #3b00b3;
+}
+
+.forgotPassword {
+  text-align: center;
+  color: #3b00b3;
+  font-size: 12px;
+  text-decoration: none;
+  margin-top: -5px;
+}
+
+.btnPrimary {
+  background-color: #3b00b3;
+  color: white;
+  border: none;
+  border-radius: 50px; /* Forme de pilule */
+  padding: 15px;
+  font-weight: 900;
+  font-size: 14px;
+  text-transform: uppercase;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.newPlayerSection {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+.newPlayerTitle {
+  font-size: 14px;
+  font-weight: 900;
+  color: #3b00b3;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.footerLink {
+  margin-top: 100px;
+  color: #3b00b3;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+/* Media Query pour Mobile (écrans inférieurs à 768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px; /* Plus d'espace sur les côtés */
+    justify-content: flex-start; /* Aligne en haut de l'écran */
+  }
+
+  .logoSection {
+    flex-direction: column; /* Icone dragon AU-DESSUS du texte */
+    gap: 10px;
+    margin-top: 30px;
+    margin-bottom: 40px;
+  }
+
+  .logoText {
+    font-size: 20px; /* Texte logo un peu plus petit sur mobile */
+    padding: 6px 12px;
+  }
+
+  .form {
+    gap: 15px;
+  }
+
+  .label {
+    font-size: 11px; /* Labels plus discrets */
+  }
+
+  .inputField {
+    padding: 10px 15px; /* Inputs moins hauts */
+    font-size: 13px;
+  }
+
+  .newPlayerSection {
+    margin-top: 50px; 
+  }
+
+  .btnPrimary {
+    padding: 12px; /* Boutons moins hauts mais toujours larges */
+    font-size: 13px;
+  }
+
+  .footerLink {
+    margin-top: auto; /* Pousse le footer tout en bas sur mobile */
+    margin-bottom: 20px;
+    padding-top: 40px;
+  }
+}

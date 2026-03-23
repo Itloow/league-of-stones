@@ -1,11 +1,9 @@
-const API_URL = "http://localhost:3001";
 
+const API_URL = "http://localhost:3001";
 function getToken() {
     return localStorage.getItem("token");
 }
-
 // ===== USERS =====
-
 export const inscription = async (email, name, password) => {
     try {
         const reponse = await fetch(API_URL + "/user", {
@@ -24,7 +22,6 @@ export const inscription = async (email, name, password) => {
         console.error(`Impossible de créer le compte : ${error}`);
     }
 };
-
 export const connexion = async (email, password) => {
     try {
         const reponse = await fetch(API_URL + "/login", {
@@ -43,7 +40,6 @@ export const connexion = async (email, password) => {
         console.error(`Impossible de se connecter : ${error}`);
     }
 };
-
 export const deconnexion = async () => {
     try {
         const reponse = await fetch(API_URL + "/logout", {
@@ -61,7 +57,6 @@ export const deconnexion = async () => {
         console.error(`Impossible de se déconnecter : ${error}`);
     }
 };
-
 export const amIConnected = async () => {
     try {
         const reponse = await fetch(API_URL + "/users/amIConnected", {
@@ -79,8 +74,21 @@ export const amIConnected = async () => {
     }
 };
 
-// ===== CARDS =====
+export const unsubscribe = async () => {
+    try {
+        const reponse = await fetch(API_URL + "/users/unsubscribe", {
+            headers: {
+                "WWW-Authenticate": getToken(),
+            },
+        });
+        if (!reponse.ok) throw new Error(`Erreur HTTP : ${reponse.status}`);
+        return await reponse.json();
+    } catch (error) {
+        console.error(`Impossible de supprimer le compte : ${error}`);
+    }
+};
 
+// ===== CARDS =====
 export const getCards = async () => {
     try {
         const reponse = await fetch(API_URL + "/cards");
@@ -93,9 +101,7 @@ export const getCards = async () => {
         console.error(`Impossible de récupérer les cartes : ${error}`);
     }
 };
-
 // ===== MATCHMAKING =====
-
 export const participate = async () => {
     try {
         const reponse = await fetch(API_URL + "/matchmaking/participate", {
@@ -112,7 +118,6 @@ export const participate = async () => {
         console.error(`Impossible de participer au matchmaking : ${error}`);
     }
 };
-
 export const getAllPlayers = async () => {
     try {
         const reponse = await fetch(API_URL + "/matchmaking/getAll", {
@@ -129,7 +134,6 @@ export const getAllPlayers = async () => {
         console.error(`Impossible de récupérer les joueurs : ${error}`);
     }
 };
-
 export const sendRequest = async (matchmakingId) => {
     try {
         const reponse = await fetch(API_URL + "/matchmaking/request?matchmakingId=" + matchmakingId, {
@@ -146,7 +150,6 @@ export const sendRequest = async (matchmakingId) => {
         console.error(`Impossible d'envoyer la demande : ${error}`);
     }
 };
-
 export const acceptRequest = async (matchmakingId) => {
     try {
         const reponse = await fetch(API_URL + "/matchmaking/acceptRequest?matchmakingId=" + matchmakingId, {
@@ -163,9 +166,7 @@ export const acceptRequest = async (matchmakingId) => {
         console.error(`Impossible d'accepter la demande : ${error}`);
     }
 };
-
 // ===== MATCH =====
-
 export const getMatch = async () => {
     try {
         const reponse = await fetch(API_URL + "/match/getMatch", {
@@ -182,7 +183,6 @@ export const getMatch = async () => {
         console.error(`Impossible de récupérer le match : ${error}`);
     }
 };
-
 export const initDeck = async (deck) => {
     try {
         const encoded = encodeURIComponent(JSON.stringify(deck));
@@ -200,7 +200,6 @@ export const initDeck = async (deck) => {
         console.error(`Impossible d'initialiser le deck : ${error}`);
     }
 };
-
 export const pickCard = async () => {
     try {
         const reponse = await fetch(API_URL + "/match/pickCard", {
@@ -217,7 +216,6 @@ export const pickCard = async () => {
         console.error(`Impossible de piocher une carte : ${error}`);
     }
 };
-
 export const playCard = async (cardKey) => {
     try {
         const reponse = await fetch(API_URL + "/match/playCard?card=" + cardKey, {
@@ -234,7 +232,6 @@ export const playCard = async (cardKey) => {
         console.error(`Impossible de jouer la carte : ${error}`);
     }
 };
-
 export const attack = async (card, ennemyCard) => {
     try {
         const reponse = await fetch(API_URL + "/match/attack?card=" + card + "&ennemyCard=" + ennemyCard, {
@@ -251,7 +248,6 @@ export const attack = async (card, ennemyCard) => {
         console.error(`Impossible d'attaquer : ${error}`);
     }
 };
-
 export const attackPlayer = async (card) => {
     try {
         const reponse = await fetch(API_URL + "/match/attackPlayer?card=" + card, {
@@ -268,7 +264,6 @@ export const attackPlayer = async (card) => {
         console.error(`Impossible d'attaquer le joueur : ${error}`);
     }
 };
-
 export const endTurn = async () => {
     try {
         const reponse = await fetch(API_URL + "/match/endTurn", {
@@ -285,7 +280,6 @@ export const endTurn = async () => {
         console.error(`Impossible de terminer le tour : ${error}`);
     }
 };
-
 export const finishMatch = async () => {
     try {
         const reponse = await fetch(API_URL + "/match/finishMatch", {
