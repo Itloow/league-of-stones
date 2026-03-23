@@ -1,0 +1,84 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: sans-serif;
+  padding: 40px 20px;
+  color: #3b00b3; /* Le texte a l'air bleu/violet foncé sur la maquette */
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.logoText {
+  background-color: #3b00b3;
+  color: white;
+  font-size: 24px;
+  font-weight: 900;
+  padding: 5px 15px;
+  border-radius: 8px;
+  text-transform: uppercase;
+}
+
+.content {
+  width: 100%;
+  max-width: 500px; /* Un peu plus large pour que le texte respire */
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+
+.paragraph {
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  text-align: justify; /* Justifié comme sur l'image */
+}
+
+.teamList {
+  list-style-type: none;
+  padding: 0;
+  text-align: left; /* La liste de l'équipe est alignée à gauche */
+  margin-bottom: 30px;
+}
+
+.teamMember {
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.memberName {
+  font-weight: 900;
+}
+
+.btnReturn {
+  background-color: #3b00b3;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 40px;
+  font-weight: 900;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  text-decoration: none;
+  margin-top: 20px;
+}
+
+    

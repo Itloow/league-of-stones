@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'; // Hooks
 import { useRouter } from 'next/router';
+import { participate, getAllPlayers, sendRequest, acceptRequest, getMatch } from '../services/api';
 
 export default function Lobby() {
     const router = useRouter();
@@ -21,134 +22,36 @@ export default function Lobby() {
 
     // 2. Fonction pour rejoindre le matchmaking (Tâche 18)
     const handleParticipate = async () => {
-        const token = getToken();
-        if (!token) {
-            router.push('/login'); // Sécurité : on le renvoie au login s'il n'a pas de token
-            return;
-        }
-
-        try {
-            const response = await fetch('http://localhost:3000/matchmaking/participate', {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token, // Header exigé par l'API
-                },
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) throw new Error(data.message || 'Erreur lors de la participation');
-
-            // Succès ! Le WS renvoie matchmakingId et le tableau request
+        const data = await participate(); // Olti gère déjà l'URL et le Token
+        if (data) {
             setIsParticipating(true);
             setMatchmakingId(data.matchmakingId);
             setRequestsReceived(data.request);
-
-        } catch (err) {
-            setError(err.message);
         }
     };
 
     // 3. Fonction pour récupérer la liste des joueurs (Tâche 19)
     const fetchPlayers = async () => {
-        const token = getToken();
-        if (!token) return;
-
-        try {
-            const response = await fetch('http://localhost:3000/matchmaking/getAll', {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token,
-                },
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                setPlayersList(data); // On met à jour notre état avec la liste des joueurs
-            }
-        } catch (err) {
-            console.error("Erreur lors de la récupération des joueurs:", err);
-        }
+        const data = await getAllPlayers(); //
+        if (data) setPlayersList(data);
     };
 
     // 4. Fonction pour envoyer une demande de match (Tâche 20)
     const handleSendRequest = async (targetId) => {
-        const token = getToken();
-        if (!token) return;
-
-        try {
-            // On passe l'ID de l'adversaire en paramètre d'URL
-            const response = await fetch(`http://localhost:3000/matchmaking/request?matchmakingId=${targetId}`, {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token,
-                },
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Erreur lors de l\'envoi de la requête');
-            }
-
-            alert('Défi envoyé avec succès ! En attente de sa réponse...');
-        } catch (err) {
-            setError(err.message);
-        }
+        const data = await sendRequest(targetId); //
+        if (data) alert('Défi envoyé !');
     };
 
     // 5. Fonction pour accepter une demande reçue (Tâche 21)
     const handleAcceptRequest = async (requesterId) => {
-        const token = getToken();
-        if (!token) return;
-
-        try {
-            const response = await fetch(`http://localhost:3000/matchmaking/acceptRequest?matchmakingId=${requesterId}`, {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token,
-                },
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Erreur lors de l\'acceptation');
-            }
-
-            // Si c'est un succès, le match est créé côté serveur !
-            alert('Match accepté ! Préparation du plateau...');
-
-            // On redirige vers la future page du plateau de jeu (Tâche 25 de Mohammed Ali)
-            router.push('/match');
-
-        } catch (err) {
-            setError(err.message);
-        }
+        const data = await acceptRequest(requesterId); //
+        if (data) router.push('/match');
     };
 
     // 6. Fonction pour la Tâche 22 : Vérifier si un match a commencé en arrière-plan
     const checkIfMatchStarted = async () => {
-        const token = getToken();
-        if (!token) return;
-
-        try {
-            const response = await fetch('http://localhost:3000/match/getMatch', {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token,
-                },
-            });
-
-            // Si le statut est OK (200), le backend confirme qu'on est dans une partie !
-            if (response.ok) {
-                // On redirige automatiquement le joueur vers le plateau
-                router.push('/match');
-            }
-        } catch (err) {
-            // S'il n'y a pas de match, le serveur renvoie une erreur, on l'ignore silencieusement ici
-            console.log("En attente d'un match...");
-        }
+        const data = await getMatch(); //
+        if (data) router.push('/match');
     };
 
     // 7. Le Polling avec useEffect

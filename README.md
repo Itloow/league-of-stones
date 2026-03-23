@@ -1,64 +1,46 @@
-# Rapport de Projet : League of Stones
-## Phase 3 (Authentification) et Phase 4 (Matchmaking)
+# 📝 Compte-rendu : Tâche 13 - Flux d'Inscription et d'Accueil
 
-**Auteur :** Hyacinthe — Responsable Mobile  
-**Date :** 22 Mars 2026
+Ce document détaille l'ensemble des fichiers créés et modifiés pour accomplir la **Tâche 13** (Création de compte), tout en intégrant les maquettes UI/UX et en assurant la compatibilité Mobile (Responsive Design de la Tâche 34).
+
+## 🗂️ 1. Les Pages (Frontend React/Next.js)
+
+### `src/pages/index.jsx` (Page d'Accueil / Connexion)
+* **Action :** Modification complète.
+* **Détails :** Transformation de la page par défaut en véritable point d'entrée du jeu. Mise en place du formulaire de connexion (visuel) et des boutons de redirection vers l'inscription et la page "À propos".
+
+### `src/pages/register.jsx` (Page d'Inscription)
+* **Action :** Création / Modification.
+* **Détails :** Implémentation de la logique de création de compte. 
+  * Ajout des contrôles de sécurité front-end : vérification du domaine de l'email (`@univ-tlse2.fr`), de la longueur du pseudo (3 à 28 caractères) et de la correspondance des mots de passe.
+  * Branchement à l'API centralisée pour la requête serveur.
+  * Redirection automatique vers la page de succès via `useRouter` une fois le compte enregistré en base de données.
+
+### `src/pages/success.jsx` (Page de Confirmation)
+* **Action :** Création.
+* **Détails :** Nouvelle page ajoutée pour améliorer l'expérience utilisateur (remplacement des alertes natives basiques). Affiche un message de succès (avec gestion de l'espace insécable `&nbsp;` pour éviter les "veuves" typographiques) et un bouton de retour à l'accueil.
+
+### `src/pages/about.jsx` (Page À propos)
+* **Action :** Création.
+* **Détails :** Intégration d'une page entière listant les membres de l'équipe et l'origine du projet, scrupuleusement fidèle à la maquette de présentation.
 
 ---
 
-### 1. Introduction
-Ce document récapitule les travaux effectués durant la première semaine du projet League of Stones. En tant que responsable mobile et support sur l'authentification, j'ai implémenté la logique d'inscription et l'intégralité du système de matchmaking (Lobby) en respectant l'architecture Next.js Pages Router et les contraintes du cahier des charges.
+## 🎨 2. Les Styles (CSS Modules & Responsive)
 
-### 2. Arborescence du Projet
-Le projet suit une structure modulaire permettant de séparer la logique d'état, les services API et les vues. Voici l'état actuel des fichiers créés ou modifiés lors de mes interventions :
+### `src/styles/Home.module.css` & `src/styles/Register.module.css`
+* **Action :** Refonte totale.
+* **Détails :** * Application stricte de la charte graphique (fond blanc forcé pour contrer le dark-mode du navigateur, boutons en forme de pilules de couleur violette `#3b00b3`).
+  * **Responsive Design fluide :** Abandon des Media Queries brutales à `100%` au profit d'une combinaison `width: 90%; max-width: 400px;`. Cela permet aux formulaires et boutons de s'étirer harmonieusement sur grand écran tout en rétrécissant de manière fluide sur smartphone, sans "saut" visuel inattendu.
+  * Inversion de l'ordre des boutons sur mobile (`flex-direction: column-reverse`) pour une meilleure ergonomie (l'action principale passe au-dessus).
 
-```text
-src/  
-├── pages/
-│   ├── index.js      (Page d'accueil)
-│   ├── register.jsx  (Créé pour la Tâche 13)
-│   ├── lobby.jsx     (Créé pour les Tâches 18 à 22)
-│   └── _app.js       (Configuration globale) 
-├── store/ 
-│   └── user-store.js (Gestion de l'état utilisateur)
-├── styles/
-│   └── globals.css   (Styles CSS globaux) 
-└── services/         (Logique d'appel API centralisée)
-```
+### `src/styles/Success.module.css` & `src/styles/About.module.css`
+* **Action :** Création.
+* **Détails :** Définition des styles spécifiques pour ces nouvelles pages, en garantissant la cohérence globale (couleurs, polices, alignements et comportement responsive fluide).
 
-### 3. Détails des Tâches Effectuées
+---
 
-#### Tâche 13 : Inscription Utilisateur (register.jsx)
-L'objectif était de permettre la création d'un compte via le Web Service PUT /user.
-* **Fonctionnement :** Un formulaire React récupère l'email, le nom et le mot de passe.
-* **Validations :** Avant l'envoi, le code vérifie que l'email se termine par '@univ-tlse2.fr' et que le nom d'utilisateur contient entre 3 et 28 caractères.
-* **Appel API :** Utilisation de la méthode fetch asynchrone avec un corps JSON. En cas de succès, l'utilisateur est redirigé vers la page de connexion.
+## ⚙️ 3. Les Services (Appels réseau)
 
-#### Phase 4 : Système de Matchmaking (lobby.jsx)
-Cette phase cruciale gère la mise en relation des joueurs. Elle regroupe les tâches 18 à 22.
-
-**Tâches 18 & 19 : Participation et Liste des Joueurs**
-Le fichier lobby.jsx utilise un état local pour suivre si l'utilisateur participe au matchmaking.
-* **Participation :** L'appel à /matchmaking/participate enregistre le joueur sur le serveur.
-* **Polling :** Un système de rafraîchissement automatique (Polling) a été mis en place via un intervalle de 5 secondes. Il interroge /matchmaking/getAll pour mettre à jour la liste des adversaires disponibles en temps réel sans recharger la page.
-
-**Tâches 20 & 21 : Gestion des Défis**
-* **Envoi de requête :** Au clic sur le bouton 'Défier', le client envoie une requête GET incluant l'identifiant de matchmaking de la cible en paramètre d'URL.
-* **Acceptation :** Le polling récupère également les demandes reçues. Si l'utilisateur clique sur 'Accepter', le service acceptRequest est appelé, créant officiellement le match côté serveur.
-
-**Tâche 22 : Redirection Automatique**
-Pour assurer une expérience fluide, une fonction de vérification d'arrière-plan a été ajoutée. Elle interroge régulièrement /match/getMatch. Dès qu'un match est détecté (si l'adversaire a accepté notre défi pendant que nous étions dans le lobby), l'application redirige automatiquement l'utilisateur vers l'URL /match.
-
-### 4. Fonctionnement Technique Global
-Tous les appels effectués vers le matchmaking et le jeu nécessitent une authentification.
-* **Sécurité :** Le jeton (token) récupéré lors de la connexion est stocké dans le localStorage.
-* **Headers :** Chaque requête AJAX inclut un header spécifique www-authenticate contenant ce token, conformément aux spécifications du backend.
-* **Nettoyage :** Pour éviter les fuites de mémoire et les appels inutiles, les intervalles de polling sont systématiquement détruits (clearInterval) lorsque le composant est démonté.
-
-### 5. Documentation de l'utilisation de l'IA
-Conformément aux règles du projet, voici la documentation liée à l'assistance par l'IA :
-* **Outil :** Gemini 3.1 Pro (Web, Paid Tier).
-* **Utilisateur :** Hyacinthe.
-* **Prompt(s) significatif(s) :** Demandes de structuration des composants register.jsx et lobby.jsx selon l'arborescence Pages Router et implémentation du polling pour le matchmaking.
-* **Contexte :** Support technique pour la gestion des appels API asynchrones et la synchronisation de l'état du lobby.
-* **Analyse personnelle :** L'IA a permis d'implémenter rapidement une structure robuste pour le polling et la gestion des erreurs HTTP. J'ai dû modifier les suggestions initiales pour les adapter strictement à l'arborescence spécifique de notre projet et à la méthode d'authentification par header imposée par le sujet.
+### `src/services/api.js`
+* **Action :** Intégration et utilisation.
+* **Détails :** Centralisation de la route d'inscription. La fonction `inscription(email, name, password)` exécute un `fetch` avec la méthode `PUT` ciblant spécifiquement `http://localhost:3001` (le backend) afin de résoudre le conflit de port avec le serveur de développement Next.js (qui tourne sur le port `3000`).

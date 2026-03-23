@@ -1,109 +1,173 @@
-/* src/styles/Register.module.css */
 .container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  min-height: 80vh; /* Centrage vertical grossier en attendant le layout global */
-  color: white;
-  font-family: sans-serif; /* À remplacer par la police du projet plus tard */
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: sans-serif;
+  padding-top: 5vh;
 }
 
-.registerBox {
-  background-color: rgba(0, 10, 20, 0.9); /* Fond très sombre transparent */
-  padding: 40px;
-  border-radius: 8px;
-  border: 1px solid #00c8ff; /* Bordure néon bleu */
-  width: 100%;
-  max-width: 450px;
-  box-shadow: 0 0 15px rgba(0, 200, 255, 0.3);
-}
-
-.title {
+.headerText {
   text-align: center;
-  color: #f0e6d2; /* Couleur dorée type LoL */
-  text-transform: uppercase;
   margin-bottom: 30px;
-  letter-spacing: 2px;
+}
+
+.welcome {
+  color: #3b00b3;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.logoText {
+  background-color: #3b00b3;
+  color: white;
+  font-size: 24px;
+  font-weight: 900;
+  padding: 5px 15px;
+  border-radius: 8px;
+  text-transform: uppercase;
+}
+
+.creationTitle {
+  font-size: 14px;
+  font-weight: 900;
+  color: #3b00b3;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.creationSubtitle {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .form {
   display: flex;
   flex-direction: column;
+  width: 90%;
+  max-width: 400px; 
   gap: 20px;
 }
 
 .inputGroup {
-  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-.inputIcon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #00c8ff;
-  opacity: 0.7;
+.label {
+  font-size: 13px;
+  font-weight: 900;
+  color: #3b00b3;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-left: 15px; /* Alignement avec l'arrondi de l'input */
 }
 
 .inputField {
+  border: 1px solid #999;
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 14px;
   width: 100%;
-  padding: 12px 15px 12px 45px; /* Padding gauche pour l'icône */
-  background-color: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(0, 200, 255, 0.5);
-  border-radius: 4px;
-  color: white;
-  font-size: 16px;
+  outline: none;
+  background-color: #ffffff;
+  color: #000000; 
 }
 
 .inputField:focus {
-  outline: none;
-  border-color: #00c8ff;
-  box-shadow: 0 0 5px rgba(0, 200, 255, 0.5);
+  border-color: #3b00b3;
 }
 
-.checkboxGroup {
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btnBack {
+  background-color: #8a8d91; /* Gris de la maquette */
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 25px;
+  font-weight: 900;
+  font-size: 14px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
-}
-
-.checkboxGroup a {
-  color: #00c8ff;
+  text-transform: uppercase;
   text-decoration: none;
 }
 
-.submitBtn {
-  background-color: #0070f3; /* Bleu plein LoL */
+.btnNext {
+  background-color: #3b00b3; /* Violet */
   color: white;
   border: none;
-  padding: 12px;
-  border-radius: 4px;
-  font-size: 16px;
-  text-transform: uppercase;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 10px;
-}
-
-.submitBtn:hover {
-  background-color: #0056b3;
-}
-
-.submitBtn:disabled {
-  background-color: #555;
-  cursor: not-allowed;
-}
-
-.footerLink {
-  text-align: center;
-  margin-top: 20px;
+  border-radius: 50px;
+  padding: 12px 35px;
+  font-weight: 900;
   font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
 }
 
-.footerLink a {
-  color: #00c8ff;
-  text-decoration: none;
-  font-weight: bold;
+/* Media Query pour Mobile (écrans inférieurs à 768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    padding-top: 5vh;
+  }
+
+  .welcome {
+    font-size: 16px; /* Texte de bienvenue plus petit */
+  }
+
+  .logoText {
+    font-size: 20px; /* Logo adapté au mobile */
+    padding: 4px 12px;
+  }
+
+  .creationTitle {
+    font-size: 13px;
+  }
+
+  .creationSubtitle {
+    font-size: 11px;
+    margin-bottom: 20px;
+  }
+
+  .form {
+    gap: 15px;
+  }
+
+  .label {
+    font-size: 11px;
+    padding-left: 10px;
+  }
+
+  .inputField {
+    padding: 10px 15px; /* Inputs légèrement moins hauts */
+    font-size: 13px;
+  }
+
+  .buttonGroup {
+    flex-direction: column-reverse; /* Astuce UX : Sur mobile, on empile, et on met le bouton "Suivant" (Action principale) AU DESSUS du bouton "Retour" */
+    gap: 15px;
+    margin-top: 10px;
+  }
+
+  .btnBack, .btnNext {
+    width: 100%; /* Les boutons prennent 100% de la largeur comme sur l'accueil */
+    justify-content: center; /* On centre le texte et l'icône */
+    padding: 12px;
+    font-size: 13px;
+  }
 }

@@ -1,143 +1,159 @@
-/* src/styles/Home.module.css */
-.main {
-  color: white;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #ffffff; /* Fond purement blanc */
   font-family: sans-serif;
-  background-color: #000a14; /* Fond très sombre */
+  padding-top: 10vh;
 }
 
-/* --- Hero Section --- */
-.hero {
+.logoSection {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 80px 10%;
-  min-height: 80vh;
+  gap: 15px;
+  margin-bottom: 50px;
 }
 
-.heroContent {
-  flex: 1;
-  max-width: 500px;
-}
-
-.heroTitle {
-  font-size: 48px;
-  color: #f0e6d2; /* Doré LoL */
+.logoText {
+  background-color: #3b00b3; /* Violet foncé maquette */
+  color: white;
+  font-size: 28px;
+  font-weight: 900;
+  padding: 8px 15px;
+  border-radius: 8px;
   text-transform: uppercase;
-  margin-bottom: 20px;
-  line-height: 1.2;
+  letter-spacing: 1px;
 }
 
-.heroDescription {
-  font-size: 18px;
-  line-height: 1.6;
-  opacity: 0.8;
-  margin-bottom: 40px;
-}
-
-.heroBtns {
+.form {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  width: 90%;
+  max-width: 400px;
+  gap: 15px;
 }
 
-.btn {
-  padding: 12px 30px;
-  border-radius: 4px;
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 900;
+  color: #000;
   text-transform: uppercase;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.2s;
+  margin-bottom: 8px;
+}
+
+.inputField {
+  border: 1px solid #333;
+  border-radius: 50px; /* Forme de pilule */
+  padding: 12px 20px;
+  font-size: 14px;
+  width: 100%;
+  text-align: center; /* Texte centré comme sur l'image */
+  outline: none;
+  background-color: #ffffff;
+  color: #000000; 
+}
+
+.inputField:focus {
+  border-color: #3b00b3;
+}
+
+.forgotPassword {
+  text-align: center;
+  color: #3b00b3;
+  font-size: 12px;
   text-decoration: none;
-  display: inline-block;
+  margin-top: -5px;
 }
 
 .btnPrimary {
-  background-color: #0070f3;
+  background-color: #3b00b3;
   color: white;
   border: none;
+  border-radius: 50px; /* Forme de pilule */
+  padding: 15px;
+  font-weight: 900;
+  font-size: 14px;
+  text-transform: uppercase;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
-.btnPrimary:hover {
-  background-color: #0056b3;
-}
-
-.btnSecondary {
-  background-color: transparent;
-  color: #00c8ff;
-  border: 2px solid #00c8ff;
-}
-
-.btnSecondary:hover {
-  background-color: rgba(0, 200, 255, 0.1);
-}
-
-.heroImage {
-  flex: 1;
+.newPlayerSection {
+  margin-top: 60px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  width: 90%;
+  max-width: 400px;
 }
 
-.heroImage img {
-  max-width: 100%;
-  height: auto;
-  /* Placeholder image style */
-  border: 2px dashed #333;
-  padding: 50px;
-  color: #555;
-}
-
-/* --- Features Section --- */
-.features {
-  padding: 80px 10%;
-  background-color: rgba(255, 255, 255, 0.02);
-}
-
-.featuresTitle {
-  text-align: center;
-  font-size: 36px;
-  color: #f0e6d2;
+.newPlayerTitle {
+  font-size: 14px;
+  font-weight: 900;
+  color: #3b00b3;
   text-transform: uppercase;
-  margin-bottom: 60px;
-}
-
-.featuresGrid {
-  display: flex;
-  gap: 30px;
-  justify-content: center;
-}
-
-.featureCard {
-  background-color: rgba(0, 20, 40, 0.5);
-  border: 1px solid rgba(0, 200, 255, 0.3);
-  padding: 30px;
-  border-radius: 8px;
-  flex: 1;
-  max-width: 300px;
-  text-align: center;
-  transition: transform 0.2s, border-color 0.2s;
-}
-
-.featureCard:hover {
-  transform: translateY(-5px);
-  border-color: #00c8ff;
-}
-
-.featureIcon {
-  font-size: 48px;
-  color: #00c8ff;
-  margin-bottom: 20px;
-}
-
-.featureCardTitle {
-  color: #f0e6d2;
-  text-transform: uppercase;
-  font-size: 20px;
   margin-bottom: 15px;
 }
 
-.featureCardDesc {
-  font-size: 15px;
-  line-height: 1.5;
-  opacity: 0.7;
+.footerLink {
+  margin-top: 100px;
+  color: #3b00b3;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+/* Media Query pour Mobile (écrans inférieurs à 768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px; /* Plus d'espace sur les côtés */
+    justify-content: flex-start; /* Aligne en haut de l'écran */
+  }
+
+  .logoSection {
+    flex-direction: column; /* Icone dragon AU-DESSUS du texte */
+    gap: 10px;
+    margin-top: 30px;
+    margin-bottom: 40px;
+  }
+
+  .logoText {
+    font-size: 20px; /* Texte logo un peu plus petit sur mobile */
+    padding: 6px 12px;
+  }
+
+  .form {
+    gap: 15px;
+  }
+
+  .label {
+    font-size: 11px; /* Labels plus discrets */
+  }
+
+  .inputField {
+    padding: 10px 15px; /* Inputs moins hauts */
+    font-size: 13px;
+  }
+
+  .newPlayerSection {
+    margin-top: 50px; 
+  }
+
+  .btnPrimary {
+    padding: 12px; /* Boutons moins hauts mais toujours larges */
+    font-size: 13px;
+  }
+
+  .footerLink {
+    margin-top: auto; /* Pousse le footer tout en bas sur mobile */
+    margin-bottom: 20px;
+    padding-top: 40px;
+  }
 }
