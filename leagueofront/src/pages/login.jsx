@@ -26,7 +26,7 @@ export default function Login() {
         throw new Error('Adresse email ou mot de passe incorrect');
       }
       // Redirection vers la page d'accueil après connexion réussie
-      router.push('/'); 
+      router.push('/Accueil'); 
     } catch (err) {
       setError(err.message || "Une erreur est survenue lors de la connexion.");
     }
