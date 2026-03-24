@@ -1,0 +1,101 @@
+.appContainer {
+  min-height: 100vh;
+  background-color: #ffffff; 
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navbar {
+  width: 100%;
+  max-width: 1400px; 
+  background-color: #3b00b3;
+  border-radius: 25px; 
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); /* shadow-2xl */
+  /*border-bottom: 4px solid rgba(0, 0, 0, 0.2);*/
+}
+
+.logoText {
+  font-family: var(--font-gaming);
+  color: white;
+  font-size: 18px;
+  letter-spacing: 2px;
+   filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.07)) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.06)); /* SUPPRIMÉ: pas besoin sur texte blanc */
+  font-weight: 900;
+}
+
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  justify-content: center;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  transition: all 0.2s ease-in-out;
+  border-radius: 12px;
+  color: white;
+  font-family: var(--font-gaming);
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-weight: 700; 
+  white-space: nowrap;
+  padding: 12px 24px;        
+  border-radius: 12px;   
+}
+
+.navButton:hover {
+  transform: translateY(-2px); 
+  
+}
+
+.navButtonActive {
+  background-color: white;
+  color: #3b00b3;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  padding: 12px 24px;        
+  border-radius: 12px;
+}
+
+.loginButton {
+  background-color: #ffffff;
+  color: #3b00b3;
+  font-family: var(--font-gaming);
+  font-size: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 0px #1e005a; 
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 12px 24px;       
+  border-radius: 12px;
+}
+
+.loginButton:hover {
+  background-color: #f3f4f6;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0px #1e005a;
+}
+
+.loginButton:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0px #1e005a;
+}
