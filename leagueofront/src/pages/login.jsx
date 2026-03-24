@@ -4,29 +4,31 @@ import { useRouter } from 'next/navigation';
 import styles from '../styles/Login.module.css';
 import { connexion } from '../services/api';
 import { useState } from 'react';
+import { useAuthStore } from '../store/authStore';
 
 export default function Login() {
-  const [ email, setEmail ] = useState('');
-  const [ password, setPassword ] = useState('');
-  const [ error, setError ] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
-  
+
+  const { login } = useAuthStore();
+
   const handleLogin = async () => {
     setError('');
-    
-    // Validation des champs
+
     if (!email || !password) {
       setError('Veuillez remplir tous les champs');
       return;
     }
-    
+
     try {
       const data = await connexion(email, password);
       if (!data) {
         throw new Error('Adresse email ou mot de passe incorrect');
       }
-      // Redirection vers la page d'accueil après connexion réussie
-      router.push('/Accueil'); 
+      login(data.token, data.name, data.email);
+      router.push('/Accueil');
     } catch (err) {
       setError(err.message || "Une erreur est survenue lors de la connexion.");
     }
@@ -41,15 +43,15 @@ export default function Login() {
         <span style={{ fontSize: '40px' }}>🐉</span> {/* Placeholder pour l'icône dragon */}
         <div className={styles.logoText}>LEAGUE OF STONES</div>
       </div>
-      
+
 
       <div className={styles.form}>
-         {error && <div style={{ color: 'red', marginTop: '10px', textAlign: 'center' }}>{error}</div>}
+        {error && <div style={{ color: 'red', marginTop: '10px', textAlign: 'center' }}>{error}</div>}
         <div className={styles.inputGroup}>
           <label className={styles.label}>ADRESSE MAIL</label>
-          <input 
-            type="email" 
-            className={styles.inputField} 
+          <input
+            type="email"
+            className={styles.inputField}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -57,8 +59,8 @@ export default function Login() {
 
         <div className={styles.inputGroup}>
           <label className={styles.label}>MOT DE PASSE</label>
-          <input 
-            type="password" 
+          <input
+            type="password"
             className={styles.inputField}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
