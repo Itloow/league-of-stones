@@ -360,6 +360,38 @@
     padding-bottom: 100px;
     background-color: #ffffff;
     gap: 40px;
+    position: relative;
+  }
+
+  /* Onglet Profil collé en haut à droite */
+  .mobileTopTab {
+    position: fixed;
+    top: 0;
+    right: 20px;
+    z-index: 99;
+  }
+
+  .btnTopTab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #3b00b3;
+    color: #ffffff;
+    border: none;
+    border-radius: 0 0 12px 12px;
+    padding: 12px 24px;
+    font-family: var(--font-gaming);
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(59, 0, 179, 0.3);
+    transition: all 0.15s ease;
+  }
+
+  .btnTopTab:active {
+    padding-top: 12px;
   }
 
   /* Logo centré */

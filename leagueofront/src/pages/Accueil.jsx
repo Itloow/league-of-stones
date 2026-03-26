@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import styles from '../styles/Accueil.module.css';
 import { useAuthStore } from '../store/authStore';
 import { getAllPlayers } from '../services/api';
-import { Layers, Home, User } from 'lucide-react';
+import { Layers, Home, User, Users } from 'lucide-react';
 
 export default function Accueil() {
     const router = useRouter();
@@ -49,7 +49,7 @@ export default function Accueil() {
         setIsSearching(true);
         // On simule un temps de recherche puis on redirige vers le lobby
         setTimeout(() => {
-            router.push('/lobby');
+            router.push('/matchmaking');
         }, 3000);
     };
     const handleModifierDeck = () => router.push('/deck');
@@ -150,6 +150,14 @@ export default function Accueil() {
 
             {/* ===== CONTENU MOBILE — Logo centré + bouton ===== */}
             <div className={styles.mobileContent}>
+                {/* Onglet Profil collé en haut */}
+                <div className={styles.mobileTopTab}>
+                    <button className={styles.btnTopTab} onClick={() => router.push('/profil')}>
+                        <User size={16} />
+                        Profil
+                    </button>
+                </div>
+
                 <div className={styles.mobileLogo}>
                     <span className={styles.mobileLogoIcon}>💎</span>
                     <h1 className={styles.mobileLogoText}>League Of Stones</h1>
@@ -172,8 +180,8 @@ export default function Accueil() {
                     <span>Home</span>
                 </button>
                 <button className={styles.bottomNavItem} onClick={() => router.push('/lobby')}>
-                    <User size={24} />
-                    <span>Profil</span>
+                    <Users size={24} />
+                    <span>Social</span>
                 </button>
             </nav>
         </>

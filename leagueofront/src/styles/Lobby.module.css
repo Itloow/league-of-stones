@@ -214,6 +214,162 @@
   font-size: 14px;
 }
 
+/* Bouton Ajouter un ami */
+.btnAddFriend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #3b00b3;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: var(--font-gaming);
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0px #1e005a;
+}
+
+.btnAddFriend:hover {
+  background-color: #2a0080;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0px #1e005a;
+}
+
+.btnAddFriend:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0px #1e005a;
+}
+
+/* Bouton supprimer ami */
+.btnDelete {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btnDelete:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+/* ===== MODAL AJOUT AMI ===== */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalBox {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 35px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 20px 60px rgba(59, 0, 179, 0.3);
+  border: 3px solid #3b00b3;
+  min-width: 320px;
+}
+
+.modalTitle {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 20px;
+  color: #3b00b3;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.modalInput {
+  width: 100%;
+  padding: 12px 18px;
+  border: 2px solid #3b00b3;
+  border-radius: 50px;
+  font-size: 14px;
+  outline: none;
+  text-align: center;
+  font-family: var(--font-gaming);
+}
+
+.modalInput:focus {
+  border-color: #2a0080;
+  box-shadow: 0 0 0 3px rgba(59, 0, 179, 0.15);
+}
+
+.modalError {
+  color: #dc3545;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.btnModalCancel {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 50px;
+  background: transparent;
+  color: #999;
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnModalCancel:hover {
+  border-color: #999;
+  color: #666;
+}
+
+.btnModalConfirm {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 50px;
+  background-color: #3b00b3;
+  color: #ffffff;
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnModalConfirm:hover {
+  background-color: #2a0080;
+}
+
 /* Bouton retour */
 .btnRetour {
   display: flex;
@@ -280,10 +436,42 @@
     flex-direction: column;
     align-items: center;
     padding: 15px;
+    padding-top: 50px;
     padding-bottom: 90px;
     background-color: #ffffff;
     min-height: calc(100vh - 70px);
     gap: 12px;
+    position: relative;
+  }
+
+  /* Onglet Fermer le menu collé en haut à droite */
+  .mobileTopTab {
+    position: fixed;
+    top: 0;
+    right: 20px;
+    z-index: 99;
+  }
+
+  .btnTopTabClose {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #3b00b3;
+    color: #ffffff;
+    border: none;
+    border-radius: 0 0 12px 12px;
+    padding: 14px 28px;
+    font-family: var(--font-gaming);
+    font-weight: 800;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(59, 0, 179, 0.3);
+  }
+
+  .btnTopTabClose:active {
+    padding-top: 12px;
   }
 
   .mobileSectionTitle {

@@ -3,124 +3,80 @@ import { useRouter } from 'next/router';
 import Navbar from "@/components/Navbar";
 import styles from '../styles/Lobby.module.css';
 import { useAuthStore } from '../store/authStore';
-import { participate, getAllPlayers, sendRequest, acceptRequest, getMatch } from '../services/api';
-import { Layers, Home, User } from 'lucide-react';
+import { getAllPlayers, participate } from '../services/api';
+import { Layers, Home, User, Users } from 'lucide-react';
 
 export default function Lobby() {
     const router = useRouter();
     const { token } = useAuthStore();
 
-    // États du matchmaking
-    const [isParticipating, setIsParticipating] = useState(false);
     const [playersList, setPlayersList] = useState([]);
+    const [friends, setFriends] = useState([]);
     const [requestsReceived, setRequestsReceived] = useState([]);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [newFriendName, setNewFriendName] = useState('');
     const [error, setError] = useState('');
-    const [successMsg, setSuccessMsg] = useState('');
 
-    // Sécurité
     useEffect(() => {
         if (!token) router.push('/');
     }, [token, router]);
 
-    // Rejoindre le matchmaking via api.js (tâche 18)
-    const handleParticipate = async () => {
-        try {
-            const data = await participate();
-            if (data) {
-                setIsParticipating(true);
-                if (data.request) setRequestsReceived(data.request);
-            }
-        } catch (err) {
-            setError("Erreur lors de la participation au matchmaking");
-        }
-    };
-
-    // Récupérer la liste des joueurs (tâche 19)
-    const fetchPlayers = async () => {
-        try {
-            const data = await getAllPlayers();
-            if (data && Array.isArray(data)) {
-                setPlayersList(data);
-            }
-        } catch (err) {
-            console.log("Erreur récupération joueurs");
-        }
-    };
-
-    // Rafraîchir les demandes reçues via participate (qui renvoie le champ request)
-    const refreshRequests = async () => {
-        try {
-            const data = await participate();
-            if (data && data.request) {
-                setRequestsReceived(data.request);
-            }
-        } catch (err) {
-            console.log("Erreur rafraîchissement demandes");
-        }
-    };
-
-    // Envoyer une demande de match (tâche 20)
-    const handleSendRequest = async (matchmakingId, playerName) => {
-        try {
-            await sendRequest(matchmakingId);
-            setSuccessMsg('Défi envoyé à ' + playerName + ' !');
-            setError('');
-            setTimeout(() => setSuccessMsg(''), 3000);
-        } catch (err) {
-            setError("Erreur lors de l'envoi du défi");
-        }
-    };
-
-    // Accepter une demande reçue (tâche 21)
-    const handleAcceptRequest = async (matchmakingId) => {
-        try {
-            const data = await acceptRequest(matchmakingId);
-            if (data) {
-                router.push('/game');
-            }
-        } catch (err) {
-            setError("Erreur lors de l'acceptation");
-        }
-    };
-
-    // Vérifier si un match a commencé (tâche 22)
-    const checkIfMatchStarted = async () => {
-        try {
-            const data = await getMatch();
-            if (data) {
-                router.push('/game');
-            }
-        } catch (err) {
-            // Pas de match en cours, on continue le polling
-        }
-    };
-
-    // Polling : rafraîchir toutes les 5 secondes (useEffect CM3 React II)
+    // Charger les amis sauvegardés depuis localStorage
     useEffect(() => {
-        let intervalId;
-
-        if (isParticipating) {
-            fetchPlayers();
-            refreshRequests();
-            checkIfMatchStarted();
-
-            intervalId = setInterval(() => {
-                fetchPlayers();
-                refreshRequests();
-                checkIfMatchStarted();
-            }, 5000);
+        const savedFriends = localStorage.getItem('friendsList');
+        if (savedFriends) {
+            try { setFriends(JSON.parse(savedFriends)); } catch (e) {}
         }
+    }, []);
 
-        // Cleanup (CM3 React II : code de nettoyage du useEffect)
-        return () => {
-            if (intervalId) clearInterval(intervalId);
+    // Récupérer les joueurs en ligne via matchmaking
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // On participe pour pouvoir voir la liste et recevoir des demandes
+                const partData = await participate();
+                if (partData && partData.request) setRequestsReceived(partData.request);
+
+                const players = await getAllPlayers();
+                if (players && Array.isArray(players)) setPlayersList(players);
+            } catch (err) {
+                console.log("Erreur récupération données social");
+            }
         };
-    }, [isParticipating]);
 
-    // Auto-participer au montage si token présent
-    useEffect(() => {
-        if (token) handleParticipate();
+        if (token) {
+            fetchData();
+            const interval = setInterval(fetchData, 5000);
+            return () => clearInterval(interval);
+        }
     }, [token]);
+
+    // Vérifier si un ami est en ligne (présent dans la liste matchmaking)
+    const isOnline = (friendName) => {
+        return playersList.some(p => p.name.toLowerCase() === friendName.toLowerCase());
+    };
+
+    // Ajouter un ami
+    const handleAddFriend = () => {
+        if (!newFriendName.trim()) return;
+        if (friends.some(f => f.toLowerCase() === newFriendName.toLowerCase())) {
+            setError("Cet ami est déjà dans ta liste !");
+            return;
+        }
+        const newList = [...friends, newFriendName.trim()];
+        setFriends(newList);
+        localStorage.setItem('friendsList', JSON.stringify(newList));
+        setNewFriendName('');
+        setShowAddModal(false);
+        setError('');
+    };
+
+    // Supprimer un ami
+    const handleRemoveFriend = (friendName) => {
+        const newList = friends.filter(f => f !== friendName);
+        setFriends(newList);
+        localStorage.setItem('friendsList', JSON.stringify(newList));
+    };
 
     return (
         <>
@@ -129,6 +85,33 @@ export default function Lobby() {
                 <Navbar />
             </div>
 
+            {/* ===== MODAL AJOUT AMI ===== */}
+            {showAddModal && (
+                <div className={styles.modalOverlay} onClick={() => setShowAddModal(false)}>
+                    <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+                        <h3 className={styles.modalTitle}>Ajouter un ami</h3>
+                        <input
+                            type="text"
+                            className={styles.modalInput}
+                            placeholder="Pseudo du joueur..."
+                            value={newFriendName}
+                            onChange={(e) => setNewFriendName(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleAddFriend()}
+                            autoFocus
+                        />
+                        {error && <p className={styles.modalError}>{error}</p>}
+                        <div className={styles.modalButtons}>
+                            <button className={styles.btnModalCancel} onClick={() => { setShowAddModal(false); setError(''); }}>
+                                Annuler
+                            </button>
+                            <button className={styles.btnModalConfirm} onClick={handleAddFriend}>
+                                Ajouter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* ===== CONTENU DESKTOP ===== */}
             <div className={styles.pageContent}>
                 <div className={styles.socialHeader}>
@@ -136,11 +119,8 @@ export default function Lobby() {
                     <h1 className={styles.socialTitle}>Social</h1>
                 </div>
 
-                {error && <div className={styles.errorMessage}>{error}</div>}
-                {successMsg && <div className={styles.successMessage}>{successMsg}</div>}
-
                 <div className={styles.columnsWrapper}>
-                    {/* Colonne gauche : Liste des joueurs en ligne */}
+                    {/* Colonne gauche : Liste d'amis */}
                     <div className={styles.section}>
                         <h2 className={styles.sectionTitle}>Liste d'amis</h2>
                         <div className={styles.tableContainer}>
@@ -153,23 +133,21 @@ export default function Lobby() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {playersList.length > 0 ? (
-                                        playersList.map((player, index) => (
-                                            <tr key={player.matchmakingId || index}>
-                                                <td className={styles.playerName}>{player.name}</td>
+                                    {friends.length > 0 ? (
+                                        friends.map((friend, index) => (
+                                            <tr key={index}>
+                                                <td className={styles.playerName}>{friend}</td>
                                                 <td>
-                                                    <span className={styles.statusOnline}>
-                                                        En ligne <span className={styles.dotGreen}>●</span>
-                                                    </span>
+                                                    {isOnline(friend) ? (
+                                                        <span className={styles.statusOnline}>En ligne <span className={styles.dotGreen}>●</span></span>
+                                                    ) : (
+                                                        <span className={styles.statusOffline}>Hors ligne <span className={styles.dotRed}>●</span></span>
+                                                    )}
                                                 </td>
                                                 <td>
                                                     <div className={styles.optionsButtons}>
-                                                        <button
-                                                            className={styles.btnInvite}
-                                                            onClick={() => handleSendRequest(player.matchmakingId, player.name)}
-                                                            title="Envoyer un défi"
-                                                        >
-                                                            ⚔️
+                                                        <button className={styles.btnDelete} onClick={() => handleRemoveFriend(friend)} title="Supprimer">
+                                                            🗑️
                                                         </button>
                                                     </div>
                                                 </td>
@@ -177,14 +155,15 @@ export default function Lobby() {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="3" className={styles.emptyText}>
-                                                {isParticipating ? "Aucun joueur en ligne..." : "Connexion au matchmaking..."}
-                                            </td>
+                                            <td colSpan="3" className={styles.emptyText}>Aucun ami ajouté</td>
                                         </tr>
                                     )}
                                 </tbody>
                             </table>
                         </div>
+                        <button className={styles.btnAddFriend} onClick={() => setShowAddModal(true)}>
+                            👤 Ajouter un ami
+                        </button>
                     </div>
 
                     {/* Colonne droite : Défis reçus */}
@@ -204,11 +183,8 @@ export default function Lobby() {
                                             <tr key={index}>
                                                 <td className={styles.playerName}>🚨 {req.name}</td>
                                                 <td>
-                                                    <button
-                                                        className={styles.btnAccept}
-                                                        onClick={() => handleAcceptRequest(req.matchmakingId)}
-                                                    >
-                                                        ✅ Accepter
+                                                    <button className={styles.btnAccept} onClick={() => router.push('/matchmaking')}>
+                                                        ✅ Voir
                                                     </button>
                                                 </td>
                                             </tr>
@@ -224,7 +200,6 @@ export default function Lobby() {
                     </div>
                 </div>
 
-                {/* Bouton retour */}
                 <button className={styles.btnRetour} onClick={() => router.push('/Accueil')}>
                     🏠 Retour au menu
                 </button>
@@ -232,13 +207,15 @@ export default function Lobby() {
 
             {/* ===== MOBILE ===== */}
             <div className={styles.mobileContent}>
+                <div className={styles.mobileTopTab}>
+                    <button className={styles.btnTopTabClose} onClick={() => router.push('/Accueil')}>
+                        ✕ Fermer le menu
+                    </button>
+                </div>
                 <div className={styles.socialHeader}>
                     <span className={styles.socialIcon}>💎</span>
                     <h1 className={styles.socialTitle}>Social</h1>
                 </div>
-
-                {error && <div className={styles.errorMessage}>{error}</div>}
-                {successMsg && <div className={styles.successMessage}>{successMsg}</div>}
 
                 <h2 className={styles.mobileSectionTitle}>Liste d'amis</h2>
                 <div className={styles.mobileTableContainer}>
@@ -251,67 +228,46 @@ export default function Lobby() {
                             </tr>
                         </thead>
                         <tbody>
-                            {playersList.length > 0 ? (
-                                playersList.map((player, index) => (
-                                    <tr key={player.matchmakingId || index}>
-                                        <td className={styles.playerName}>{player.name}</td>
+                            {friends.length > 0 ? (
+                                friends.map((friend, index) => (
+                                    <tr key={index}>
+                                        <td className={styles.playerName}>{friend}</td>
                                         <td>
-                                            <span className={styles.statusOnline}>
-                                                En ligne <span className={styles.dotGreen}>●</span>
-                                            </span>
+                                            {isOnline(friend) ? (
+                                                <span className={styles.statusOnline}>En ligne <span className={styles.dotGreen}>●</span></span>
+                                            ) : (
+                                                <span className={styles.statusOffline}>Hors ligne <span className={styles.dotRed}>●</span></span>
+                                            )}
                                         </td>
                                         <td>
-                                            <button className={styles.btnInvite} onClick={() => handleSendRequest(player.matchmakingId, player.name)}>
-                                                ⚔️
-                                            </button>
+                                            <button className={styles.btnDelete} onClick={() => handleRemoveFriend(friend)}>🗑️</button>
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="3" className={styles.emptyText}>Aucun joueur en ligne...</td>
+                                    <td colSpan="3" className={styles.emptyText}>Aucun ami ajouté</td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
 
-                {requestsReceived && requestsReceived.length > 0 && (
-                    <>
-                        <h2 className={styles.mobileSectionTitle}>Défis reçus</h2>
-                        <div className={styles.mobileTableContainer}>
-                            <table className={styles.friendsTable}>
-                                <tbody>
-                                    {requestsReceived.map((req, index) => (
-                                        <tr key={index}>
-                                            <td className={styles.playerName}>🚨 {req.name}</td>
-                                            <td>
-                                                <button className={styles.btnAccept} onClick={() => handleAcceptRequest(req.matchmakingId)}>
-                                                    ✅ Accepter
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </>
-                )}
+                <button className={styles.btnAddFriend} onClick={() => setShowAddModal(true)}>
+                    👤 Ajouter un ami
+                </button>
             </div>
 
-            {/* ===== BOTTOM NAV MOBILE ===== */}
+            {/* Bottom nav mobile */}
             <nav className={styles.bottomNav}>
                 <button className={styles.bottomNavItem} onClick={() => router.push('/deck')}>
-                    <Layers size={24} />
-                    <span>Decks</span>
+                    <Layers size={24} /><span>Decks</span>
                 </button>
                 <button className={styles.bottomNavItem} onClick={() => router.push('/Accueil')}>
-                    <Home size={24} />
-                    <span>Home</span>
+                    <Home size={24} /><span>Home</span>
                 </button>
                 <button className={`${styles.bottomNavItem} ${styles.bottomNavItemActive}`}>
-                    <User size={24} />
-                    <span>Profil</span>
+                    <Users size={24} /><span>Social</span>
                 </button>
             </nav>
         </>

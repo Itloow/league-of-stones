@@ -1,0 +1,406 @@
+/* ============================================
+   PAGE MATCHMAKING — League Of Stones
+   ============================================ */
+
+.navbarDesktop { display: block; }
+.mobileContent { display: none; }
+.bottomNav { display: none; }
+
+/* ===== DESKTOP ===== */
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 40px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.headerIcon { font-size: 40px; }
+
+.headerTitle {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 32px;
+  color: #3b00b3;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 1px 2px 0px rgba(59, 0, 179, 0.3);
+}
+
+.sectionTitle {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 16px;
+  color: #3b00b3;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.errorMsg {
+  background-color: #ff4444;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.successMsg {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* Tableau des joueurs */
+.tableContainer {
+  border: 2px solid #333;
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+}
+
+.playersTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.playersTable th {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 13px;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: 12px;
+  text-align: left;
+  border-bottom: 2px solid #eee;
+}
+
+.playersTable td {
+  padding: 12px 0;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.myRow {
+  background-color: #f8f4ff;
+}
+
+.playerName {
+  font-family: var(--font-gaming);
+  font-weight: 800;
+  color: #3b00b3;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.statusReady {
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 13px;
+  color: #28a745;
+  text-transform: uppercase;
+}
+
+.statusWaiting {
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 13px;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.dotGreen { color: #28a745; }
+
+/* Séparateur VS */
+.vsRow {
+  text-align: center;
+  padding: 8px 0;
+  border: none;
+}
+
+.vsBadge {
+  display: inline-block;
+  background-color: #3b00b3;
+  color: #fff;
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 14px;
+  padding: 4px 16px;
+  border-radius: 50px;
+  letter-spacing: 2px;
+}
+
+.emptyText {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 20px 0;
+}
+
+.emptyCell {
+  color: #ccc;
+  text-align: center;
+}
+
+/* Bouton défier */
+.btnInvite {
+  background-color: #3b00b3;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-family: var(--font-gaming);
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnInvite:hover {
+  background-color: #2a0080;
+  transform: translateY(-1px);
+}
+
+/* Défis reçus */
+.requestsSection {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.requestCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 20px;
+  border: 2px solid #28a745;
+  border-radius: 12px;
+  background-color: #f0fff0;
+}
+
+.btnAccept {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-family: var(--font-gaming);
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnAccept:hover {
+  background-color: #218838;
+}
+
+/* Boutons bas */
+.bottomButtons {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.btnBack {
+  background-color: transparent;
+  color: #3b00b3;
+  border: 2px solid #3b00b3;
+  border-radius: 50px;
+  padding: 12px 28px;
+  font-family: var(--font-gaming);
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnBack:hover {
+  background-color: #3b00b3;
+  color: #fff;
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media (max-width: 768px) {
+  .navbarDesktop { display: none; }
+  .pageContent { display: none; }
+
+  .mobileContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    padding-top: 50px;
+    padding-bottom: 90px;
+    background-color: #fff;
+    min-height: calc(100vh - 70px);
+    gap: 12px;
+    position: relative;
+  }
+
+  .mobileTopTab {
+    position: fixed;
+    top: 0;
+    right: 20px;
+    z-index: 99;
+  }
+
+  .btnTopTab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #3b00b3;
+    color: #ffffff;
+    border: none;
+    border-radius: 0 0 12px 12px;
+    padding: 12px 24px;
+    font-family: var(--font-gaming);
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(59, 0, 179, 0.3);
+  }
+
+  .btnTopTab:active {
+    padding-top: 12px;
+  }
+
+  .mobileSectionTitle {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 14px;
+    color: #3b00b3;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .mobileTableContainer {
+    border: 2px solid #333;
+    border-radius: 16px;
+    padding: 12px 15px;
+    background-color: #fff;
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .btnMobileInvite {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: #666;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 30px;
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    width: 85%;
+    max-width: 400px;
+  }
+
+  .btnMobileLaunch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: #3b00b3;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 30px;
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    width: 85%;
+    max-width: 400px;
+    box-shadow: 0 4px 0px #1e005a;
+  }
+
+  .btnMobileRetour {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: transparent;
+    color: #3b00b3;
+    border: 2px solid #3b00b3;
+    border-radius: 50px;
+    padding: 12px 28px;
+    font-family: var(--font-gaming);
+    font-weight: 800;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+
+  .btnMobileRetour:active {
+    background-color: #3b00b3;
+    color: #fff;
+  }
+
+  .bottomNav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background-color: #3b00b3;
+    z-index: 100;
+  }
+
+  .bottomNavItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-gaming);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 8px 20px;
+  }
+
+  .bottomNavItemActive { color: #fff; }
+}

@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import styles from '../styles/Deck.module.css';
 import { useAuthStore } from '../store/authStore';
 import { getCards } from '../services/api';
-import { Layers, Home, User } from 'lucide-react';
+import { Layers, Home, User, Users } from 'lucide-react';
 
 export default function Deck() {
     const router = useRouter();
@@ -172,6 +172,11 @@ export default function Deck() {
 
             {/* ===== MOBILE — VUE DECK (écran 1) ===== */}
             <div className={`${styles.mobileView} ${mobileEditing ? styles.mobileHidden : ''}`}>
+                <div className={styles.mobileTopTab}>
+                    <button className={styles.btnTopTab} onClick={() => router.push('/profil')}>
+                        <User size={16} /> Profil
+                    </button>
+                </div>
                 <div className={styles.mobileLogo}>
                     <span className={styles.mobileLogoIcon}>💎</span>
                     <h1 className={styles.mobileTitle}>Decks</h1>
@@ -193,6 +198,11 @@ export default function Deck() {
 
             {/* ===== MOBILE — VUE COLLECTION/EDIT (écran 2) ===== */}
             <div className={`${styles.mobileView} ${!mobileEditing ? styles.mobileHidden : ''}`}>
+                <div className={styles.mobileTopTab}>
+                    <button className={styles.btnTopTab} onClick={() => router.push('/profil')}>
+                        <User size={16} /> Profil
+                    </button>
+                </div>
                 <div className={styles.mobileLogo}>
                     <span className={styles.mobileLogoIcon}>💎</span>
                     <h1 className={styles.mobileTitle}>Collection</h1>
@@ -239,8 +249,8 @@ export default function Deck() {
                     <span>Home</span>
                 </button>
                 <button className={styles.bottomNavItem} onClick={() => router.push('/lobby')}>
-                    <User size={24} />
-                    <span>Profil</span>
+                    <Users size={24} />
+                    <span>Social</span>
                 </button>
             </nav>
         </>

@@ -100,6 +100,21 @@ export default function Navbar() {
                 zIndex: 50,
               }}>
                 <button
+                  onClick={() => { setMenuOpen(false); alert('Fonctionnalité à venir'); }}
+                  style={{
+                    padding: '10px 15px',
+                    border: 'none',
+                    borderRadius: '8px',
+                    backgroundColor: 'transparent',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: '#3b00b3',
+                    textAlign: 'left',
+                  }}
+                >
+                  Modifier les informations
+                </button>
+                <button
                   onClick={handleLogout}
                   style={{
                     padding: '10px 15px',
