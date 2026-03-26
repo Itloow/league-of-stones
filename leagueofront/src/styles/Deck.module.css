@@ -1,0 +1,671 @@
+/* ============================================
+   PAGE DECK — League Of Stones
+   3 colonnes : Collection / Deck actif / Mes Decks
+   ============================================ */
+
+/* Layout principal */
+.pageContent {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 15px;
+  padding: 20px 20px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+
+/* Message d'erreur */
+.errorMessage {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff4444;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 50px;
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 13px;
+  z-index: 200;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+}
+
+/* ===== COLONNE GÉNÉRIQUE ===== */
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Proportions des 3 colonnes — remplissent la largeur comme la maquette */
+.column:first-child {
+  flex: 3;
+  max-width: 700px;
+}
+.column:nth-child(2) {
+  flex: 2.5;
+  max-width: 550px;
+}
+.column:last-child {
+  flex: 1.5;
+  max-width: 320px;
+  align-self: stretch;
+}
+
+/* Titre des sections */
+.sectionTitle {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 20px;
+  color: #3b00b3;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-style: italic;
+  text-shadow: 1px 2px 0px rgba(59, 0, 179, 0.3);
+}
+
+.deckCount {
+  font-size: 14px;
+  font-style: normal;
+  color: #666;
+}
+
+/* ===== COLLECTION (gauche) ===== */
+.collectionContainer {
+  border: 3px solid #3b00b3;
+  border-radius: 12px;
+  padding: 12px;
+  max-height: 650px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  position: relative;
+  width: 100%;
+}
+
+/* Scrollbar personnalisée */
+.collectionContainer::-webkit-scrollbar {
+  width: 6px;
+}
+.collectionContainer::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+.collectionContainer::-webkit-scrollbar-thumb {
+  background: #3b00b3;
+  border-radius: 3px;
+}
+
+/* Grille de cartes — 6 colonnes pour la collection comme la maquette */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+
+/* Wrapper carte (cliquable) */
+.cardWrapper {
+  position: relative;
+  cursor: pointer;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.cardWrapper:hover {
+  transform: scale(1.05);
+}
+
+/* Carte grisée si déjà dans le deck */
+.cardDisabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.cardDisabled:hover {
+  transform: none;
+}
+
+/* Image de la carte */
+.cardImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3/4.2;
+  object-fit: cover;
+  border-radius: 5px;
+  display: block;
+}
+
+/* Indicateur de scroll (chevron bas) */
+.scrollIndicator {
+  text-align: center;
+  font-size: 22px;
+  color: #3b00b3;
+  padding-top: 5px;
+  opacity: 0.6;
+}
+
+/* Overlay "X" au survol d'une carte dans le deck */
+.removeOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(200, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  font-weight: 900;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  border-radius: 5px;
+}
+
+.cardWrapper:hover .removeOverlay {
+  opacity: 1;
+}
+
+/* Placeholder "?" pour les emplacements vides du deck */
+.deckPlaceholder {
+  aspect-ratio: 3/4.2;
+  border-radius: 5px;
+  background-color: #ede6fa;
+  border: 2px dashed #3b00b3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #3b00b3;
+  opacity: 0.5;
+  font-weight: 700;
+}
+
+/* ===== DECK ACTIF (centre) ===== */
+.deckContainer {
+  border: 3px solid #3b00b3;
+  border-radius: 12px;
+  padding: 12px;
+  max-height: 650px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  width: 100%;
+  min-height: 200px;
+}
+
+.deckContainer::-webkit-scrollbar {
+  width: 6px;
+}
+.deckContainer::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+.deckContainer::-webkit-scrollbar-thumb {
+  background: #3b00b3;
+  border-radius: 3px;
+}
+
+.deckContainer .cardGrid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* ===== MES DECKS SAUVEGARDÉS (droite) ===== */
+.savedDecksContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  flex: 1;
+}
+
+/* Un emplacement de deck sauvegardé — s'étire pour remplir la hauteur */
+.savedDeckSlot {
+  border: 3px solid #3b00b3;
+  border-radius: 12px;
+  padding: 10px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+
+/* Mini preview 2x2 des cartes du deck sauvegardé */
+.savedDeckPreview {
+  width: 100%;
+  height: 115px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Effet "main de cartes" — les cartes se superposent en éventail */
+.savedDeckMiniGrid {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 150px;
+  height: 110px;
+}
+
+.miniCard {
+  width: 75px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 2px solid #ffffff;
+  transition: transform 0.2s ease;
+  transform-origin: bottom center;
+}
+
+/* Carte gauche : décalée à gauche + rotation antihoraire */
+.miniCard:nth-child(1) {
+  transform: translate(-80%, -50%) rotate(-15deg);
+  z-index: 1;
+}
+
+/* Carte centre : centrée, légèrement au-dessus */
+.miniCard:nth-child(2) {
+  transform: translate(-50%, -55%);
+  z-index: 2;
+}
+
+/* Carte droite : décalée à droite + rotation horaire */
+.miniCard:nth-child(3) {
+  transform: translate(-20%, -50%) rotate(15deg);
+  z-index: 1;
+}
+
+/* Au survol du slot, les cartes s'écartent davantage */
+.savedDeckSlot:hover .miniCard:nth-child(1) {
+  transform: translate(-95%, -50%) rotate(-20deg);
+}
+.savedDeckSlot:hover .miniCard:nth-child(2) {
+  transform: translate(-50%, -60%);
+}
+.savedDeckSlot:hover .miniCard:nth-child(3) {
+  transform: translate(-5%, -50%) rotate(20deg);
+}
+
+.emptySlotText {
+  color: #ccc;
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* Nom + boutons d'action du slot */
+.savedDeckInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.savedDeckName {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 13px;
+  color: #3b00b3;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.savedDeckActions {
+  display: flex;
+  gap: 6px;
+}
+
+.btnLoad, .btnDelete {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btnLoad {
+  background-color: #3b00b3;
+  color: white;
+}
+.btnLoad:hover {
+  background-color: #2a0080;
+  transform: translateY(-1px);
+}
+
+.btnDelete {
+  background-color: #a33;
+  color: white;
+}
+.btnDelete:hover {
+  background-color: #822;
+  transform: translateY(-1px);
+}
+
+/* ===== BARRE DU BAS DESKTOP ===== */
+.bottomBarDesktop {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+/* Navbar desktop wrapper */
+.navbarDesktop {
+  display: block;
+}
+
+/* Mobile views — hidden on desktop */
+.mobileView {
+  display: none;
+}
+.mobileHidden {
+  display: none !important;
+}
+.bottomNav {
+  display: none;
+}
+
+.btnRetour {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #3b00b3;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 30px;
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0px #1e005a;
+}
+
+.btnRetour:hover {
+  background-color: #2a0080;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0px #1e005a;
+}
+
+.btnRetour:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0px #1e005a;
+}
+
+/* ===== RESPONSIVE TABLETTE ===== */
+@media (max-width: 1024px) {
+  .pageContent {
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    padding: 10px 15px;
+  }
+
+  .column {
+    width: 100%;
+    max-width: 600px;
+    align-self: center !important;
+  }
+
+  .column:first-child,
+  .column:nth-child(2),
+  .column:last-child {
+    max-width: 600px;
+    flex: unset;
+  }
+
+  .savedDecksContainer {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .savedDeckSlot {
+    width: 180px;
+    flex: unset;
+  }
+
+  .collectionContainer,
+  .deckContainer {
+    max-height: 350px;
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .deckContainer .cardGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media (max-width: 768px) {
+
+  /* Masquer tout le desktop */
+  .navbarDesktop {
+    display: none;
+  }
+  .pageContent {
+    display: none;
+  }
+  .bottomBarDesktop {
+    display: none;
+  }
+
+  /* Afficher les vues mobile */
+  .mobileView {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    padding-bottom: 80px;
+    background-color: #ffffff;
+    min-height: calc(100vh - 70px);
+    gap: 10px;
+    overflow-y: auto;
+  }
+
+  .mobileHidden {
+    display: none !important;
+  }
+
+  /* Logo + Titre */
+  .mobileLogo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mobileLogoIcon {
+    font-size: 30px;
+  }
+
+  .mobileTitle {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 26px;
+    color: #3b00b3;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background-color: #3b00b3;
+    color: #ffffff;
+    padding: 6px 18px;
+    border-radius: 8px;
+  }
+
+  .mobileSubtitle {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 16px;
+    color: #3b00b3;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+  }
+
+  /* Grille de cartes mobile — 3 colonnes */
+  .mobileDeckGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    border: 3px solid #3b00b3;
+    border-radius: 12px;
+    padding: 10px;
+    width: 100%;
+    max-width: 90%;
+    max-height: 32vh;
+    overflow-y: auto;
+  }
+
+  .mobileDeckGrid::-webkit-scrollbar {
+    width: 4px;
+  }
+  .mobileDeckGrid::-webkit-scrollbar-thumb {
+    background: #3b00b3;
+    border-radius: 3px;
+  }
+
+  .mobileCard {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+
+  .mobileCardWrapper {
+    cursor: pointer;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: transform 0.15s ease;
+  }
+
+  .mobileCardWrapper:active {
+    transform: scale(0.95);
+  }
+
+  .mobileCardPlaceholder {
+    aspect-ratio: 3/4;
+    border-radius: 5px;
+    background-color: #ede6fa;
+    border: 2px dashed #3b00b3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #3b00b3;
+    opacity: 0.5;
+  }
+
+  /* Boutons mobile */
+  .btnMobileModifier {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: #3b00b3;
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 35px;
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    width: 85%;
+    max-width: 90%;
+    box-shadow: 0 4px 0px #1e005a;
+  }
+
+  .btnMobileModifier:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0px #1e005a;
+  }
+
+  .btnMobileSave {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: #3b00b3;
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 35px;
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    width: 85%;
+    max-width: 90%;
+    box-shadow: 0 4px 0px #1e005a;
+    margin-top: 5px;
+  }
+
+  .btnMobileSave:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0px #1e005a;
+  }
+
+  /* Bottom nav mobile */
+  .bottomNav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background-color: #3b00b3;
+    z-index: 100;
+  }
+
+  .bottomNavItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-gaming);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    padding: 8px 20px;
+  }
+
+  .bottomNavItemActive {
+    color: #ffffff;
+  }
+}

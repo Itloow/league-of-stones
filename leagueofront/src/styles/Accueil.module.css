@@ -1,0 +1,475 @@
+/* ============================================
+   PAGE ACCUEIL — League Of Stones
+   Desktop : 3 colonnes (deck / play / amis)
+   Mobile  : Logo centré + bouton + bottom nav
+   ============================================ */
+
+/* ===== NAVBAR DESKTOP — visible uniquement en desktop ===== */
+.navbarDesktop {
+  display: block;
+}
+
+/* ===== CONTENU DESKTOP — 3 colonnes ===== */
+.pageContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 30px 30px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+
+/* ===== CONTENU MOBILE — masqué en desktop ===== */
+.mobileContent {
+  display: none;
+}
+
+/* ===== BOTTOM NAV — masquée en desktop ===== */
+.bottomNav {
+  display: none;
+}
+
+/* ===== SECTION GAUCHE : VOTRE DECK ===== */
+.deckSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.sectionTitle {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 22px;
+  color: #3b00b3;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-style: italic;
+  text-shadow: 1px 2px 0px rgba(59, 0, 179, 0.3);
+}
+
+.deckContainer {
+  border: 3px solid #3b00b3;
+  border-radius: 10px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background-color: #ffffff;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* Scrollbar personnalisée */
+.deckContainer::-webkit-scrollbar {
+  width: 5px;
+}
+.deckContainer::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+.deckContainer::-webkit-scrollbar-thumb {
+  background: #3b00b3;
+  border-radius: 3px;
+}
+
+.deckCard {
+  width: 130px;
+  height: 180px;
+  border-radius: 5px;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.deckCard:hover {
+  transform: scale(1.08);
+}
+
+.deckCardPlaceholder {
+  width: 130px;
+  height: 180px;
+  border-radius: 5px;
+  background-color: #ede6fa;
+  border: 2px dashed #3b00b3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #3b00b3;
+  opacity: 0.6;
+}
+
+.btnModifierDeck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #3b00b3;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 30px;
+  font-family: var(--font-gaming);
+  font-weight: 800;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnModifierDeck:hover {
+  background-color: #2a0080;
+  transform: translateY(-2px);
+}
+
+/* ===== SECTION CENTRE : LANCER UNE PARTIE ===== */
+.centerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 220px;
+}
+
+.btnLancerPartie {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #3b00b3;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 20px 40px;
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 5px 0px #1e005a;
+}
+
+.btnLancerPartie:hover {
+  background-color: #2a0080;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0px #1e005a;
+}
+
+.btnLancerPartie:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0px #1e005a;
+}
+
+.playIcon {
+  font-size: 16px;
+}
+
+/* ===== SECTION DROITE : AMIS EN LIGNE ===== */
+.friendsSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 380px;
+}
+
+.friendsContainer {
+  border: 2px solid #333333;
+  border-radius: 20px;
+  padding: 15px 20px;
+  background-color: #ffffff;
+  width: 100%;
+  min-height: 400px;
+}
+
+.friendsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.friendsTable th {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 12px;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: 10px;
+  text-align: left;
+}
+
+.friendsTable th:last-child {
+  text-align: right;
+}
+
+.friendsTable td {
+  padding: 6px 0;
+  font-family: var(--font-gaming);
+  font-size: 13px;
+  font-weight: 700;
+  color: #3b00b3;
+  vertical-align: middle;
+}
+
+.friendsTable td:last-child {
+  text-align: right;
+}
+
+.btnInviter {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #3b00b3;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 7px 12px;
+  font-family: var(--font-gaming);
+  font-weight: 800;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnInviter:hover {
+  background-color: #2a0080;
+  transform: translateY(-1px);
+}
+
+.noFriends {
+  text-align: center;
+  color: #999999;
+  font-size: 13px;
+  padding: 15px 0;
+  font-style: italic;
+}
+
+/* ===== OVERLAY MATCHMAKING ===== */
+.matchmakingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.matchmakingBox {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 50px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 20px 60px rgba(59, 0, 179, 0.4);
+  border: 3px solid #3b00b3;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #ede6fa;
+  border-top: 5px solid #3b00b3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.matchmakingTitle {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 28px;
+  color: #3b00b3;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.matchmakingText {
+  font-family: var(--font-gaming);
+  font-size: 14px;
+  color: #666;
+  letter-spacing: 1px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.btnCancel {
+  background-color: transparent;
+  color: #999;
+  border: 2px solid #ccc;
+  border-radius: 50px;
+  padding: 10px 25px;
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.btnCancel:hover {
+  border-color: #ff4444;
+  color: #ff4444;
+}
+
+/* =============================================
+   RESPONSIVE MOBILE — max-width: 768px
+   Fidèle à la maquette Figma mobile de Karim
+   ============================================= */
+@media (max-width: 768px) {
+
+  /* Masquer la navbar desktop */
+  .navbarDesktop {
+    display: none;
+  }
+
+  /* Masquer le contenu desktop 3 colonnes */
+  .pageContent {
+    display: none;
+  }
+
+  /* ===== CONTENU MOBILE VISIBLE ===== */
+  .mobileContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 70px);
+    padding: 40px 20px;
+    padding-bottom: 100px;
+    background-color: #ffffff;
+    gap: 40px;
+  }
+
+  /* Logo centré */
+  .mobileLogo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .mobileLogoIcon {
+    font-size: 60px;
+  }
+
+  .mobileLogoText {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 28px;
+    color: #3b00b3;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background-color: #3b00b3;
+    color: #ffffff;
+    padding: 8px 20px;
+    border-radius: 8px;
+  }
+
+  /* Bouton LANCER UNE PARTIE mobile */
+  .btnLancerPartieMobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: #3b00b3;
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    width: 85%;
+    max-width: 350px;
+    box-shadow: 0 5px 0px #1e005a;
+    transition: all 0.2s ease;
+  }
+
+  .btnLancerPartieMobile:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0px #1e005a;
+  }
+
+  /* ===== BOTTOM NAV BAR ===== */
+  .bottomNav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background-color: #3b00b3;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    z-index: 100;
+  }
+
+  .bottomNavItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-gaming);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    padding: 8px 20px;
+    transition: all 0.2s ease;
+  }
+
+  .bottomNavItemActive {
+    color: #ffffff;
+  }
+}
+
+/* ===== TABLETTE (entre 768px et 1024px) ===== */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .pageContent {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 30px 20px;
+  }
+
+  .centerSection {
+    padding-top: 0;
+  }
+
+  .friendsSection {
+    min-width: unset;
+    width: 100%;
+    max-width: 400px;
+  }
+}

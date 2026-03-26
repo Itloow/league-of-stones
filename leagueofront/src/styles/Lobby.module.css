@@ -1,0 +1,340 @@
+/* ============================================
+   PAGE SOCIAL / LOBBY — League Of Stones
+   Desktop : 2 colonnes (amis + défis)
+   Mobile  : liste d'amis + bottom nav
+   ============================================ */
+
+/* Navbar desktop wrapper */
+.navbarDesktop {
+  display: block;
+}
+
+/* ===== CONTENU DESKTOP ===== */
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 40px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  gap: 25px;
+}
+
+/* Header : icone + titre SOCIAL */
+.socialHeader {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.socialIcon {
+  font-size: 40px;
+}
+
+.socialTitle {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 32px;
+  color: #3b00b3;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 1px 2px 0px rgba(59, 0, 179, 0.3);
+}
+
+/* Messages d'état */
+.errorMessage {
+  background-color: #ff4444;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 50px;
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+}
+
+.successMessage {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 50px;
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+/* 2 colonnes desktop */
+.columnsWrapper {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  justify-content: center;
+}
+
+.section {
+  flex: 1;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 18px;
+  color: #3b00b3;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Container du tableau avec cadre arrondi */
+.tableContainer {
+  border: 2px solid #333333;
+  border-radius: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  width: 100%;
+  min-height: 200px;
+}
+
+/* Tableau des joueurs */
+.friendsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.friendsTable th {
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 13px;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: 12px;
+  text-align: left;
+  border-bottom: 2px solid #eee;
+}
+
+.friendsTable td {
+  padding: 10px 0;
+  font-size: 14px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.playerName {
+  font-family: var(--font-gaming);
+  font-weight: 800;
+  color: #3b00b3;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+/* Statut en ligne / hors ligne */
+.statusOnline {
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 12px;
+  color: #28a745;
+  text-transform: uppercase;
+}
+
+.statusOffline {
+  font-family: var(--font-gaming);
+  font-weight: 700;
+  font-size: 12px;
+  color: #dc3545;
+  text-transform: uppercase;
+}
+
+.dotGreen {
+  color: #28a745;
+  font-size: 14px;
+}
+
+.dotRed {
+  color: #dc3545;
+  font-size: 14px;
+}
+
+/* Boutons d'options */
+.optionsButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.btnInvite {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #3b00b3;
+  border-radius: 8px;
+  background-color: #ffffff;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btnInvite:hover {
+  background-color: #3b00b3;
+  transform: translateY(-1px);
+}
+
+.btnAccept {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 16px;
+  font-family: var(--font-gaming);
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnAccept:hover {
+  background-color: #218838;
+  transform: translateY(-1px);
+}
+
+.emptyText {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 20px 0;
+  font-size: 14px;
+}
+
+/* Bouton retour */
+.btnRetour {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #3b00b3;
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 30px;
+  font-family: var(--font-gaming);
+  font-weight: 900;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 0px #1e005a;
+}
+
+.btnRetour:hover {
+  background-color: #2a0080;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0px #1e005a;
+}
+
+.btnRetour:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0px #1e005a;
+}
+
+/* Mobile masqué en desktop */
+.mobileContent {
+  display: none;
+}
+.bottomNav {
+  display: none;
+}
+
+/* ===== RESPONSIVE TABLETTE ===== */
+@media (max-width: 1024px) {
+  .columnsWrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .section {
+    max-width: 600px;
+    width: 100%;
+  }
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media (max-width: 768px) {
+  .navbarDesktop {
+    display: none;
+  }
+  .pageContent {
+    display: none;
+  }
+
+  .mobileContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    padding-bottom: 90px;
+    background-color: #ffffff;
+    min-height: calc(100vh - 70px);
+    gap: 12px;
+  }
+
+  .mobileSectionTitle {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 16px;
+    color: #3b00b3;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .mobileTableContainer {
+    border: 2px solid #333333;
+    border-radius: 16px;
+    padding: 12px 15px;
+    background-color: #ffffff;
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .bottomNav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    background-color: #3b00b3;
+    z-index: 100;
+  }
+
+  .bottomNavItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-gaming);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    padding: 8px 20px;
+  }
+
+  .bottomNavItemActive {
+    color: #ffffff;
+  }
+}

@@ -1,249 +1,319 @@
-import { useState, useEffect } from 'react'; // Hooks
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Navbar from "@/components/Navbar";
+import styles from '../styles/Lobby.module.css';
+import { useAuthStore } from '../store/authStore';
+import { participate, getAllPlayers, sendRequest, acceptRequest, getMatch } from '../services/api';
+import { Layers, Home, User } from 'lucide-react';
 
 export default function Lobby() {
     const router = useRouter();
+    const { token } = useAuthStore();
 
-    // 1. Nos états locaux
+    // États du matchmaking
     const [isParticipating, setIsParticipating] = useState(false);
-    const [matchmakingId, setMatchmakingId] = useState(null);
-    const [playersList, setPlayersList] = useState([]); // Liste des adversaires potentiels
-    const [requestsReceived, setRequestsReceived] = useState([]); // Demandes de match reçues
+    const [playersList, setPlayersList] = useState([]);
+    const [requestsReceived, setRequestsReceived] = useState([]);
     const [error, setError] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
 
-    // Fonction utilitaire pour récupérer le token
-    const getToken = () => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('token');
-        }
-        return null;
-    };
+    // Sécurité
+    useEffect(() => {
+        if (!token) router.push('/');
+    }, [token, router]);
 
-    // 2. Fonction pour rejoindre le matchmaking (Tâche 18)
+    // Rejoindre le matchmaking via api.js (tâche 18)
     const handleParticipate = async () => {
-        const token = getToken();
-        if (!token) {
-            router.push('/login'); // Sécurité : on le renvoie au login s'il n'a pas de token
-            return;
-        }
-
         try {
-            const response = await fetch('http://localhost:3000/matchmaking/participate', {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token, // Header exigé par l'API
-                },
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) throw new Error(data.message || 'Erreur lors de la participation');
-
-            // Succès ! Le WS renvoie matchmakingId et le tableau request
-            setIsParticipating(true);
-            setMatchmakingId(data.matchmakingId);
-            setRequestsReceived(data.request);
-
+            const data = await participate();
+            if (data) {
+                setIsParticipating(true);
+                if (data.request) setRequestsReceived(data.request);
+            }
         } catch (err) {
-            setError(err.message);
+            setError("Erreur lors de la participation au matchmaking");
         }
     };
 
-    // 3. Fonction pour récupérer la liste des joueurs (Tâche 19)
+    // Récupérer la liste des joueurs (tâche 19)
     const fetchPlayers = async () => {
-        const token = getToken();
-        if (!token) return;
-
         try {
-            const response = await fetch('http://localhost:3000/matchmaking/getAll', {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token,
-                },
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                setPlayersList(data); // On met à jour notre état avec la liste des joueurs
+            const data = await getAllPlayers();
+            if (data && Array.isArray(data)) {
+                setPlayersList(data);
             }
         } catch (err) {
-            console.error("Erreur lors de la récupération des joueurs:", err);
+            console.log("Erreur récupération joueurs");
         }
     };
 
-    // 4. Fonction pour envoyer une demande de match (Tâche 20)
-    const handleSendRequest = async (targetId) => {
-        const token = getToken();
-        if (!token) return;
-
+    // Rafraîchir les demandes reçues via participate (qui renvoie le champ request)
+    const refreshRequests = async () => {
         try {
-            // On passe l'ID de l'adversaire en paramètre d'URL
-            const response = await fetch(`http://localhost:3000/matchmaking/request?matchmakingId=${targetId}`, {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token,
-                },
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Erreur lors de l\'envoi de la requête');
+            const data = await participate();
+            if (data && data.request) {
+                setRequestsReceived(data.request);
             }
-
-            alert('Défi envoyé avec succès ! En attente de sa réponse...');
         } catch (err) {
-            setError(err.message);
+            console.log("Erreur rafraîchissement demandes");
         }
     };
 
-    // 5. Fonction pour accepter une demande reçue (Tâche 21)
-    const handleAcceptRequest = async (requesterId) => {
-        const token = getToken();
-        if (!token) return;
-
+    // Envoyer une demande de match (tâche 20)
+    const handleSendRequest = async (matchmakingId, playerName) => {
         try {
-            const response = await fetch(`http://localhost:3000/matchmaking/acceptRequest?matchmakingId=${requesterId}`, {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token,
-                },
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Erreur lors de l\'acceptation');
-            }
-
-            // Si c'est un succès, le match est créé côté serveur !
-            alert('Match accepté ! Préparation du plateau...');
-
-            // On redirige vers la future page du plateau de jeu (Tâche 25 de Mohammed Ali)
-            router.push('/match');
-
+            await sendRequest(matchmakingId);
+            setSuccessMsg('Défi envoyé à ' + playerName + ' !');
+            setError('');
+            setTimeout(() => setSuccessMsg(''), 3000);
         } catch (err) {
-            setError(err.message);
+            setError("Erreur lors de l'envoi du défi");
         }
     };
 
-    // 6. Fonction pour la Tâche 22 : Vérifier si un match a commencé en arrière-plan
+    // Accepter une demande reçue (tâche 21)
+    const handleAcceptRequest = async (matchmakingId) => {
+        try {
+            const data = await acceptRequest(matchmakingId);
+            if (data) {
+                router.push('/game');
+            }
+        } catch (err) {
+            setError("Erreur lors de l'acceptation");
+        }
+    };
+
+    // Vérifier si un match a commencé (tâche 22)
     const checkIfMatchStarted = async () => {
-        const token = getToken();
-        if (!token) return;
-
         try {
-            const response = await fetch('http://localhost:3000/match/getMatch', {
-                method: 'GET',
-                headers: {
-                    'www-authenticate': token,
-                },
-            });
-
-            // Si le statut est OK (200), le backend confirme qu'on est dans une partie !
-            if (response.ok) {
-                // On redirige automatiquement le joueur vers le plateau
-                router.push('/match');
+            const data = await getMatch();
+            if (data) {
+                router.push('/game');
             }
         } catch (err) {
-            // S'il n'y a pas de match, le serveur renvoie une erreur, on l'ignore silencieusement ici
-            console.log("En attente d'un match...");
+            // Pas de match en cours, on continue le polling
         }
     };
 
-    // 7. Le Polling avec useEffect
+    // Polling : rafraîchir toutes les 5 secondes (useEffect CM3 React II)
     useEffect(() => {
         let intervalId;
 
-        // On ne fait le polling QUE si le joueur participe
         if (isParticipating) {
-            // Premier appel immédiat
             fetchPlayers();
-            handleParticipate();
-            checkIfMatchStarted(); // On vérifie tout de suite si un match a commencé
+            refreshRequests();
+            checkIfMatchStarted();
 
-            // Mise en place de l'intervalle toutes les 5 secondes (5000ms)
             intervalId = setInterval(() => {
                 fetchPlayers();
-                handleParticipate();
-                checkIfMatchStarted(); // On vérifie en boucle
+                refreshRequests();
+                checkIfMatchStarted();
             }, 5000);
         }
 
+        // Cleanup (CM3 React II : code de nettoyage du useEffect)
         return () => {
             if (intervalId) clearInterval(intervalId);
         };
-    }, [isParticipating]); // L'effet se déclenche quand isParticipating change
+    }, [isParticipating]);
 
-    // 5. Le rendu UI
+    // Auto-participer au montage si token présent
+    useEffect(() => {
+        if (token) handleParticipate();
+    }, [token]);
+
     return (
-        <main style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-            <h1>Lobby - Matchmaking</h1>
+        <>
+            {/* ===== NAVBAR DESKTOP ===== */}
+            <div className={styles.navbarDesktop}>
+                <Navbar />
+            </div>
 
-            {error && <div style={{ color: 'red', marginBottom: '15px' }}>{error}</div>}
+            {/* ===== CONTENU DESKTOP ===== */}
+            <div className={styles.pageContent}>
+                <div className={styles.socialHeader}>
+                    <span className={styles.socialIcon}>💎</span>
+                    <h1 className={styles.socialTitle}>Social</h1>
+                </div>
 
-            {!isParticipating ? (
-                <button
-                    onClick={handleParticipate}
-                    style={{ padding: '15px 30px', fontSize: '18px', cursor: 'pointer', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px' }}
-                >
-                    Rejoindre le matchmaking
-                </button>
-            ) : (
-                <div>
-                    {/* ... info de participation ... */}
+                {error && <div className={styles.errorMessage}>{error}</div>}
+                {successMsg && <div className={styles.successMessage}>{successMsg}</div>}
 
-                    <div style={{ display: 'flex', gap: '20px' }}>
-
-                        {/* Colonne Joueurs */}
-                        <div style={{ flex: 1, border: '1px solid #ccc', padding: '15px', borderRadius: '5px' }}>
-                            <h2>Joueurs en attente</h2>
-                            {playersList.length === 0 ? (
-                                <p>Aucun autre joueur pour le moment...</p>
-                            ) : (
-                                <ul style={{ listStyle: 'none', padding: 0 }}>
-                                    {playersList.map((player) => (
-                                        <li key={player.matchmakingId} style={{ padding: '10px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <span>{player.name}</span>
-                                            {/* On branche notre nouvelle fonction d'envoi de requête ici */}
-                                            <button
-                                                onClick={() => handleSendRequest(player.matchmakingId)}
-                                                style={{ padding: '5px 10px', cursor: 'pointer', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '3px' }}
-                                            >
-                                                Défier
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                <div className={styles.columnsWrapper}>
+                    {/* Colonne gauche : Liste des joueurs en ligne */}
+                    <div className={styles.section}>
+                        <h2 className={styles.sectionTitle}>Liste d'amis</h2>
+                        <div className={styles.tableContainer}>
+                            <table className={styles.friendsTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Pseudo</th>
+                                        <th>Statut</th>
+                                        <th>Options</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {playersList.length > 0 ? (
+                                        playersList.map((player, index) => (
+                                            <tr key={player.matchmakingId || index}>
+                                                <td className={styles.playerName}>{player.name}</td>
+                                                <td>
+                                                    <span className={styles.statusOnline}>
+                                                        En ligne <span className={styles.dotGreen}>●</span>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div className={styles.optionsButtons}>
+                                                        <button
+                                                            className={styles.btnInvite}
+                                                            onClick={() => handleSendRequest(player.matchmakingId, player.name)}
+                                                            title="Envoyer un défi"
+                                                        >
+                                                            ⚔️
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="3" className={styles.emptyText}>
+                                                {isParticipating ? "Aucun joueur en ligne..." : "Connexion au matchmaking..."}
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
 
-                        {/* Colonne Demandes */}
-                        <div style={{ flex: 1, border: '1px solid #ccc', padding: '15px', borderRadius: '5px' }}>
-                            <h2>Défis reçus</h2>
-                            {requestsReceived && requestsReceived.length > 0 ? (
-                                <ul style={{ listStyle: 'none', padding: 0 }}>
-                                    {requestsReceived.map((req, index) => (
-                                        <li key={index} style={{ padding: '10px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <span>🚨 {req.name} veut jouer !</span>
-                                            {/* On branche notre nouvelle fonction d'acceptation ici */}
-                                            <button
-                                                onClick={() => handleAcceptRequest(req.matchmakingId)}
-                                                style={{ padding: '5px 10px', cursor: 'pointer', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '3px' }}
-                                            >
-                                                Accepter
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p>Aucun défi reçu.</p>
-                            )}
+                    {/* Colonne droite : Défis reçus */}
+                    <div className={styles.section}>
+                        <h2 className={styles.sectionTitle}>Défis reçus</h2>
+                        <div className={styles.tableContainer}>
+                            <table className={styles.friendsTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Joueur</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {requestsReceived && requestsReceived.length > 0 ? (
+                                        requestsReceived.map((req, index) => (
+                                            <tr key={index}>
+                                                <td className={styles.playerName}>🚨 {req.name}</td>
+                                                <td>
+                                                    <button
+                                                        className={styles.btnAccept}
+                                                        onClick={() => handleAcceptRequest(req.matchmakingId)}
+                                                    >
+                                                        ✅ Accepter
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="2" className={styles.emptyText}>Aucun défi reçu</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
-
                     </div>
                 </div>
-            )}
-        </main>
+
+                {/* Bouton retour */}
+                <button className={styles.btnRetour} onClick={() => router.push('/Accueil')}>
+                    🏠 Retour au menu
+                </button>
+            </div>
+
+            {/* ===== MOBILE ===== */}
+            <div className={styles.mobileContent}>
+                <div className={styles.socialHeader}>
+                    <span className={styles.socialIcon}>💎</span>
+                    <h1 className={styles.socialTitle}>Social</h1>
+                </div>
+
+                {error && <div className={styles.errorMessage}>{error}</div>}
+                {successMsg && <div className={styles.successMessage}>{successMsg}</div>}
+
+                <h2 className={styles.mobileSectionTitle}>Liste d'amis</h2>
+                <div className={styles.mobileTableContainer}>
+                    <table className={styles.friendsTable}>
+                        <thead>
+                            <tr>
+                                <th>Pseudo</th>
+                                <th>Statut</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {playersList.length > 0 ? (
+                                playersList.map((player, index) => (
+                                    <tr key={player.matchmakingId || index}>
+                                        <td className={styles.playerName}>{player.name}</td>
+                                        <td>
+                                            <span className={styles.statusOnline}>
+                                                En ligne <span className={styles.dotGreen}>●</span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button className={styles.btnInvite} onClick={() => handleSendRequest(player.matchmakingId, player.name)}>
+                                                ⚔️
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="3" className={styles.emptyText}>Aucun joueur en ligne...</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                {requestsReceived && requestsReceived.length > 0 && (
+                    <>
+                        <h2 className={styles.mobileSectionTitle}>Défis reçus</h2>
+                        <div className={styles.mobileTableContainer}>
+                            <table className={styles.friendsTable}>
+                                <tbody>
+                                    {requestsReceived.map((req, index) => (
+                                        <tr key={index}>
+                                            <td className={styles.playerName}>🚨 {req.name}</td>
+                                            <td>
+                                                <button className={styles.btnAccept} onClick={() => handleAcceptRequest(req.matchmakingId)}>
+                                                    ✅ Accepter
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </>
+                )}
+            </div>
+
+            {/* ===== BOTTOM NAV MOBILE ===== */}
+            <nav className={styles.bottomNav}>
+                <button className={styles.bottomNavItem} onClick={() => router.push('/deck')}>
+                    <Layers size={24} />
+                    <span>Decks</span>
+                </button>
+                <button className={styles.bottomNavItem} onClick={() => router.push('/Accueil')}>
+                    <Home size={24} />
+                    <span>Home</span>
+                </button>
+                <button className={`${styles.bottomNavItem} ${styles.bottomNavItemActive}`}>
+                    <User size={24} />
+                    <span>Profil</span>
+                </button>
+            </nav>
+        </>
     );
 }

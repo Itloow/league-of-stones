@@ -1,15 +1,24 @@
 import { Home, Layers, Users } from 'lucide-react';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import styles from '../styles/Navbar.module.css';
 import { useAuthStore } from '../store/authStore';
 import { deconnexion } from '../services/api';
 
 export default function Navbar() {
-  const [activeTab, setActiveTab] = useState('ACCUEIL');
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
   const { token, name, logout } = useAuthStore();
+
+  // Déterminer l'onglet actif en fonction de la route actuelle
+  const getActiveTab = () => {
+    const path = router.pathname;
+    if (path === '/deck') return 'DECKS';
+    if (path === '/lobby') return 'SOCIAL';
+    return 'ACCUEIL';
+  };
+
+  const activeTab = getActiveTab();
 
   const handleLogout = async () => {
     await deconnexion();
@@ -22,11 +31,16 @@ export default function Navbar() {
     alert("Fonctionnalité à venir");
   };
 
+  // Chaque onglet a maintenant sa route de navigation
   const navItems = [
-    { id: 'ACCUEIL', label: 'ACCUEIL', icon: Home },
-    { id: 'DECKS', label: 'DECKS', icon: Layers },
-    { id: 'SOCIAL', label: 'SOCIAL', icon: Users },
+    { id: 'ACCUEIL', label: 'ACCUEIL', icon: Home, route: '/Accueil' },
+    { id: 'DECKS', label: 'DECKS', icon: Layers, route: '/deck' },
+    { id: 'SOCIAL', label: 'SOCIAL', icon: Users, route: '/lobby' },
   ];
+
+  const handleNavClick = (item) => {
+    router.push(item.route);
+  };
 
   return (
     <div className={styles.appContainer}>
@@ -44,7 +58,7 @@ export default function Navbar() {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleNavClick(item)}
                 className={`${styles.navButton} ${isActive ? styles.navButtonActive : ''}`}
               >
                 <Icon size={20} />
@@ -83,6 +97,7 @@ export default function Navbar() {
                 flexDirection: 'column',
                 gap: '5px',
                 minWidth: '180px',
+                zIndex: 50,
               }}>
                 <button
                   onClick={handleLogout}

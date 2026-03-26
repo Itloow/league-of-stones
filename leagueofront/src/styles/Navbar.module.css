@@ -1,6 +1,4 @@
-
 .appContainer {
-  min-height: 100vh;
   background-color: #ffffff; 
   padding: 2rem;
   display: flex;
@@ -17,8 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); /* shadow-2xl */
-  /*border-bottom: 4px solid rgba(0, 0, 0, 0.2);*/
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 }
 
 .logoText {
@@ -26,7 +23,7 @@
   color: white;
   font-size: 18px;
   letter-spacing: 2px;
-   filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.07)) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.06)); /* SUPPRIMÉ: pas besoin sur texte blanc */
+  filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.07)) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.06));
   font-weight: 900;
 }
 
@@ -43,9 +40,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 20px;
   transition: all 0.2s ease-in-out;
-  border-radius: 12px;
   color: white;
   font-family: var(--font-gaming);
   font-size: 14px;
@@ -61,7 +56,6 @@
 
 .navButton:hover {
   transform: translateY(-2px); 
-  
 }
 
 .navButtonActive {
@@ -78,8 +72,6 @@
   color: #3b00b3;
   font-family: var(--font-gaming);
   font-size: 0.75rem;
-  padding: 0.6rem 1.25rem;
-  border-radius: 0.5rem;
   border: none;
   cursor: pointer;
   transition: all 0.2s;
@@ -102,23 +94,23 @@
 }
 
 
-/* Media Query pour Mobile et Tablette (écrans inférieurs à 768px) */
+/* Media Query pour Mobile et Tablette */
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column; /* 👈 On empile : le logo en haut, les boutons en bas */
+    flex-direction: column;
     gap: 15px;
     padding: 15px 10px;
   }
 
   .navLinks {
-    flex-wrap: wrap; /* 👈 Magique : les 4 boutons vont à la ligne s'ils manquent de place */
-    justify-content: center; /* On centre les boutons */
+    flex-wrap: wrap;
+    justify-content: center;
     width: 100%;
     gap: 10px;
   }
 
   .navButton {
     padding: 8px 12px;
-    font-size: 11px; /* On réduit un peu la taille du texte */
+    font-size: 11px;
   }
 }
