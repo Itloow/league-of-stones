@@ -165,39 +165,6 @@ export default function Lobby() {
                             👤 Ajouter un ami
                         </button>
                     </div>
-
-                    {/* Colonne droite : Défis reçus */}
-                    <div className={styles.section}>
-                        <h2 className={styles.sectionTitle}>Défis reçus</h2>
-                        <div className={styles.tableContainer}>
-                            <table className={styles.friendsTable}>
-                                <thead>
-                                    <tr>
-                                        <th>Joueur</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {requestsReceived && requestsReceived.length > 0 ? (
-                                        requestsReceived.map((req, index) => (
-                                            <tr key={index}>
-                                                <td className={styles.playerName}>🚨 {req.name}</td>
-                                                <td>
-                                                    <button className={styles.btnAccept} onClick={() => router.push('/matchmaking')}>
-                                                        ✅ Voir
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="2" className={styles.emptyText}>Aucun défi reçu</td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
 
                 <button className={styles.btnRetour} onClick={() => router.push('/Accueil')}>
