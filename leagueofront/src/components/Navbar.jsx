@@ -47,7 +47,8 @@ export default function Navbar() {
       <nav className={styles.navbar}>
         {/* Logo Section */}
         <div className={styles.logoSection}>
-          <span className={styles.logoText}>LEAGUE OF STONES</span>
+          <img src="/dragon.jpeg" alt="logo" style={{ width: '52px', height: '52px', marginRight: '20px' }} />
+<span className={styles.logoText}>LEAGUE OF STONES</span>
         </div>
 
         {/* Navigation Items */}
@@ -77,7 +78,16 @@ export default function Navbar() {
               style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
             >
               <img
-                src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Thresh_0.jpg"
+                src={(() => {
+                  const deck = localStorage.getItem('myDeck_' + name);
+                  if (deck) {
+                    try {
+                      const cards = JSON.parse(deck);
+                      if (cards.length > 0) return 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/' + cards[0].key + '_0.jpg';
+                    } catch (e) { }
+                  }
+                  return 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Thresh_0.jpg';
+                })()}
                 alt="avatar"
                 style={{ width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover' }}
               />
@@ -108,7 +118,7 @@ export default function Navbar() {
                     backgroundColor: 'transparent',
                     cursor: 'pointer',
                     fontWeight: 'bold',
-                    color: '#3b00b3',
+                    color: '#26289F',
                     textAlign: 'left',
                   }}
                 >
@@ -123,7 +133,7 @@ export default function Navbar() {
                     backgroundColor: 'transparent',
                     cursor: 'pointer',
                     fontWeight: 'bold',
-                    color: '#3b00b3',
+                    color: '#26289F',
                     textAlign: 'left',
                   }}
                 >

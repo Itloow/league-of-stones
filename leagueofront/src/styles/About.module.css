@@ -3,10 +3,10 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: transparent;
   font-family: sans-serif;
   padding: 40px 20px;
-  color: #3b00b3; /* Le texte a l'air bleu/violet foncé sur la maquette */
+  color: #26289F; /* Le texte a l'air bleu/violet foncé sur la maquette */
 }
 
 .logoSection {
@@ -14,16 +14,18 @@
   align-items: center;
   gap: 15px;
   margin-bottom: 40px;
+  background-color: transparent;
 }
 
 .logoText {
-  background-color: #3b00b3;
-  color: white;
   font-size: 24px;
   font-weight: 900;
-  padding: 5px 15px;
-  border-radius: 8px;
   text-transform: uppercase;
+  font-family: 'Holtwood One SC', serif;
+  -webkit-text-stroke: 3px #26289F;
+  text-shadow: 6px 6px 6px rgba(10, 10, 62, 0.5), 2px 2px 0px #1a1a4e;
+  font-size: 40px;
+  color: #fff;
 }
 
 .content {
@@ -38,6 +40,9 @@
   text-transform: uppercase;
   margin-top: 30px;
   margin-bottom: 15px;
+  font-family: 'Holtwood One SC', serif;
+  color: #26289F;
+
 }
 
 .paragraph {
@@ -65,7 +70,7 @@
 }
 
 .btnReturn {
-  background-color: #3b00b3;
+  background-color: #26289F;
   color: white;
   border: none;
   border-radius: 50px;
@@ -79,6 +84,45 @@
   text-transform: uppercase;
   text-decoration: none;
   margin-top: 20px;
+  font-family: 'Holtwood One SC', serif;
+  box-shadow: 0 5px 0px #13135a;
+  transition: all 0.2s ease;
 }
 
-    
+.btnReturn:hover {
+  background-color: #1a1a7a;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0px #13135a;
+}
+
+/* Media Query pour Mobile (écrans inférieurs à 768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    padding-top: 5vh;
+  }
+
+
+  .logoText {
+    font-size: 24px; /* Logo adapté au mobile */
+    padding: 4px 12px;
+    font-family: 'Holtwood One SC', serif;
+  }
+
+
+  .btnReturn{
+    width: 100%; /* Les boutons prennent 100% de la largeur comme sur l'accueil */
+    justify-content: center; /* On centre le texte et l'icône */
+    padding: 12px;
+    font-size: 13px;
+    font-family: 'Holtwood One SC', serif;
+  }
+
+    .logoSection {
+    flex-direction: column; /* Icone dragon AU-DESSUS du texte */
+    gap: 10px;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    background-color: transparent;
+  }
+}

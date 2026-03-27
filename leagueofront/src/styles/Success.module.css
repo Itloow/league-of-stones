@@ -4,12 +4,12 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: transparent;
   font-family: sans-serif;
 }
 
 .title {
-  color: #3b00b3; 
+  color: #26289F; 
   font-size: 28px;
   font-weight: 900;
   text-transform: uppercase;
@@ -20,19 +20,21 @@
   flex-wrap: wrap;        
   gap: 15px;
   margin-bottom: 40px;
-  width: 90%;             
+  width: 90%;
+  font-family: 'Holtwood One SC', serif;             
 }
 
 .icon {
-  background-color: #3b00b3;
+  background-color: #26289F;
   color: white;
   border-radius: 6px; 
   padding: 2px 8px;
   font-size: 24px;
+  font-family: 'Holtwood One SC', serif;
 }
 
 .btnNext {
-  background-color: #3b00b3;
+  background-color: #26289F;
   color: white;
   border: none;
   border-radius: 50px;
@@ -47,5 +49,14 @@
   text-align: center;      
   display: flex;
   justify-content: center;
+  box-shadow: 0 5px 0px #13135a;
+  transition: all 0.2s ease;
+  font-family: 'Holtwood One SC', serif;
+}
+
+.btnNext:hover {
+  background-color: #1a1a7a;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0px #13135a;
 }
 

@@ -3,8 +3,8 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: #ffffff;
-  font-family: sans-serif;
+  background-color: transparent;
+  font-family: 'Poppins', sans-serif;
   padding-top: 5vh;
 }
 
@@ -14,28 +14,30 @@
 }
 
 .welcome {
-  color: #3b00b3;
+  color: #26289F;
   font-size: 20px;
   margin-bottom: 5px;
 }
 
 .logoText {
-  background-color: #3b00b3;
-  color: white;
   font-size: 24px;
   font-weight: 900;
-  padding: 5px 15px;
-  border-radius: 8px;
   text-transform: uppercase;
+  font-family: 'Holtwood One SC', serif;
+  -webkit-text-stroke: 3px #26289F;
+  text-shadow: 6px 6px 6px rgba(10, 10, 62, 0.5), 2px 2px 0px #1a1a4e;
+  font-size: 40px;
+  color: #fff;
 }
 
 .creationTitle {
   font-size: 14px;
   font-weight: 900;
-  color: #3b00b3;
+  color: #26289F;
   text-transform: uppercase;
   margin-bottom: 5px;
   text-align: center;
+  font-family: 'Holtwood One SC', serif;
 }
 
 .creationSubtitle {
@@ -61,10 +63,11 @@
 .label {
   font-size: 13px;
   font-weight: 900;
-  color: #3b00b3;
+  color: #26289F;
   text-transform: uppercase;
   margin-bottom: 8px;
   padding-left: 15px; /* Alignement avec l'arrondi de l'input */
+  font-family: 'Holtwood One SC', serif;
 }
 
 .inputField {
@@ -74,18 +77,26 @@
   font-size: 14px;
   width: 100%;
   outline: none;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.85);
   color: #000000; 
 }
 
 .inputField:focus {
-  border-color: #3b00b3;
+  border-color: #26289F;
 }
 
 .buttonGroup {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 50px;
+  background-color: transparent;
 }
 
 .btnBack {
@@ -102,10 +113,13 @@
   gap: 10px;
   text-transform: uppercase;
   text-decoration: none;
+  font-family: 'Holtwood One SC', serif;
+  box-shadow: 0 5px 0px #13135a;
+  transition: all 0.2s ease;
 }
 
 .btnNext {
-  background-color: #3b00b3; /* Violet */
+  background-color: #26289F; /* Violet */
   color: white;
   border: none;
   border-radius: 50px;
@@ -117,6 +131,15 @@
   align-items: center;
   gap: 10px;
   text-transform: uppercase;
+  font-family: 'Holtwood One SC', serif;
+  box-shadow: 0 5px 0px #13135a;
+  transition: all 0.2s ease;
+}
+
+.btnNext:hover, .btnBack:hover {
+  background-color: #1a1a7a;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0px #13135a;
 }
 
 /* Media Query pour Mobile (écrans inférieurs à 768px) */
@@ -131,12 +154,14 @@
   }
 
   .logoText {
-    font-size: 20px; /* Logo adapté au mobile */
+    font-size: 24px; /* Logo adapté au mobile */
     padding: 4px 12px;
+    font-family: 'Holtwood One SC', serif;
   }
 
   .creationTitle {
     font-size: 13px;
+    font-family: 'Holtwood One SC', serif;
   }
 
   .creationSubtitle {
@@ -151,6 +176,7 @@
   .label {
     font-size: 11px;
     padding-left: 10px;
+    font-family: 'Holtwood One SC', serif;
   }
 
   .inputField {
@@ -169,5 +195,14 @@
     justify-content: center; /* On centre le texte et l'icône */
     padding: 12px;
     font-size: 13px;
+    font-family: 'Holtwood One SC', serif;
+  }
+
+  .logoSection {
+    flex-direction: column; /* Icone dragon AU-DESSUS du texte */
+    gap: 10px;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    background-color: transparent;
   }
 }

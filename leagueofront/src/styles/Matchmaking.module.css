@@ -15,7 +15,7 @@
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: transparent;
   gap: 20px;
 }
 
@@ -31,7 +31,7 @@
   font-family: var(--font-gaming);
   font-weight: 900;
   font-size: 32px;
-  color: #3b00b3;
+  color: #26289F;
   text-transform: uppercase;
   letter-spacing: 3px;
   text-shadow: 1px 2px 0px rgba(59, 0, 179, 0.3);
@@ -41,7 +41,7 @@
   font-family: var(--font-gaming);
   font-weight: 900;
   font-size: 16px;
-  color: #3b00b3;
+  color: #26289F;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -56,7 +56,7 @@
 }
 
 .successMsg {
-  background-color: #28a745;
+  background-color: #0BDB38;
   color: white;
   padding: 8px 20px;
   border-radius: 50px;
@@ -71,7 +71,7 @@
   padding: 20px;
   width: 100%;
   max-width: 600px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 .playersTable {
@@ -104,7 +104,7 @@
 .playerName {
   font-family: var(--font-gaming);
   font-weight: 800;
-  color: #3b00b3;
+  color: #26289F;
   font-size: 14px;
   text-transform: uppercase;
 }
@@ -113,7 +113,7 @@
   font-family: var(--font-gaming);
   font-weight: 700;
   font-size: 13px;
-  color: #28a745;
+  color: #0BDB38;
   text-transform: uppercase;
 }
 
@@ -125,7 +125,7 @@
   text-transform: uppercase;
 }
 
-.dotGreen { color: #28a745; }
+.dotGreen { color: #0BDB38; }
 
 /* Séparateur VS */
 .vsRow {
@@ -136,7 +136,7 @@
 
 .vsBadge {
   display: inline-block;
-  background-color: #3b00b3;
+  background-color: #26289F;
   color: #fff;
   font-family: var(--font-gaming);
   font-weight: 900;
@@ -160,7 +160,7 @@
 
 /* Bouton défier */
 .btnInvite {
-  background-color: #3b00b3;
+  background-color: #26289F;
   color: #fff;
   border: none;
   border-radius: 50px;
@@ -194,13 +194,13 @@
   align-items: center;
   width: 100%;
   padding: 12px 20px;
-  border: 2px solid #28a745;
+  border: 2px solid #0BDB38;
   border-radius: 12px;
   background-color: #f0fff0;
 }
 
 .btnAccept {
-  background-color: #28a745;
+  background-color: #0BDB38;
   color: white;
   border: none;
   border-radius: 50px;
@@ -226,8 +226,8 @@
 
 .btnBack {
   background-color: transparent;
-  color: #3b00b3;
-  border: 2px solid #3b00b3;
+  color: #26289F;
+  border: 2px solid #26289F;
   border-radius: 50px;
   padding: 12px 28px;
   font-family: var(--font-gaming);
@@ -239,7 +239,7 @@
 }
 
 .btnBack:hover {
-  background-color: #3b00b3;
+  background-color: #26289F;
   color: #fff;
 }
 
@@ -255,7 +255,7 @@
     padding: 15px;
     padding-top: 50px;
     padding-bottom: 90px;
-    background-color: #fff;
+    background-color: transparent;
     min-height: calc(100vh - 70px);
     gap: 12px;
     position: relative;
@@ -272,7 +272,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background-color: #3b00b3;
+    background-color: #26289F;
     color: #ffffff;
     border: none;
     border-radius: 0 0 12px 12px;
@@ -294,7 +294,7 @@
     font-family: var(--font-gaming);
     font-weight: 900;
     font-size: 14px;
-    color: #3b00b3;
+    color: #26289F;
     text-transform: uppercase;
     letter-spacing: 1.5px;
   }
@@ -303,7 +303,7 @@
     border: 2px solid #333;
     border-radius: 16px;
     padding: 12px 15px;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.85);
     width: 90%;
     max-width: 400px;
   }
@@ -333,7 +333,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background-color: #3b00b3;
+    background-color: #26289F;
     color: #fff;
     border: none;
     border-radius: 50px;
@@ -346,7 +346,7 @@
     cursor: pointer;
     width: 85%;
     max-width: 400px;
-    box-shadow: 0 4px 0px #1e005a;
+    box-shadow: 0 4px 0px #13135a;
   }
 
   .btnMobileRetour {
@@ -355,8 +355,8 @@
     justify-content: center;
     gap: 8px;
     background-color: transparent;
-    color: #3b00b3;
-    border: 2px solid #3b00b3;
+    color: #26289F;
+    border: 2px solid #26289F;
     border-radius: 50px;
     padding: 12px 28px;
     font-family: var(--font-gaming);
@@ -369,7 +369,7 @@
   }
 
   .btnMobileRetour:active {
-    background-color: #3b00b3;
+    background-color: #26289F;
     color: #fff;
   }
 
@@ -382,7 +382,7 @@
     left: 0;
     right: 0;
     height: 70px;
-    background-color: #3b00b3;
+    background-color: #26289F;
     z-index: 100;
   }
 

@@ -50,7 +50,10 @@ export default function Register() {
     <div className={styles.container}>
       <div className={styles.headerText}>
         <div className={styles.welcome}>Bienvenue sur</div>
+              <div className={styles.logoSection}>
+        <img src="/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px', mixBlendMode: 'multiply' }} />
         <div className={styles.logoText}>LEAGUE OF STONES</div>
+      </div>
       </div>
 
       <div className={styles.creationTitle}>CRÉATION DE COMPTE</div>
@@ -81,7 +84,7 @@ export default function Register() {
 
         <div className={styles.buttonGroup}>
           <Link href="/" className={styles.btnBack}>
-            ← RETOUR EN ARRIÈRE
+            ← ANNULER
           </Link>
           <button type="submit" disabled={isLoading} className={styles.btnNext}>
             {isLoading ? '...' : 'SUIVANT →'}

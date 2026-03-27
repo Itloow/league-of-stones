@@ -3,15 +3,15 @@ import { useRouter } from 'next/router';
 import Navbar from "@/components/Navbar";
 import styles from '../styles/Accueil.module.css';
 import { useAuthStore } from '../store/authStore';
-import { getAllPlayers } from '../services/api';
+import { getAllPlayers, participate } from '../services/api';
 import { Layers, Home, User, Users } from 'lucide-react';
 
 export default function Accueil() {
     const router = useRouter();
-    const { token } = useAuthStore();
-
+    const { token, name } = useAuthStore();
     const [deckCards, setDeckCards] = useState([]);
     const [onlinePlayers, setOnlinePlayers] = useState([]);
+    const [requestsReceived, setRequestsReceived] = useState([]);
 
     useEffect(() => {
         if (!token) {
@@ -20,7 +20,7 @@ export default function Accueil() {
     }, [token, router]);
 
     useEffect(() => {
-        const savedDeck = localStorage.getItem('myDeck');
+        const savedDeck = localStorage.getItem('myDeck_' + name);
         if (savedDeck) {
             try {
                 setDeckCards(JSON.parse(savedDeck));
@@ -41,16 +41,29 @@ export default function Accueil() {
         };
 
         if (token) fetchOnlinePlayers();
+        const fetchRequests = async () => {
+            try {
+                const data = await participate();
+                if (data && data.request) setRequestsReceived(data.request);
+            } catch (err) { }
+        };
+        if (token) fetchRequests();
     }, [token]);
 
     const [isSearching, setIsSearching] = useState(false);
+    const [searchTimeout, setSearchTimeout] = useState(null);
 
     const handleLancerPartie = () => {
         setIsSearching(true);
-        // On simule un temps de recherche puis on redirige vers le lobby
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             router.push('/matchmaking');
         }, 3000);
+        setSearchTimeout(timeout);
+    };
+
+    const handleCancel = () => {
+        setIsSearching(false);
+        if (searchTimeout) clearTimeout(searchTimeout);
     };
     const handleModifierDeck = () => router.push('/deck');
     const handleInviter = (id) => router.push('/lobby?invite=' + id);
@@ -86,7 +99,7 @@ export default function Accueil() {
                         <div className={styles.spinner}></div>
                         <h2 className={styles.matchmakingTitle}>Matchmaking</h2>
                         <p className={styles.matchmakingText}>Recherche d'un adversaire...</p>
-                        <button className={styles.btnCancel} onClick={() => setIsSearching(false)}>
+                        <button className={styles.btnCancel} onClick={handleCancel}>
                             ✕ Annuler
                         </button>
                     </div>
@@ -118,23 +131,23 @@ export default function Accueil() {
                 </div>
 
                 <div className={styles.friendsSection}>
-                    <h2 className={styles.sectionTitle}>Amis en ligne</h2>
+                    <h2 className={styles.sectionTitle}>Défis reçus</h2>
                     <div className={styles.friendsContainer}>
-                        {onlinePlayers.length > 0 ? (
+                        {requestsReceived.length > 0 ? (
                             <table className={styles.friendsTable}>
                                 <thead>
                                     <tr>
-                                        <th>Pseudo</th>
-                                        <th>Options</th>
+                                        <th>Joueur</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {onlinePlayers.map((player, index) => (
-                                        <tr key={player.matchmakingId || index}>
-                                            <td>{player.name}</td>
+                                    {requestsReceived.map((req, index) => (
+                                        <tr key={index}>
+                                            <td>🚨 {req.name}</td>
                                             <td>
-                                                <button className={styles.btnInviter} onClick={() => handleInviter(player.matchmakingId)}>
-                                                    🎮 Envoyer une invitation
+                                                <button className={styles.btnInviter} onClick={() => router.push('/matchmaking')}>
+                                                    ⚔️ Voir le défi
                                                 </button>
                                             </td>
                                         </tr>
@@ -142,7 +155,7 @@ export default function Accueil() {
                                 </tbody>
                             </table>
                         ) : (
-                            <p className={styles.noFriends}>Aucun joueur en ligne pour le moment...</p>
+                            <p className={styles.noFriends}>Aucun défi reçu pour le moment...</p>
                         )}
                     </div>
                 </div>
@@ -158,10 +171,11 @@ export default function Accueil() {
                     </button>
                 </div>
 
-                <div className={styles.mobileLogo}>
-                    <span className={styles.mobileLogoIcon}>💎</span>
-                    <h1 className={styles.mobileLogoText}>League Of Stones</h1>
-                </div>
+<div className={styles.mobileLogo}>
+    <img src="/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px' }} />
+    <h1 className={styles.mobileLogoText}>League Of Stones</h1>
+</div>
+
 
                 <button className={styles.btnLancerPartieMobile} onClick={handleLancerPartie}>
                     <span>▶</span>

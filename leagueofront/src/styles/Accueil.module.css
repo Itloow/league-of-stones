@@ -18,7 +18,7 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 /* ===== CONTENU MOBILE — masqué en desktop ===== */
@@ -43,7 +43,7 @@
   font-family: var(--font-gaming);
   font-weight: 900;
   font-size: 22px;
-  color: #3b00b3;
+  color: #26289F;
   text-transform: uppercase;
   letter-spacing: 3px;
   font-style: italic;
@@ -51,13 +51,13 @@
 }
 
 .deckContainer {
-  border: 3px solid #3b00b3;
+  border: 3px solid #26289F;
   border-radius: 10px;
   padding: 12px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.85);
   max-height: 600px;
   overflow-y: auto;
 }
@@ -71,7 +71,7 @@
   border-radius: 3px;
 }
 .deckContainer::-webkit-scrollbar-thumb {
-  background: #3b00b3;
+  background: #26289F;
   border-radius: 3px;
 }
 
@@ -92,12 +92,12 @@
   height: 180px;
   border-radius: 5px;
   background-color: #ede6fa;
-  border: 2px dashed #3b00b3;
+  border: 2px dashed #26289F;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  color: #3b00b3;
+  color: #26289F;
   opacity: 0.6;
 }
 
@@ -105,7 +105,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: #3b00b3;
+  background-color: #26289F;
   color: #ffffff;
   border: none;
   border-radius: 50px;
@@ -137,7 +137,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background-color: #3b00b3;
+  background-color: #26289F;
   color: #ffffff;
   border: none;
   border-radius: 50px;
@@ -149,18 +149,18 @@
   letter-spacing: 2px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 5px 0px #1e005a;
+  box-shadow: 0 5px 0px #13135a;
 }
 
 .btnLancerPartie:hover {
   background-color: #2a0080;
   transform: translateY(-2px);
-  box-shadow: 0 7px 0px #1e005a;
+  box-shadow: 0 7px 0px #13135a;
 }
 
 .btnLancerPartie:active {
   transform: translateY(2px);
-  box-shadow: 0 2px 0px #1e005a;
+  box-shadow: 0 2px 0px #13135a;
 }
 
 .playIcon {
@@ -180,7 +180,7 @@
   border: 2px solid #333333;
   border-radius: 20px;
   padding: 15px 20px;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.85);
   width: 100%;
   min-height: 400px;
 }
@@ -210,7 +210,7 @@
   font-family: var(--font-gaming);
   font-size: 13px;
   font-weight: 700;
-  color: #3b00b3;
+  color: #26289F;
   vertical-align: middle;
 }
 
@@ -222,7 +222,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background-color: #3b00b3;
+  background-color: #26289F;
   color: #ffffff;
   border: none;
   border-radius: 50px;
@@ -265,7 +265,7 @@
 }
 
 .matchmakingBox {
-  background-color: #ffffff;
+  background-color: transparent;
   border-radius: 20px;
   padding: 50px 60px;
   display: flex;
@@ -273,14 +273,14 @@
   align-items: center;
   gap: 20px;
   box-shadow: 0 20px 60px rgba(59, 0, 179, 0.4);
-  border: 3px solid #3b00b3;
+  border: 3px solid #26289F;
 }
 
 .spinner {
   width: 60px;
   height: 60px;
   border: 5px solid #ede6fa;
-  border-top: 5px solid #3b00b3;
+  border-top: 5px solid #26289F;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -294,7 +294,7 @@
   font-family: var(--font-gaming);
   font-weight: 900;
   font-size: 28px;
-  color: #3b00b3;
+  color: #26289F;
   text-transform: uppercase;
   letter-spacing: 3px;
 }
@@ -358,7 +358,7 @@
     min-height: calc(100vh - 70px);
     padding: 40px 20px;
     padding-bottom: 100px;
-    background-color: #ffffff;
+    background-color: transparent;
     gap: 40px;
     position: relative;
   }
@@ -375,7 +375,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background-color: #3b00b3;
+    background-color: #26289F;
     color: #ffffff;
     border: none;
     border-radius: 0 0 12px 12px;
@@ -402,22 +402,17 @@
     gap: 15px;
   }
 
-  .mobileLogoIcon {
-    font-size: 60px;
-  }
 
-  .mobileLogoText {
+.mobileLogoText {
     font-family: var(--font-gaming);
     font-weight: 900;
-    font-size: 28px;
-    color: #3b00b3;
+    font-size: 24px;
+    color: #fff;
     text-transform: uppercase;
     letter-spacing: 3px;
-    background-color: #3b00b3;
-    color: #ffffff;
-    padding: 8px 20px;
-    border-radius: 8px;
-  }
+    -webkit-text-stroke: 3px #26289F;
+  text-shadow: 6px 6px 6px rgba(10, 10, 62, 0.5), 2px 2px 0px #1a1a4e;
+}
 
   /* Bouton LANCER UNE PARTIE mobile */
   .btnLancerPartieMobile {
@@ -425,7 +420,7 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    background-color: #3b00b3;
+    background-color: #26289F;
     color: #ffffff;
     border: none;
     border-radius: 50px;
@@ -438,13 +433,13 @@
     cursor: pointer;
     width: 85%;
     max-width: 350px;
-    box-shadow: 0 5px 0px #1e005a;
+    box-shadow: 0 5px 0px #13135a;
     transition: all 0.2s ease;
   }
 
   .btnLancerPartieMobile:active {
     transform: translateY(2px);
-    box-shadow: 0 2px 0px #1e005a;
+    box-shadow: 0 2px 0px #13135a;
   }
 
   /* ===== BOTTOM NAV BAR ===== */
@@ -457,7 +452,7 @@
     left: 0;
     right: 0;
     height: 70px;
-    background-color: #3b00b3;
+    background-color: #26289F;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     z-index: 100;

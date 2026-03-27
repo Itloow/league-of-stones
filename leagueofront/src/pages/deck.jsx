@@ -8,7 +8,7 @@ import { Layers, Home, User, Users } from 'lucide-react';
 
 export default function Deck() {
     const router = useRouter();
-    const { token } = useAuthStore();
+    const { token, name } = useAuthStore();
 
     const [allCards, setAllCards] = useState([]);
     const [currentDeck, setCurrentDeck] = useState([]);
@@ -32,10 +32,10 @@ export default function Deck() {
         };
         if (token) fetchCards();
 
-        const saved = localStorage.getItem('savedDecks');
+        const saved = localStorage.getItem('savedDecks_' + name);
         if (saved) { try { setSavedDecks(JSON.parse(saved)); } catch (e) {} }
 
-        const activeDeck = localStorage.getItem('myDeck');
+        const activeDeck = localStorage.getItem('myDeck_' + name)
         if (activeDeck) { try { setCurrentDeck(JSON.parse(activeDeck)); } catch (e) {} }
     }, [token]);
 
@@ -45,13 +45,13 @@ export default function Deck() {
         setError('');
         const newDeck = [...currentDeck, card];
         setCurrentDeck(newDeck);
-        localStorage.setItem('myDeck', JSON.stringify(newDeck));
+        localStorage.setItem('myDeck_' + name, JSON.stringify(newDeck));
     };
 
     const handleRemoveFromDeck = (cardKey) => {
         const newDeck = currentDeck.filter(c => c.key !== cardKey);
         setCurrentDeck(newDeck);
-        localStorage.setItem('myDeck', JSON.stringify(newDeck));
+        localStorage.setItem('myDeck_' + name, JSON.stringify(newDeck));
     };
 
     const handleSaveDeck = (slotIndex) => {
@@ -59,21 +59,21 @@ export default function Deck() {
         const newSaved = [...savedDecks];
         newSaved[slotIndex] = [...currentDeck];
         setSavedDecks(newSaved);
-        localStorage.setItem('savedDecks', JSON.stringify(newSaved));
+        localStorage.setItem('savedDecks_' + name, JSON.stringify(newSaved));
         setError('');
     };
 
     const handleLoadDeck = (slotIndex) => {
         if (!savedDecks[slotIndex]) return;
         setCurrentDeck([...savedDecks[slotIndex]]);
-        localStorage.setItem('myDeck', JSON.stringify(savedDecks[slotIndex]));
+        localStorage.setItem('myDeck_' + name, JSON.stringify(savedDecks[slotIndex]));
     };
 
     const handleDeleteDeck = (slotIndex) => {
         const newSaved = [...savedDecks];
         newSaved[slotIndex] = null;
         setSavedDecks(newSaved);
-        localStorage.setItem('savedDecks', JSON.stringify(newSaved));
+        localStorage.setItem('savedDecks_' + name, JSON.stringify(newSaved));
     };
 
     const getCardImage = (card) => {

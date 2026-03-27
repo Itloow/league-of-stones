@@ -10,7 +10,7 @@ export default function About() {
       </Head>
 
       <div className={styles.logoSection}>
-        <span style={{ fontSize: '30px' }}>🐉</span>
+        <img src="/dragon.jpeg" alt="logo" style={{ width: '50px', height: '50px', mixBlendMode: 'multiply' }} />
         <div className={styles.logoText}>LEAGUE OF STONES</div>
       </div>
 
