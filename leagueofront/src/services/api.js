@@ -73,6 +73,25 @@ export const amIConnected = async () => {
         console.error(`Impossible de vérifier la connexion : ${error}`);
     }
 };
+export const updateProfil = async (email, name, password) => {
+    try {
+        const reponse = await fetch(API_URL + "/user", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "WWW-Authenticate": getToken(),
+            },
+            body: JSON.stringify({ email, name, password }),
+        });
+        if (!reponse.ok) throw new Error(`Erreur HTTP : ${reponse.status}`);
+        const data = await reponse.json();
+        return data;
+    } catch (error) {
+        console.error(`Impossible de mettre à jour le profil : ${error}`);
+        throw error;
+    }
+};
+
 
 export const unsubscribe = async () => {
     try {
@@ -136,16 +155,25 @@ export const getAllPlayers = async () => {
 };
 export const sendRequest = async (matchmakingId) => {
     try {
+        const token = getToken();
+        console.log('sendRequest token:', token); // DEBUG
         const reponse = await fetch(API_URL + "/matchmaking/request?matchmakingId=" + matchmakingId, {
             headers: {
-                "WWW-Authenticate": getToken(),
+                "WWW-Authenticate": token,
             },
         });
         if (!reponse.ok) {
             throw new Error(`Erreur HTTP : ${reponse.status}`);
         }
-        const json = await reponse.json();
-        return json;
+        // Lire le body une seule fois
+        const text = await reponse.text();
+        // Essayer de parser en JSON
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            // Si ça échoue, retourner le texte brut
+            return text;
+        }
     } catch (error) {
         console.error(`Impossible d'envoyer la demande : ${error}`);
     }
@@ -175,12 +203,17 @@ export const getMatch = async () => {
             },
         });
         if (!reponse.ok) {
+            // Erreur 500 = pas de match pour ce joueur, c'est normal
+            if (reponse.status === 500) {
+                return null;
+            }
             throw new Error(`Erreur HTTP : ${reponse.status}`);
         }
         const json = await reponse.json();
         return json;
     } catch (error) {
         console.error(`Impossible de récupérer le match : ${error}`);
+        return null;
     }
 };
 export const initDeck = async (deck) => {

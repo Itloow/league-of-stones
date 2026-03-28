@@ -49,15 +49,15 @@ export default function Matchmaking() {
             if (data && data.request) setRequestsReceived(data.request);
         } catch (err) {}
     };
-
+    /*
     // Vérifier si un match a commencé
-    const checkMatch = async () => {
+    const checkMatch = useCallback(async () => {
         try {
             const data = await getMatch();
             if (data) router.push('/game');
         } catch (err) {}
-    };
-
+    }, [router]);
+*/
     // Envoyer une demande de match
     const handleSendRequest = async (matchmakingId, playerName) => {
         try {
@@ -82,18 +82,30 @@ export default function Matchmaking() {
     // Polling toutes les 5 secondes
     useEffect(() => {
         if (token) {
-            handleParticipate();
-            fetchPlayers();
+            // Fonction interne pour initialiser le matchmaking
+            const initializeMatchmaking = async () => {
+                await handleParticipate();
+                await fetchPlayers();
+            };
 
-            const interval = setInterval(() => {
+            initializeMatchmaking();
+
+            const interval = setInterval(async () => {
                 fetchPlayers();
                 refreshRequests();
-                checkMatch();
+                // Ne pas rediriger automatiquement, attendre que l'utilisateur accepte
+                 try {
+                    const data = await getMatch();
+                    if (data) {
+                        clearInterval(interval);
+                        router.push('/game');
+                    }
+                } catch (err) {}
             }, 5000);
 
             return () => clearInterval(interval);
         }
-    }, [token]);
+    }, [token, router]);
 
     return (
         <>
@@ -112,7 +124,7 @@ export default function Matchmaking() {
                 {error && <div className={styles.errorMsg}>{error}</div>}
                 {successMsg && <div className={styles.successMsg}>{successMsg}</div>}
 
-                <h2 className={styles.sectionTitle}>Liste d'attente des joueurs</h2>
+                <h2 className={styles.sectionTitle}>Liste d&#39;attente des joueurs</h2>
 
                 <div className={styles.tableContainer}>
                     <table className={styles.playersTable}>
@@ -155,7 +167,7 @@ export default function Matchmaking() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="3" className={styles.emptyText}>En attente d'autres joueurs...</td>
+                                    <td colSpan="3" className={styles.emptyText}>En attente d&#39;autres joueurs...</td>
                                 </tr>
                             )}
                         </tbody>
@@ -168,7 +180,7 @@ export default function Matchmaking() {
                         <h3 className={styles.sectionTitle}>Défis reçus</h3>
                         {requestsReceived.map((req, i) => (
                             <div key={i} className={styles.requestCard}>
-                                <span className={styles.playerName}>🚨 {req.name} veut jouer !</span>
+                                <span className={styles.playerName}>🚨 {req.name} veut jouer&#33;</span>
                                 <button className={styles.btnAccept} onClick={() => handleAccept(req.matchmakingId)}>
                                     ✅ Accepter
                                 </button>
@@ -199,7 +211,7 @@ export default function Matchmaking() {
                 {error && <div className={styles.errorMsg}>{error}</div>}
                 {successMsg && <div className={styles.successMsg}>{successMsg}</div>}
 
-                <h2 className={styles.mobileSectionTitle}>Liste d'attente des joueurs</h2>
+                <h2 className={styles.mobileSectionTitle}>Liste d&#39;attente des joueurs</h2>
 
                 <div className={styles.mobileTableContainer}>
                     <table className={styles.playersTable}>
