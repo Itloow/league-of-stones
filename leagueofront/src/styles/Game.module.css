@@ -1,61 +1,409 @@
-.marble-bg {
+/* ============================================
+   PAGE GAME / PLATEAU — League Of Stones
+   Fidèle à la maquette de Karim
+   ============================================ */
 
-  
-  position: relative;
+.gamePage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0 20px 20px 20px;
+    gap: 15px;
 }
 
-.marble-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
- 
-  opacity: 0.1;
-  pointer-events: none;
+/* === MESSAGES === */
+.errorMsg {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff4444;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-family: var(--font-gaming);
+    font-weight: 700;
+    font-size: 13px;
+    z-index: 300;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
+/* === LOADING === */
+.loadingScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 20px;
+    font-family: var(--font-gaming);
+    color: #26289F;
+    font-size: 18px;
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ede6fa;
+    border-top: 5px solid #26289F;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
-  .page {
-    --background: #000;
-    --foreground: #000;
+.btnRetour {
+    background-color: #26289F;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 25px;
+    font-family: var(--font-gaming);
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
 
-    --text-primary: #ededed;
-    --text-secondary: #999;
+/* ============================================
+   PLATEAU PRINCIPAL — Un seul grand cadre
+   ============================================ */
+.boardContainer {
+    width: 100%;
+    max-width: 1000px;
+    border: 3px solid #222;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
-  }
+/* === ZONE ADVERSAIRE (haut) === */
+.enemySection {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 10px;
+}
+
+/* === ZONE JOUEUR (bas) === */
+.mySection {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 10px;
+}
+
+/* === INFO JOUEUR (avatar + nom + hp) === */
+.playerInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 80px;
+}
+
+.avatarEnemy {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #cc0000;
+    box-shadow: 0 0 10px rgba(204, 0, 0, 0.3);
+}
+
+.avatarMy {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #0BDB38;
+    box-shadow: 0 0 10px rgba(11, 219, 56, 0.3);
+}
+
+.avatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.playerName {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 11px;
+    color: #26289F;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.hpText {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 14px;
+    color: #cc0000;
+}
+
+.hpTextBlue {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 14px;
+    color: #26289F;
+}
+
+/* === DECK COUNT === */
+.deckInfo {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 11px;
+    color: #333;
+    text-transform: uppercase;
+    min-width: 70px;
+    text-align: center;
+}
+
+/* === EMPLACEMENTS DU BOARD (5 slots) === */
+.slotsRow {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.emptySlot {
+    width: 100px;
+    height: 140px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: rgba(220, 220, 220, 0.2);
+}
+
+/* === CARTE SUR LE BOARD === */
+.cardSlot {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid #333;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cardImg {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+}
+
+.cardStats {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    background-color: #f0f0f0;
+    border-top: 1px solid #ddd;
+}
+
+.atkStat {
+    color: #cc0000;
+}
+
+.defStat {
+    color: #26289F;
+}
+
+/* === SÉPARATEUR / BARRE DE TOUR === */
+.turnDivider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+    margin: 5px 0;
+}
+
+.turnText {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 14px;
+    color: #26289F;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* ============================================
+   MAIN DU JOUEUR — style éventail
+   ============================================ */
+.handZone {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 10px 0;
+    position: relative;
+    height: 160px;
+}
+
+.handCard {
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid #26289F;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin: 0 -10px;
+    transform-origin: bottom center;
+}
+
+.handCard:hover {
+    transform: translateY(-20px) scale(1.1) !important;
+    box-shadow: 0 8px 25px rgba(38, 40, 159, 0.4);
+    z-index: 100 !important;
+}
+
+.handCardImg {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}
+
+.handCardStats {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    background-color: #f0f0f0;
+    border-top: 1px solid #ddd;
+}
+
+/* ============================================
+   RESPONSIVE TABLETTE
+   ============================================ */
+@media (max-width: 1024px) {
+    .boardContainer {
+        padding: 12px;
+    }
+
+    .cardSlot, .emptySlot {
+        width: 80px;
+    }
+
+    .cardImg {
+        height: 90px;
+    }
+
+    .emptySlot {
+        height: 120px;
+    }
+
+    .handCard {
+        width: 75px;
+    }
+
+    .handCardImg {
+        height: 85px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE MOBILE
+   ============================================ */
+@media (max-width: 768px) {
+    .gamePage {
+        padding: 5px;
+        gap: 8px;
+    }
+
+    .boardContainer {
+        padding: 8px;
+        border-radius: 12px;
+    }
+
+    .enemySection, .mySection {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 8px 5px;
+    }
+
+    .playerInfo {
+        min-width: 60px;
+    }
+
+    .avatarEnemy, .avatarMy {
+        width: 40px;
+        height: 40px;
+    }
+
+    .playerName {
+        font-size: 9px;
+    }
+
+    .hpText, .hpTextBlue {
+        font-size: 11px;
+    }
+
+    .deckInfo {
+        font-size: 9px;
+        min-width: 50px;
+    }
+
+    .slotsRow {
+        gap: 4px;
+    }
+
+    .cardSlot, .emptySlot {
+        width: 55px;
+    }
+
+    .cardImg {
+        height: 65px;
+    }
+
+    .emptySlot {
+        height: 90px;
+    }
+
+    .cardStats {
+        font-size: 8px;
+        padding: 2px 3px;
+    }
+
+    .turnText {
+        font-size: 10px;
+        letter-spacing: 1px;
+    }
+
+    .handZone {
+        height: 120px;
+    }
+
+    .handCard {
+        width: 55px;
+        margin: 0 -6px;
+    }
+
+    .handCardImg {
+        height: 65px;
+    }
+
+    .handCardStats {
+        font-size: 8px;
+        padding: 1px 3px;
+    }
 }
