@@ -212,6 +212,42 @@
     background-color: #f0f0f0;
     border-top: 1px solid #ddd;
 }
+.cardImg.selected {
+    border: 3px solid #d4af37 !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.8) !important;
+}
+
+.attackMessageBox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #26289F 0%, #1a1a66 100%);
+    color: #d4af37;
+    padding: 20px 40px;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 0 20px rgba(38, 40, 159, 0.8), 0 0 40px rgba(212, 175, 55, 0.5), inset 0 0 20px rgba(204, 0, 0, 0.3);
+    z-index: 1000;
+    animation: attackPulse 0.5s ease-in-out;
+    border: 2px solid #d4af37;
+}
+
+@keyframes attackPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
 
 .atkStat {
     color: #cc0000;
@@ -239,18 +275,36 @@
     color: #26289F;
     text-transform: uppercase;
     letter-spacing: 2px;
+    min-height: 20px;
+    display: block;
 }
 
+
+
 /* ============================================
-   MAIN DU JOUEUR — style éventail
+   MAIN DU JOUEUR — style éventail + ACTIONS
    ============================================ */
+.handZoneWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 30px;
+    padding: 20px;
+    position: relative;
+    height: 200px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
 .handZone {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    padding: 10px 0;
+    padding: 0;
     position: relative;
     height: 160px;
+    flex: 1;
 }
 
 .handCard {
@@ -266,6 +320,7 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     margin: 0 -10px;
     transform-origin: bottom center;
+    flex-shrink: 0;
 }
 
 .handCard:hover {
@@ -279,6 +334,19 @@
     height: 100px;
     object-fit: cover;
 }
+.handCardImg.clickable {
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.handCardImg.clickable:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2) drop-shadow(0 0 10px rgba(38, 40, 159, 0.8));
+}
+
+.handCardImg.clickable:active {
+    transform: scale(0.95);
+}
 
 .handCardStats {
     display: flex;
@@ -289,6 +357,98 @@
     font-weight: 700;
     background-color: #f0f0f0;
     border-top: 1px solid #ddd;
+}
+
+/* ============================================
+   CARTE EN ATTENTE / DÉSACTIVÉE EN MAIN
+   ============================================ */
+.handCardPending {
+    border: 3px solid #26289F !important;
+    box-shadow: 0 0 15px rgba(38, 40, 159, 0.6) !important;
+}
+
+/* ============================================
+   CARTE EN ATTENTE SUR LE PLATEAU
+   ============================================ */
+.pendingCard {
+    border: 2px dashed #26289F;
+    box-shadow: 0 0 15px rgba(38, 40, 159, 0.5);
+    background-color: rgba(38, 40, 159, 0.05);
+    cursor: pointer !important;
+}
+
+.pendingCard:hover {
+    background-color: rgba(38, 40, 159, 0.1);
+}
+
+/* ============================================
+   CARTE PIOCHER
+   ============================================ */
+.pickCard {
+    cursor: pointer;
+    background: #f0f0f0 !important;
+    border: 2px dashed #26289F !important;
+    transition: all 0.2s ease;
+}
+
+.pickCard:hover {
+    transform: scale(1.05);
+    border-color: #7b2cbf;
+    box-shadow: 0 4px 12px rgba(38, 40, 159, 0.3);
+}
+
+.pickCardContent {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+}
+
+.pickCardLabel {
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 11px;
+    color: #26289F;
+    text-transform: uppercase;
+}
+
+/* ============================================
+   CARTE PASSER LE TOUR
+   ============================================ */
+.passCard {
+    cursor: pointer;
+    background: #fff8e8 !important;
+    border: 2px dashed #ff9800 !important;
+    transition: all 0.2s ease;
+}
+
+.passCard:hover {
+    transform: scale(1.05);
+    border-color: #f57c00;
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+.passCardContent {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+}
+
+.passCardLabel {
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 11px;
+    color: #ff9800;
+    text-transform: uppercase;
 }
 
 /* ============================================

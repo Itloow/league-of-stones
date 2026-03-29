@@ -276,6 +276,7 @@ export const attack = async (card, ennemyCard) => {
             throw new Error(`Erreur HTTP : ${reponse.status}`);
         }
         const json = await reponse.json();
+         console.log('Réponse attaque:', json);
         return json;
     } catch (error) {
         console.error(`Impossible d'attaquer : ${error}`);
@@ -307,8 +308,14 @@ export const endTurn = async () => {
         if (!reponse.ok) {
             throw new Error(`Erreur HTTP : ${reponse.status}`);
         }
-        const json = await reponse.json();
-        return json;
+        // Essayer de parser JSON, si ça échoue, retourner null (le backend envoie du texte brut)
+        try {
+            const json = await reponse.json();
+            return json;
+        } catch (jsonError) {
+            console.warn("Réponse non-JSON du serveur, on ignore", jsonError);
+            return null; // Retourner null au lieu de crasher
+        }
     } catch (error) {
         console.error(`Impossible de terminer le tour : ${error}`);
     }
