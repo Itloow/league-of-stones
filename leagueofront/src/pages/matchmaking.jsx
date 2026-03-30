@@ -38,26 +38,27 @@ export default function Matchmaking() {
     const fetchPlayers = async () => {
         try {
             const data = await getAllPlayers();
-            if (data && Array.isArray(data)) setPlayersList(data);
-        } catch (err) {}
+            // Le backend renvoie directement le tableau, donc on vérifie juste si c'est un Array !
+            if (data && Array.isArray(data)) {
+                setPlayersList(data);
+            }
+        } catch (err) {
+            console.error("Erreur fetchPlayers :", err);
+        }
     };
 
     // Rafraîchir les demandes
     const refreshRequests = async () => {
         try {
             const data = await participate();
-            if (data && data.request) setRequestsReceived(data.request);
-        } catch (err) {}
+            // Le backend renvoie directement l'objet avec la propriété request
+            if (data && data.request) {
+                setRequestsReceived(data.request);
+            }
+        } catch (err) {
+            console.error("Erreur refreshRequests :", err);
+        }
     };
-    /*
-    // Vérifier si un match a commencé
-    const checkMatch = useCallback(async () => {
-        try {
-            const data = await getMatch();
-            if (data) router.push('/game');
-        } catch (err) {}
-    }, [router]);
-*/
     // Envoyer une demande de match
     const handleSendRequest = async (matchmakingId, playerName) => {
         try {
@@ -94,13 +95,13 @@ export default function Matchmaking() {
                 fetchPlayers();
                 refreshRequests();
                 // Ne pas rediriger automatiquement, attendre que l'utilisateur accepte
-                 try {
+                try {
                     const data = await getMatch();
                     if (data) {
                         clearInterval(interval);
                         router.push('/game');
                     }
-                } catch (err) {}
+                } catch (err) { }
             }, 5000);
 
             return () => clearInterval(interval);
