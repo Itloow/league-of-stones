@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Navbar from "@/components/Navbar";
 import styles from '../styles/Matchmaking.module.css';
@@ -12,101 +12,132 @@ export default function Matchmaking() {
 
     const [playersList, setPlayersList] = useState([]);
     const [requestsReceived, setRequestsReceived] = useState([]);
-    const [myMatchmakingId, setMyMatchmakingId] = useState(null);
+    const [isJoined, setIsJoined] = useState(false);
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
-    // Sécurité
+    // Refs pour gérer le cycle de vie du polling
+    const hasRedirected = useRef(false);
+    const intervalRef = useRef(null);
+
+    // Sécurité : redirection si pas connecté
     useEffect(() => {
         if (!token) router.push('/');
     }, [token, router]);
 
-    // S'inscrire au matchmaking au montage
-    const handleParticipate = async () => {
-        try {
-            const data = await participate();
-            if (data) {
-                setMyMatchmakingId(data.matchmakingId);
-                if (data.request) setRequestsReceived(data.request);
+    // ÉTAPE 1 : S'inscrire au matchmaking dès l'arrivée sur la page
+    useEffect(() => {
+        if (!token || isJoined) return;
+
+        const joinMatchmaking = async () => {
+            try {
+                const data = await participate();
+                if (data) {
+                    setIsJoined(true);
+                    if (data.request && Array.isArray(data.request)) {
+                        setRequestsReceived(data.request);
+                    }
+                }
+            } catch (err) {
+                setError("Impossible de rejoindre le matchmaking");
             }
-        } catch (err) {
-            setError("Erreur matchmaking");
+        };
+
+        joinMatchmaking();
+    }, [token, isJoined]);
+
+    // ÉTAPE 2 : Polling régulier une fois inscrit
+    useEffect(() => {
+        if (!token || !isJoined) return;
+
+        const poll = async () => {
+            try {
+                // Rafraîchir les demandes reçues
+                const partData = await participate();
+                if (partData && partData.request && Array.isArray(partData.request)) {
+                    setRequestsReceived(partData.request);
+                }
+
+                // Récupérer la liste des joueurs en attente
+                const players = await getAllPlayers();
+                if (players && Array.isArray(players)) {
+                    setPlayersList(players);
+                }
+
+                // Vérifier si un match a été créé (l'adversaire a accepté notre défi)
+                if (!hasRedirected.current) {
+                    const matchData = await getMatch();
+                    if (matchData && matchData.player1 && matchData.player2) {
+                        hasRedirected.current = true;
+                        stopPolling();
+                        router.push('/game');
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.log("Polling matchmaking:", err.message);
+            }
+        };
+
+        // Premier poll immédiat
+        poll();
+
+        // Puis toutes les 5 secondes
+        intervalRef.current = setInterval(poll, 5000);
+
+        // Cleanup au démontage du composant (changement de page, etc.)
+        return () => stopPolling();
+    }, [token, isJoined, router]);
+
+    // Fonction utilitaire pour stopper le polling proprement
+    const stopPolling = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
         }
     };
 
-    // Récupérer la liste des joueurs en attente
-    const fetchPlayers = async () => {
-        try {
-            const data = await getAllPlayers();
-            // Le backend renvoie directement le tableau, donc on vérifie juste si c'est un Array !
-            if (data && Array.isArray(data)) {
-                setPlayersList(data);
-            }
-        } catch (err) {
-            console.error("Erreur fetchPlayers :", err);
-        }
+    // RETOUR : stopper le polling et quitter la page
+    const handleLeave = () => {
+        stopPolling();
+        setIsJoined(false);
+        router.push('/Accueil');
     };
 
-    // Rafraîchir les demandes
-    const refreshRequests = async () => {
-        try {
-            const data = await participate();
-            // Le backend renvoie directement l'objet avec la propriété request
-            if (data && data.request) {
-                setRequestsReceived(data.request);
-            }
-        } catch (err) {
-            console.error("Erreur refreshRequests :", err);
-        }
-    };
-    // Envoyer une demande de match
+    // Envoyer un défi à un joueur
     const handleSendRequest = async (matchmakingId, playerName) => {
         try {
             await sendRequest(matchmakingId);
-            setSuccessMsg('Défi envoyé à ' + playerName + ' !');
-            setTimeout(() => setSuccessMsg(''), 3000);
+            setSuccessMsg('Défi envoyé à ' + playerName + ' ! En attente de sa réponse...');
+            setTimeout(() => setSuccessMsg(''), 4000);
         } catch (err) {
-            setError("Erreur envoi défi");
+            setError("Erreur lors de l'envoi du défi");
+            setTimeout(() => setError(''), 3000);
         }
     };
 
-    // Accepter une demande
-    const handleAccept = async (matchmakingId) => {
+    // Accepter un défi reçu → le match est créé côté backend
+    const handleAccept = async (matchmakingId, playerName) => {
         try {
             const data = await acceptRequest(matchmakingId);
-            if (data) router.push('/game');
+            if (data) {
+                hasRedirected.current = true;
+                stopPolling();
+                router.push('/game');
+            }
         } catch (err) {
-            setError("Erreur acceptation");
+            setError("Erreur lors de l'acceptation du défi");
+            setTimeout(() => setError(''), 3000);
         }
     };
 
-    // Polling toutes les 5 secondes
+    // Effacer les messages d'erreur
     useEffect(() => {
-        if (token) {
-            // Fonction interne pour initialiser le matchmaking
-            const initializeMatchmaking = async () => {
-                await handleParticipate();
-                await fetchPlayers();
-            };
-
-            initializeMatchmaking();
-
-            const interval = setInterval(async () => {
-                fetchPlayers();
-                refreshRequests();
-                // Ne pas rediriger automatiquement, attendre que l'utilisateur accepte
-                try {
-                    const data = await getMatch();
-                    if (data) {
-                        clearInterval(interval);
-                        router.push('/game');
-                    }
-                } catch (err) { }
-            }, 5000);
-
-            return () => clearInterval(interval);
+        if (error) {
+            const timer = setTimeout(() => setError(''), 3000);
+            return () => clearTimeout(timer);
         }
-    }, [token, router]);
+    }, [error]);
 
     return (
         <>
@@ -125,73 +156,79 @@ export default function Matchmaking() {
                 {error && <div className={styles.errorMsg}>{error}</div>}
                 {successMsg && <div className={styles.successMsg}>{successMsg}</div>}
 
-                <h2 className={styles.sectionTitle}>Liste d&#39;attente des joueurs</h2>
+                {!isJoined ? (
+                    <p style={{ color: '#26289F', fontWeight: 'bold' }}>Connexion au matchmaking...</p>
+                ) : (
+                    <>
+                        <h2 className={styles.sectionTitle}>Liste d&#39;attente des joueurs</h2>
 
-                <div className={styles.tableContainer}>
-                    <table className={styles.playersTable}>
-                        <thead>
-                            <tr>
-                                <th>Pseudo</th>
-                                <th>Statut</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {/* Moi en premier */}
-                            <tr className={styles.myRow}>
-                                <td className={styles.playerName}>🎮 {name || 'Moi'}</td>
-                                <td><span className={styles.statusReady}>Prêt <span className={styles.dotGreen}>●</span></span></td>
-                                <td className={styles.emptyCell}>—</td>
-                            </tr>
-
-                            {/* Séparateur VS */}
-                            {playersList.length > 0 && (
-                                <tr>
-                                    <td colSpan="3" className={styles.vsRow}>
-                                        <span className={styles.vsBadge}>VS</span>
-                                    </td>
-                                </tr>
-                            )}
-
-                            {/* Autres joueurs */}
-                            {playersList.length > 0 ? (
-                                playersList.map((player, index) => (
-                                    <tr key={player.matchmakingId || index}>
-                                        <td className={styles.playerName}>{player.name}</td>
-                                        <td><span className={styles.statusWaiting}>En attente ⏳</span></td>
-                                        <td>
-                                            <button className={styles.btnInvite} onClick={() => handleSendRequest(player.matchmakingId, player.name)}>
-                                                ⚔️ Défier
-                                            </button>
-                                        </td>
+                        <div className={styles.tableContainer}>
+                            <table className={styles.playersTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Pseudo</th>
+                                        <th>Statut</th>
+                                        <th>Action</th>
                                     </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="3" className={styles.emptyText}>En attente d&#39;autres joueurs...</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                </thead>
+                                <tbody>
+                                    {/* Moi en premier */}
+                                    <tr className={styles.myRow}>
+                                        <td className={styles.playerName}>🎮 {name || 'Moi'}</td>
+                                        <td><span className={styles.statusReady}>Prêt <span className={styles.dotGreen}>●</span></span></td>
+                                        <td className={styles.emptyCell}>—</td>
+                                    </tr>
 
-                {/* Défis reçus */}
-                {requestsReceived && requestsReceived.length > 0 && (
-                    <div className={styles.requestsSection}>
-                        <h3 className={styles.sectionTitle}>Défis reçus</h3>
-                        {requestsReceived.map((req, i) => (
-                            <div key={i} className={styles.requestCard}>
-                                <span className={styles.playerName}>🚨 {req.name} veut jouer&#33;</span>
-                                <button className={styles.btnAccept} onClick={() => handleAccept(req.matchmakingId)}>
-                                    ✅ Accepter
-                                </button>
+                                    {/* Séparateur VS */}
+                                    {playersList.length > 0 && (
+                                        <tr>
+                                            <td colSpan="3" className={styles.vsRow}>
+                                                <span className={styles.vsBadge}>VS</span>
+                                            </td>
+                                        </tr>
+                                    )}
+
+                                    {/* Autres joueurs */}
+                                    {playersList.length > 0 ? (
+                                        playersList.map((player, index) => (
+                                            <tr key={player.matchmakingId || index}>
+                                                <td className={styles.playerName}>{player.name}</td>
+                                                <td><span className={styles.statusWaiting}>En attente ⏳</span></td>
+                                                <td>
+                                                    <button className={styles.btnInvite} onClick={() => handleSendRequest(player.matchmakingId, player.name)}>
+                                                        ⚔️ Défier
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="3" className={styles.emptyText}>En attente d&#39;autres joueurs...</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Défis reçus */}
+                        {requestsReceived && requestsReceived.length > 0 && (
+                            <div className={styles.requestsSection}>
+                                <h3 className={styles.sectionTitle}>Défis reçus</h3>
+                                {requestsReceived.map((req, i) => (
+                                    <div key={i} className={styles.requestCard}>
+                                        <span className={styles.playerName}>🚨 {req.name} veut jouer&#33;</span>
+                                        <button className={styles.btnAccept} onClick={() => handleAccept(req.matchmakingId, req.name)}>
+                                            ✅ Accepter
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
+                        )}
+                    </>
                 )}
 
                 <div className={styles.bottomButtons}>
-                    <button className={styles.btnBack} onClick={() => router.push('/Accueil')}>
+                    <button className={styles.btnBack} onClick={handleLeave}>
                         ← Retour
                     </button>
                 </div>
@@ -212,62 +249,68 @@ export default function Matchmaking() {
                 {error && <div className={styles.errorMsg}>{error}</div>}
                 {successMsg && <div className={styles.successMsg}>{successMsg}</div>}
 
-                <h2 className={styles.mobileSectionTitle}>Liste d&#39;attente des joueurs</h2>
+                {!isJoined ? (
+                    <p style={{ color: '#26289F', fontWeight: 'bold', textAlign: 'center' }}>Connexion...</p>
+                ) : (
+                    <>
+                        <h2 className={styles.mobileSectionTitle}>Liste d&#39;attente des joueurs</h2>
 
-                <div className={styles.mobileTableContainer}>
-                    <table className={styles.playersTable}>
-                        <thead>
-                            <tr>
-                                <th>Pseudo</th>
-                                <th>Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className={styles.myRow}>
-                                <td className={styles.playerName}>🎮 {name || 'Moi'}</td>
-                                <td><span className={styles.statusReady}>Prêt <span className={styles.dotGreen}>●</span></span></td>
-                            </tr>
-                            {playersList.length > 0 && (
-                                <tr><td colSpan="2" className={styles.vsRow}><span className={styles.vsBadge}>VS</span></td></tr>
-                            )}
-                            {playersList.map((player, index) => (
-                                <tr key={player.matchmakingId || index}>
-                                    <td className={styles.playerName}>{player.name}</td>
-                                    <td><span className={styles.statusWaiting}>En attente ⏳</span></td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                        <div className={styles.mobileTableContainer}>
+                            <table className={styles.playersTable}>
+                                <thead>
+                                    <tr>
+                                        <th>Pseudo</th>
+                                        <th>Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className={styles.myRow}>
+                                        <td className={styles.playerName}>🎮 {name || 'Moi'}</td>
+                                        <td><span className={styles.statusReady}>Prêt <span className={styles.dotGreen}>●</span></span></td>
+                                    </tr>
+                                    {playersList.length > 0 && (
+                                        <tr><td colSpan="2" className={styles.vsRow}><span className={styles.vsBadge}>VS</span></td></tr>
+                                    )}
+                                    {playersList.map((player, index) => (
+                                        <tr key={player.matchmakingId || index}>
+                                            <td className={styles.playerName}>{player.name}</td>
+                                            <td><span className={styles.statusWaiting}>En attente ⏳</span></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
 
-                {playersList.length > 0 && (
-                    playersList.map((player, index) => (
-                        <button key={player.matchmakingId || index} className={styles.btnMobileInvite} onClick={() => handleSendRequest(player.matchmakingId, player.name)}>
-                            ⚔️ Défier {player.name}
-                        </button>
-                    ))
+                        {playersList.length > 0 && (
+                            playersList.map((player, index) => (
+                                <button key={player.matchmakingId || index} className={styles.btnMobileInvite} onClick={() => handleSendRequest(player.matchmakingId, player.name)}>
+                                    ⚔️ Défier {player.name}
+                                </button>
+                            ))
+                        )}
+
+                        {requestsReceived && requestsReceived.length > 0 && (
+                            <button className={styles.btnMobileLaunch} onClick={() => handleAccept(requestsReceived[0].matchmakingId, requestsReceived[0].name)}>
+                                ▶ Accepter le défi de {requestsReceived[0].name}
+                            </button>
+                        )}
+                    </>
                 )}
 
-                {requestsReceived && requestsReceived.length > 0 && (
-                    <button className={styles.btnMobileLaunch} onClick={() => handleAccept(requestsReceived[0].matchmakingId)}>
-                        ▶ Lancer la partie
-                    </button>
-                )}
-
-                <button className={styles.btnMobileRetour} onClick={() => router.push('/Accueil')}>
+                <button className={styles.btnMobileRetour} onClick={handleLeave}>
                     ← Retour
                 </button>
             </div>
 
             {/* Bottom nav mobile */}
             <nav className={styles.bottomNav}>
-                <button className={styles.bottomNavItem} onClick={() => router.push('/deck')}>
+                <button className={styles.bottomNavItem} onClick={() => { stopPolling(); router.push('/deck'); }}>
                     <Layers size={24} /><span>Decks</span>
                 </button>
-                <button className={styles.bottomNavItem} onClick={() => router.push('/Accueil')}>
+                <button className={styles.bottomNavItem} onClick={handleLeave}>
                     <Home size={24} /><span>Home</span>
                 </button>
-                <button className={styles.bottomNavItem} onClick={() => router.push('/lobby')}>
+                <button className={styles.bottomNavItem} onClick={() => { stopPolling(); router.push('/lobby'); }}>
                     <Users size={24} /><span>Social</span>
                 </button>
             </nav>

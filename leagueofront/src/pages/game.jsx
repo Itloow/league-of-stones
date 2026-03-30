@@ -22,20 +22,15 @@ export default function Game() {
     const [attackMessage, setAttackMessage] = useState(null);
     const [matchFinished, setMatchFinished] = useState(false);
 
-    // pour eviter les doubles clics sur les actions
     const [actionEnCours, setActionEnCours] = useState(false);
-
-    // cartes jouees/attaquees ce tour (pour pas rejouer ou re-attaquer)
     const [playedThisTurn, setPlayedThisTurn] = useState([]);
     const [attackedThisTurn, setAttackedThisTurn] = useState([]);
     const [lastTurnState, setLastTurnState] = useState(false);
 
-    // redirection si pas connecte
     useEffect(() => {
         if (!token) router.push('/');
     }, [token, router]);
 
-    // envoi du deck au serveur au montage
     useEffect(() => {
         if (!token || deckSent) return;
         const sendDeck = async () => {
@@ -53,7 +48,6 @@ export default function Game() {
         sendDeck();
     }, [token, name, deckSent]);
 
-    // recuperation des infos du match
     const refreshMatch = async () => {
         try {
             const data = await getMatch();
@@ -77,7 +71,6 @@ export default function Game() {
         }
     };
 
-    // polling toutes les 3 secondes
     useEffect(() => {
         if (!token) return;
         refreshMatch();
@@ -85,7 +78,6 @@ export default function Game() {
         return () => clearInterval(interval);
     }, [token]);
 
-    // reset des listes quand le tour change
     useEffect(() => {
         if (isMyTurn && !lastTurnState) {
             setPlayedThisTurn([]);
@@ -101,7 +93,6 @@ export default function Game() {
         return 'https://ddragon.leagueoflegends.com/cdn/img/champion/loading/' + key + '_0.jpg';
     };
 
-    // piocher une carte
     const handlePick = async () => {
         if (actionEnCours) return;
         if (!isMyTurn) return setError('Ce n\'est pas votre tour');
@@ -118,7 +109,6 @@ export default function Game() {
         }
     };
 
-    // poser une carte sur le plateau
     const handlePlayCard = async (cardKey) => {
         if (actionEnCours) return;
         if (!isMyTurn) return setError('Ce n\'est pas votre tour');
@@ -136,7 +126,6 @@ export default function Game() {
         }
     };
 
-    // fin du tour
     const handleEndTurn = async () => {
         if (actionEnCours) return;
         if (!isMyTurn) return setError('Ce n\'est pas votre tour');
@@ -153,7 +142,6 @@ export default function Game() {
         }
     };
 
-    // attaquer une carte adverse
     const handleAttackCard = async (myCardKey, enemyCardKey) => {
         if (actionEnCours) return;
         if (!isMyTurn) return setError('Ce n\'est pas votre tour');
@@ -184,7 +172,6 @@ export default function Game() {
         }
     };
 
-    // attaquer directement le joueur adverse (board vide)
     const handleAttackPlayer = async (myCardKey) => {
         if (actionEnCours) return;
         if (!isMyTurn) return setError('Ce n\'est pas votre tour');
@@ -215,7 +202,6 @@ export default function Game() {
         }
     };
 
-    // gestion de la fin de match (hp a 0)
     useEffect(() => {
         if (!matchData || !myPlayer || !enemyPlayer || matchFinished) return;
 
@@ -233,12 +219,10 @@ export default function Game() {
         }
     }, [myPlayer?.hp, enemyPlayer?.hp, matchFinished]);
 
-    // reset du flag matchFinished si on change de match
     useEffect(() => {
         setMatchFinished(false);
     }, [matchData?._id]);
 
-    // efface le message d'erreur apres 3 secondes
     useEffect(() => {
         if (error) {
             const timer = setTimeout(() => setError(''), 3000);
@@ -246,7 +230,6 @@ export default function Game() {
         }
     }, [error]);
 
-    // verifier si une carte peut attaquer
     const canCardAttack = (card) => {
         return isMyTurn && !playedThisTurn.includes(card.key) && !attackedThisTurn.includes(card.key) && !card.attack;
     };
@@ -256,7 +239,15 @@ export default function Game() {
 
     return (
         <div className={styles.gamePage}>
-            <Navbar />
+            {/* Navbar desktop — masquée en mobile */}
+            <div className={styles.navbarDesktop}>
+                <Navbar />
+            </div>
+
+            {/* Header mobile — visible uniquement en mobile */}
+            <div className={styles.mobileGameHeader}>
+                <span className={styles.mobileHeaderTitle}>League Of Stones</span>
+            </div>
 
             {(error || (myPlayer.hp <= 0 || enemyPlayer.hp <= 0)) && (
                 <div className={styles.errorMsg}>
@@ -266,9 +257,22 @@ export default function Game() {
             {attackMessage && <div className={styles.attackMessageBox}>{attackMessage}</div>}
 
             <div className={styles.boardContainer}>
-                {/* zone adversaire */}
+
+                {/* ====== ZONE ADVERSAIRE ====== */}
                 <div className={styles.enemySection}>
-                    <div className={styles.deckInfo}>Deck : {typeof enemyPlayer.deck === 'number' ? enemyPlayer.deck : '?'}</div>
+                    {/* Info adversaire — badge horizontal sur mobile */}
+                    <div className={styles.playerInfo}>
+                        <div className={styles.avatarEnemy}><img src="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Garen_0.jpg" alt="adversaire" className={styles.avatarImg} /></div>
+                        <span className={styles.playerName}>{enemyName}</span>
+                        <span className={styles.hpText}>❤️ {enemyPlayer.hp}</span>
+                        {isMyTurn && selectedAttackCard && (!enemyPlayer.board || enemyPlayer.board.length === 0) && (
+                            <button className={styles.btnAttackPlayer} onClick={() => handleAttackPlayer(selectedAttackCard)}>
+                                Attaquer {enemyName}
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Board adversaire */}
                     <div className={styles.slotsRow}>
                         {enemyPlayer.board && enemyPlayer.board.map((card) => (
                             <div key={card.key} className={styles.cardSlot}>
@@ -288,32 +292,27 @@ export default function Game() {
                         {enemyPlayer.board && Array.from({ length: 5 - (enemyPlayer.board.length || 0) }).map((_, i) => <div key={'ee-' + i} className={styles.emptySlot}></div>)}
                     </div>
 
-                    <div className={styles.playerInfo}>
-                        <div className={styles.avatarEnemy}><img src="https://ddragon.leagueoflegends.com/cdn/img/champion/loading/Garen_0.jpg" alt="adversaire" className={styles.avatarImg} /></div>
-                        <span className={styles.playerName}>{enemyName}</span>
-                        <span className={styles.hpText}>❤️ {enemyPlayer.hp}</span>
-                        {isMyTurn && selectedAttackCard && (!enemyPlayer.board || enemyPlayer.board.length === 0) && (
-                            <button className={styles.btnAttackPlayer} onClick={() => handleAttackPlayer(selectedAttackCard)}>
-                                Attaquer {enemyName}
+                    <div className={styles.deckInfo}>Deck : {typeof enemyPlayer.deck === 'number' ? enemyPlayer.deck : '?'}</div>
+                </div>
+
+                {/* ====== INDICATEUR DE TOUR ====== */}
+                {matchData && (
+                    <div className={styles.turnDivider}>
+                        <span className={styles.turnText}>
+                            {matchData.status === 'Deck is pending' ? "Attente des decks..." : isMyTurn ? "A ton tour" : "Tour adverse"}
+                        </span>
+                        {/* Bouton fin de tour intégré — visible surtout en mobile */}
+                        {isMyTurn && (
+                            <button className={styles.btnEndTurn} onClick={handleEndTurn}>
+                                ⚡ Fin du tour
                             </button>
                         )}
                     </div>
-                </div>
-
-                {matchData && (
-                    <div className={styles.turnDivider}>
-                        <span className={styles.turnText}>{matchData.status === 'Deck is pending' ? "Attente des decks..." : isMyTurn ? "A ton tour" : "Tour adverse"}</span>
-                    </div>
                 )}
 
-                {/* zone joueur */}
+                {/* ====== ZONE JOUEUR ====== */}
                 <div className={styles.mySection}>
-                    <div className={styles.playerInfo}>
-                        <div className={styles.avatarMy}><img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Thresh_0.jpg" alt="moi" className={styles.avatarImg} /></div>
-                        <span className={styles.playerName}>{name || 'Moi'}</span>
-                        <span className={styles.hpTextBlue}>❤️ {myPlayer.hp}</span>
-                    </div>
-
+                    {/* Board joueur */}
                     <div className={styles.slotsRow}>
                         {myPlayer.board && myPlayer.board.map((card) => {
                             const isClickable = canCardAttack(card);
@@ -336,10 +335,17 @@ export default function Game() {
                         {myPlayer.board && Array.from({ length: 5 - (myPlayer.board.length || 0) }).map((_, i) => <div key={'me-' + i} className={styles.emptySlot}></div>)}
                     </div>
                     <div className={styles.deckInfo}>Deck : {typeof myPlayer.deck === 'number' ? myPlayer.deck : '?'}</div>
+
+                    {/* Info joueur — badge horizontal sur mobile */}
+                    <div className={styles.playerInfo}>
+                        <div className={styles.avatarMy}><img src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Thresh_0.jpg" alt="moi" className={styles.avatarImg} /></div>
+                        <span className={styles.playerName}>{name || 'Moi'}</span>
+                        <span className={styles.hpTextBlue}>❤️ {myPlayer.hp}</span>
+                    </div>
                 </div>
             </div>
 
-            {/* main du joueur */}
+            {/* ====== MAIN DU JOUEUR ====== */}
             <div className={styles.handZoneWrapper}>
                 {isMyTurn && !myPlayer.cardPicked && myPlayer.deck > 0 && (
                     <div className={`${styles.handCard} ${styles.pickCard}`} onClick={handlePick}>
@@ -370,6 +376,7 @@ export default function Game() {
                     })}
                 </div>
 
+                {/* Bouton passer — desktop seulement (en mobile c'est le btnEndTurn dans le turnDivider) */}
                 {isMyTurn && (
                     <div className={`${styles.handCard} ${styles.passCard}`} onClick={handleEndTurn}>
                         <div className={styles.passCardContent}>⚡</div>

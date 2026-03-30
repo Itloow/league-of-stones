@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Navbar from "@/components/Navbar";
 import styles from '../styles/Accueil.module.css';
 import { useAuthStore } from '../store/authStore';
-import { getAllPlayers, participate } from '../services/api';
+import { getAllPlayers, participate, getMatch } from '../services/api';
 import { Layers, Home, User, Users } from 'lucide-react';
 
 export default function Accueil() {
@@ -11,15 +11,26 @@ export default function Accueil() {
     const { token, name } = useAuthStore();
     const [deckCards, setDeckCards] = useState([]);
     const [onlinePlayers, setOnlinePlayers] = useState([]);
-    const [requestsReceived, setRequestsReceived] = useState([]);
 
+    // Overlay matchmaking
+    const [isSearching, setIsSearching] = useState(false);
+
+    // Overlay "match trouvé" — quand un adversaire a accepté un défi
+    // alors qu'on était revenu sur l'accueil
+    const [pendingMatch, setPendingMatch] = useState(false);
+
+    // Redirection si pas connecté
     useEffect(() => {
         if (!token) {
             router.push('/');
         }
     }, [token, router]);
 
+    // Charger le deck + joueurs en ligne + vérifier si un match existe déjà
     useEffect(() => {
+        if (!token) return;
+
+        // Charger le deck sauvegardé
         const savedDeck = localStorage.getItem('myDeck_' + name);
         if (savedDeck) {
             try {
@@ -29,6 +40,7 @@ export default function Accueil() {
             }
         }
 
+        // Récupérer joueurs en attente (juste pour l'affichage, pas d'inscription)
         const fetchOnlinePlayers = async () => {
             try {
                 const players = await getAllPlayers();
@@ -40,37 +52,51 @@ export default function Accueil() {
             }
         };
 
-        if (token) fetchOnlinePlayers();
-        const fetchRequests = async () => {
+        // Vérifier si un match est en cours
+        // Cas : le joueur était dans le matchmaking, est revenu sur l'accueil,
+        // et entre-temps un adversaire a accepté son défi → match créé
+        const checkExistingMatch = async () => {
             try {
-                const data = await participate();
-                if (data && data.request) setRequestsReceived(data.request);
-            } catch (err) { }
+                const matchData = await getMatch();
+                if (matchData && matchData.player1 && matchData.player2) {
+                    setPendingMatch(true);
+                }
+            } catch (err) {
+                // Pas de match en cours, c'est normal
+            }
         };
-        if (token) fetchRequests();
-    }, [token]);
 
-    const [isSearching, setIsSearching] = useState(false);
-    const [searchTimeout, setSearchTimeout] = useState(null);
+        fetchOnlinePlayers();
+        checkExistingMatch();
+    }, [token, name]);
 
-    const handleLancerPartie = () => {
+    // Lancer une partie : overlay → participate() → redirection
+    const handleLancerPartie = async () => {
         setIsSearching(true);
-        const timeout = setTimeout(() => {
-            router.push('/matchmaking');
-        }, 3000);
-        setSearchTimeout(timeout);
+        try {
+            await participate();
+            setTimeout(() => {
+                router.push('/matchmaking');
+            }, 1500);
+        } catch (err) {
+            setIsSearching(false);
+            console.error("Erreur matchmaking:", err);
+        }
     };
 
     const handleCancel = () => {
         setIsSearching(false);
-        if (searchTimeout) clearTimeout(searchTimeout);
     };
+
+    // Rejoindre le match en attente
+    const handleJoinPendingMatch = () => {
+        router.push('/game');
+    };
+
     const handleModifierDeck = () => router.push('/deck');
-    const handleInviter = (id) => router.push('/lobby?invite=' + id);
 
     const renderDeckPreview = () => {
         const slots = [];
-        // Afficher les cartes existantes
         deckCards.forEach((card, i) => {
             slots.push(
                 <img
@@ -81,7 +107,6 @@ export default function Accueil() {
                 />
             );
         });
-        // Remplir les emplacements vides avec des placeholders "?"
         for (let i = deckCards.length; i < 20; i++) {
             slots.push(
                 <div key={'empty-' + i} className={styles.deckCardPlaceholder}>?</div>
@@ -92,7 +117,20 @@ export default function Accueil() {
 
     return (
         <>
-            {/* ===== OVERLAY MATCHMAKING ===== */}
+            {/* ===== OVERLAY : MATCH EN ATTENTE (quelqu'un a accepté le défi) ===== */}
+            {pendingMatch && (
+                <div className={styles.matchmakingOverlay}>
+                    <div className={styles.matchmakingBox}>
+                        <h2 className={styles.matchmakingTitle}>Match trouvé !</h2>
+                        <p className={styles.matchmakingText}>Un adversaire a accepté votre défi</p>
+                        <button className={styles.btnLancerPartie} onClick={handleJoinPendingMatch} style={{ marginTop: '15px' }}>
+                            ⚔️ Rejoindre la partie
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* ===== OVERLAY : RECHERCHE MATCHMAKING ===== */}
             {isSearching && (
                 <div className={styles.matchmakingOverlay}>
                     <div className={styles.matchmakingBox}>
@@ -106,7 +144,7 @@ export default function Accueil() {
                 </div>
             )}
 
-            {/* ===== NAVBAR DESKTOP (masquée en mobile) ===== */}
+            {/* ===== NAVBAR DESKTOP ===== */}
             <div className={styles.navbarDesktop}>
                 <Navbar />
             </div>
@@ -131,9 +169,9 @@ export default function Accueil() {
                 </div>
 
                 <div className={styles.friendsSection}>
-                    <h2 className={styles.sectionTitle}>Défis reçus</h2>
+                    <h2 className={styles.sectionTitle}>Joueurs en attente</h2>
                     <div className={styles.friendsContainer}>
-                        {requestsReceived.length > 0 ? (
+                        {onlinePlayers.length > 0 ? (
                             <table className={styles.friendsTable}>
                                 <thead>
                                     <tr>
@@ -142,12 +180,12 @@ export default function Accueil() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {requestsReceived.map((req, index) => (
+                                    {onlinePlayers.map((player, index) => (
                                         <tr key={index}>
-                                            <td>🚨 {req.name}</td>
+                                            <td>🎮 {player.name}</td>
                                             <td>
-                                                <button className={styles.btnInviter} onClick={() => router.push('/matchmaking')}>
-                                                    ⚔️ Voir le défi
+                                                <button className={styles.btnInviter} onClick={handleLancerPartie}>
+                                                    ⚔️ Rejoindre
                                                 </button>
                                             </td>
                                         </tr>
@@ -155,15 +193,14 @@ export default function Accueil() {
                                 </tbody>
                             </table>
                         ) : (
-                            <p className={styles.noFriends}>Aucun défi reçu pour le moment...</p>
+                            <p className={styles.noFriends}>Aucun joueur en attente...</p>
                         )}
                     </div>
                 </div>
             </div>
 
-            {/* ===== CONTENU MOBILE — Logo centré + bouton ===== */}
+            {/* ===== CONTENU MOBILE ===== */}
             <div className={styles.mobileContent}>
-                {/* Onglet Profil collé en haut */}
                 <div className={styles.mobileTopTab}>
                     <button className={styles.btnTopTab} onClick={() => router.push('/profil')}>
                         <User size={16} />
@@ -171,16 +208,23 @@ export default function Accueil() {
                     </button>
                 </div>
 
-<div className={styles.mobileLogo}>
-    <img src="/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px' }} />
-    <h1 className={styles.mobileLogoText}>League Of Stones</h1>
-</div>
+                <div className={styles.mobileLogo}>
+                    <img src="/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px' }} />
+                    <h1 className={styles.mobileLogoText}>League Of Stones</h1>
+                </div>
 
-
-                <button className={styles.btnLancerPartieMobile} onClick={handleLancerPartie}>
-                    <span>▶</span>
-                    Lancer une partie
-                </button>
+                {/* Bouton contextuel : si match en attente, afficher "Rejoindre" à la place */}
+                {pendingMatch ? (
+                    <button className={styles.btnLancerPartieMobile} onClick={handleJoinPendingMatch}>
+                        <span>⚔️</span>
+                        Rejoindre la partie
+                    </button>
+                ) : (
+                    <button className={styles.btnLancerPartieMobile} onClick={handleLancerPartie}>
+                        <span>▶</span>
+                        Lancer une partie
+                    </button>
+                )}
             </div>
 
             {/* ===== BOTTOM NAV MOBILE ===== */}

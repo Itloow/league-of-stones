@@ -1,6 +1,6 @@
 /* ============================================
    PAGE GAME / PLATEAU — League Of Stones
-   Fidèle à la maquette de Karim
+   Desktop + Mobile responsive (maquette Karim)
    ============================================ */
 
 .gamePage {
@@ -10,6 +10,17 @@
     min-height: 100vh;
     padding: 0 20px 20px 20px;
     gap: 15px;
+}
+
+/* Desktop navbar wrapper */
+.navbarDesktop {
+    display: block;
+    width: 100%;
+}
+
+/* Mobile header — masqué en desktop */
+.mobileGameHeader {
+    display: none;
 }
 
 /* === MESSAGES === */
@@ -69,7 +80,7 @@
 }
 
 /* ============================================
-   PLATEAU PRINCIPAL — Un seul grand cadre
+   PLATEAU PRINCIPAL
    ============================================ */
 .boardContainer {
     width: 100%;
@@ -212,6 +223,7 @@
     background-color: #f0f0f0;
     border-top: 1px solid #ddd;
 }
+
 .cardImg.selected {
     border: 3px solid #d4af37 !important;
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.8) !important;
@@ -266,6 +278,7 @@
     border-top: 2px solid #ddd;
     border-bottom: 2px solid #ddd;
     margin: 5px 0;
+    gap: 15px;
 }
 
 .turnText {
@@ -279,7 +292,48 @@
     display: block;
 }
 
+/* Bouton fin de tour intégré au turnDivider — masqué en desktop (on a la carte PASSER) */
+.btnEndTurn {
+    display: none;
+}
 
+/* ============================================
+   BOUTON ATTAQUER JOUEUR DIRECTEMENT
+   Apparaît quand le board adverse est vide
+   ============================================ */
+.btnAttackPlayer {
+    background: linear-gradient(135deg, #cc0000 0%, #8b0000 100%);
+    color: #fff;
+    border: 2px solid #d4af37;
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    margin-top: 6px;
+    box-shadow: 0 3px 0px #5a0000, 0 0 12px rgba(204, 0, 0, 0.4);
+    transition: all 0.2s ease;
+    animation: attackPulseBtn 1.5s ease-in-out infinite;
+}
+
+.btnAttackPlayer:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 5px 0px #5a0000, 0 0 20px rgba(204, 0, 0, 0.6);
+    background: linear-gradient(135deg, #e60000 0%, #a30000 100%);
+}
+
+.btnAttackPlayer:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0px #5a0000;
+}
+
+@keyframes attackPulseBtn {
+    0%, 100% { box-shadow: 0 3px 0px #5a0000, 0 0 12px rgba(204, 0, 0, 0.4); }
+    50% { box-shadow: 0 3px 0px #5a0000, 0 0 25px rgba(204, 0, 0, 0.7); }
+}
 
 /* ============================================
    MAIN DU JOUEUR — style éventail + ACTIONS
@@ -360,28 +414,6 @@
 }
 
 /* ============================================
-   CARTE EN ATTENTE / DÉSACTIVÉE EN MAIN
-   ============================================ */
-.handCardPending {
-    border: 3px solid #26289F !important;
-    box-shadow: 0 0 15px rgba(38, 40, 159, 0.6) !important;
-}
-
-/* ============================================
-   CARTE EN ATTENTE SUR LE PLATEAU
-   ============================================ */
-.pendingCard {
-    border: 2px dashed #26289F;
-    box-shadow: 0 0 15px rgba(38, 40, 159, 0.5);
-    background-color: rgba(38, 40, 159, 0.05);
-    cursor: pointer !important;
-}
-
-.pendingCard:hover {
-    background-color: rgba(38, 40, 159, 0.1);
-}
-
-/* ============================================
    CARTE PIOCHER
    ============================================ */
 .pickCard {
@@ -417,7 +449,7 @@
 }
 
 /* ============================================
-   CARTE PASSER LE TOUR
+   CARTE PASSER LE TOUR — desktop uniquement
    ============================================ */
 .passCard {
     cursor: pointer;
@@ -481,62 +513,140 @@
 }
 
 /* ============================================
-   RESPONSIVE MOBILE
+   RESPONSIVE MOBILE — Layout vertical complet
+   Inspiré de la maquette Karim (image de ref)
    ============================================ */
 @media (max-width: 768px) {
+
+    /* ---- PAGE ---- */
     .gamePage {
-        padding: 5px;
-        gap: 8px;
+        padding: 0;
+        gap: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
     }
 
-    .boardContainer {
-        padding: 8px;
-        border-radius: 12px;
+    /* ---- MASQUER NAVBAR DESKTOP ---- */
+    .navbarDesktop {
+        display: none;
     }
 
-    .enemySection, .mySection {
-        flex-wrap: wrap;
+    /* ---- HEADER MOBILE ---- */
+    .mobileGameHeader {
+        display: flex;
         justify-content: center;
+        align-items: center;
+        width: 100%;
+        padding: 12px 20px;
+        background-color: #26289F;
+    }
+
+    .mobileHeaderTitle {
+        font-family: var(--font-gaming);
+        font-weight: 900;
+        font-size: 16px;
+        color: #ffffff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    /* ---- MESSAGES ---- */
+    .errorMsg {
+        font-size: 11px;
+        padding: 8px 16px;
+        top: 50px;
+    }
+
+    .attackMessageBox {
+        font-size: 16px;
+        padding: 14px 24px;
+    }
+
+    /* ---- PLATEAU ---- */
+    .boardContainer {
+        border: none;
+        border-radius: 0;
+        padding: 8px 10px;
+        background-color: transparent;
+        gap: 0;
+        flex: 1;
+    }
+
+    /* ---- SECTIONS ADVERSAIRE & JOUEUR ---- */
+    .enemySection,
+    .mySection {
+        flex-direction: column;
+        align-items: center;
         gap: 8px;
-        padding: 8px 5px;
+        padding: 8px 0;
     }
 
+    /* ---- PLAYER INFO — badge horizontal ---- */
     .playerInfo {
-        min-width: 60px;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        min-width: unset;
+        width: 100%;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.6);
+        border-radius: 50px;
+        padding: 6px 16px;
     }
 
-    .avatarEnemy, .avatarMy {
-        width: 40px;
-        height: 40px;
+    .avatarEnemy,
+    .avatarMy {
+        width: 36px;
+        height: 36px;
     }
 
     .playerName {
-        font-size: 9px;
-    }
-
-    .hpText, .hpTextBlue {
         font-size: 11px;
+        background-color: #26289F;
+        color: #ffffff;
+        padding: 3px 10px;
+        border-radius: 6px;
     }
 
+    .hpText,
+    .hpTextBlue {
+        font-size: 13px;
+        background-color: #ffffff;
+        padding: 2px 8px;
+        border-radius: 20px;
+        border: 2px solid currentColor;
+    }
+
+    /* ---- DECK INFO ---- */
     .deckInfo {
         font-size: 9px;
-        min-width: 50px;
+        min-width: unset;
+        background-color: #26289F;
+        color: #ffffff;
+        padding: 3px 10px;
+        border-radius: 6px;
     }
 
+    /* ---- BOARD SLOTS ---- */
     .slotsRow {
         gap: 4px;
+        flex-wrap: nowrap;
     }
 
-    .cardSlot, .emptySlot {
+    .cardSlot {
         width: 55px;
     }
 
-    .cardImg {
-        height: 65px;
+    .emptySlot {
+        width: 55px;
+        height: 80px;
+        border-radius: 8px;
+        border: 2px solid rgba(200, 200, 200, 0.4);
     }
 
-    .emptySlot {
-        height: 90px;
+    .cardImg,
+    .handCardImg {
+        height: 60px;
     }
 
     .cardStats {
@@ -544,18 +654,74 @@
         padding: 2px 3px;
     }
 
+    /* ---- INDICATEUR DE TOUR ---- */
+    .turnDivider {
+        flex-direction: column;
+        gap: 6px;
+        padding: 10px 0;
+        border-top: 2px solid rgba(38, 40, 159, 0.3);
+        border-bottom: 2px solid rgba(38, 40, 159, 0.3);
+        margin: 4px 0;
+    }
+
     .turnText {
+        font-size: 13px;
+        letter-spacing: 2px;
+    }
+
+    /* Bouton fin de tour — VISIBLE en mobile */
+    .btnEndTurn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #26289F;
+        color: #ffffff;
+        border: none;
+        border-radius: 50px;
+        padding: 8px 20px;
+        font-family: var(--font-gaming);
+        font-weight: 900;
         font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        cursor: pointer;
+        box-shadow: 0 3px 0px #13135a;
+        transition: all 0.15s ease;
+    }
+
+    .btnEndTurn:active {
+        transform: translateY(2px);
+        box-shadow: 0 1px 0px #13135a;
+    }
+
+    /* ---- BOUTON ATTAQUER JOUEUR ---- */
+    .btnAttackPlayer {
+        padding: 6px 14px;
+        font-size: 8px;
         letter-spacing: 1px;
     }
 
+    /* ---- ZONE MAIN DU JOUEUR ---- */
+    .handZoneWrapper {
+        gap: 8px;
+        padding: 8px 5px;
+        height: auto;
+        min-height: 120px;
+        align-items: flex-end;
+        justify-content: center;
+        width: 100%;
+        max-width: 100%;
+    }
+
     .handZone {
-        height: 120px;
+        height: 100px;
+        flex: 1;
     }
 
     .handCard {
-        width: 55px;
-        margin: 0 -6px;
+        width: 58px;
+        margin: 0 -8px;
+        border-radius: 8px;
     }
 
     .handCardImg {
@@ -563,7 +729,30 @@
     }
 
     .handCardStats {
-        font-size: 8px;
+        font-size: 7px;
         padding: 1px 3px;
+    }
+
+    .handCard:hover {
+        transform: translateY(-12px) scale(1.08) !important;
+    }
+
+    /* ---- PIOCHER — plus petit en mobile ---- */
+    .pickCard {
+        width: 50px !important;
+    }
+
+    .pickCardContent {
+        height: 65px;
+        font-size: 28px;
+    }
+
+    .pickCardLabel {
+        font-size: 7px;
+    }
+
+    /* ---- PASSER — masqué en mobile (remplacé par btnEndTurn) ---- */
+    .passCard {
+        display: none !important;
     }
 }
