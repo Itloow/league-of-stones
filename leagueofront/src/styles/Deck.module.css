@@ -461,7 +461,7 @@
 }
 
 /* ===== RESPONSIVE MOBILE ===== */
-@media (max-width: 768px) {
+@media (max-width: 890px) {
 
   /* Masquer tout le desktop */
   .navbarDesktop {

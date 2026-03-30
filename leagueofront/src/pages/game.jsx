@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/authStore';
 import { initDeck, getMatch, pickCard, playCard, endTurn, attack, attackPlayer, finishMatch } from '../services/api';
 import Navbar from '@/components/Navbar';
 import styles from '../styles/Game.module.css';
+import { Layers, Home, Users } from 'lucide-react';
 
 export default function Game() {
     const router = useRouter();
@@ -384,6 +385,22 @@ export default function Game() {
                     </div>
                 )}
             </div>
+
+            {/* ===== BOTTOM NAV MOBILE ===== */}
+            <nav className={styles.bottomNav}>
+                <button className={styles.bottomNavItem} onClick={() => router.push('/deck')}>
+                    <Layers size={24} />
+                    <span>Decks</span>
+                </button>
+                <button className={styles.bottomNavItem} onClick={() => router.push('/Accueil')}>
+                    <Home size={24} />
+                    <span>Home</span>
+                </button>
+                <button className={styles.bottomNavItem} onClick={() => router.push('/lobby')}>
+                    <Users size={24} />
+                    <span>Social</span>
+                </button>
+            </nav>
         </div>
     );
 }

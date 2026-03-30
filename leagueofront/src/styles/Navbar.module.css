@@ -103,7 +103,6 @@
 }
 
 
-/* Media Query pour Mobile et Tablette */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
@@ -121,5 +120,15 @@
   .navButton {
     padding: 8px 12px;
     font-size: 11px;
+  }
+
+  /* Cacher le bouton profil/connexion qui déborde */
+  .loginButton {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 8px 12px;
+    font-size: 10px;
   }
 }

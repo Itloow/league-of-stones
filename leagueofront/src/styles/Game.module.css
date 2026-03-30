@@ -177,6 +177,11 @@
     text-align: center;
 }
 
+/* Bottom nav — masquée en desktop */
+.bottomNav {
+    display: none;
+}
+
 /* === EMPLACEMENTS DU BOARD (5 slots) === */
 .slotsRow {
     display: flex;
@@ -516,7 +521,7 @@
    RESPONSIVE MOBILE — Layout vertical complet
    Inspiré de la maquette Karim (image de ref)
    ============================================ */
-@media (max-width: 768px) {
+@media (max-width: 950px) {
 
     /* ---- PAGE ---- */
     .gamePage {
@@ -537,14 +542,14 @@
         justify-content: center;
         align-items: center;
         width: 100%;
-        padding: 12px 20px;
+        padding: 8px 20px;
         background-color: #26289F;
     }
 
     .mobileHeaderTitle {
         font-family: var(--font-gaming);
         font-weight: 900;
-        font-size: 16px;
+        font-size: 14px;
         color: #ffffff;
         text-transform: uppercase;
         letter-spacing: 2px;
@@ -577,8 +582,8 @@
     .mySection {
         flex-direction: column;
         align-items: center;
-        gap: 8px;
-        padding: 8px 0;
+        gap: 5px;
+        padding: 5px 0;
     }
 
     /* ---- PLAYER INFO — badge horizontal ---- */
@@ -591,13 +596,13 @@
         justify-content: center;
         background-color: rgba(255, 255, 255, 0.6);
         border-radius: 50px;
-        padding: 6px 16px;
+        padding: 4px 12px;
     }
 
     .avatarEnemy,
     .avatarMy {
-        width: 36px;
-        height: 36px;
+        width: 30px;
+        height: 30px;
     }
 
     .playerName {
@@ -634,19 +639,19 @@
     }
 
     .cardSlot {
-        width: 55px;
+        width: 50px;
     }
 
     .emptySlot {
         width: 55px;
-        height: 80px;
+        height: 70px;
         border-radius: 8px;
         border: 2px solid rgba(200, 200, 200, 0.4);
     }
 
     .cardImg,
     .handCardImg {
-        height: 60px;
+        height: 55px;
     }
 
     .cardStats {
@@ -657,15 +662,15 @@
     /* ---- INDICATEUR DE TOUR ---- */
     .turnDivider {
         flex-direction: column;
-        gap: 6px;
-        padding: 10px 0;
+        gap: 4px;
+        padding: 6px 0;
         border-top: 2px solid rgba(38, 40, 159, 0.3);
         border-bottom: 2px solid rgba(38, 40, 159, 0.3);
-        margin: 4px 0;
+        margin: 2px 0;
     }
 
     .turnText {
-        font-size: 13px;
+        font-size: 11px;
         letter-spacing: 2px;
     }
 
@@ -678,10 +683,10 @@
         color: #ffffff;
         border: none;
         border-radius: 50px;
-        padding: 8px 20px;
+        padding: 6px 16px;
         font-family: var(--font-gaming);
         font-weight: 900;
-        font-size: 10px;
+        font-size: 9px;
         text-transform: uppercase;
         letter-spacing: 1.5px;
         cursor: pointer;
@@ -714,18 +719,18 @@
     }
 
     .handZone {
-        height: 100px;
+        height: 85px;
         flex: 1;
     }
 
     .handCard {
-        width: 58px;
+        width: 52px;
         margin: 0 -8px;
         border-radius: 8px;
     }
 
     .handCardImg {
-        height: 65px;
+        height: 55px;
     }
 
     .handCardStats {
@@ -739,12 +744,12 @@
 
     /* ---- PIOCHER — plus petit en mobile ---- */
     .pickCard {
-        width: 50px !important;
+        width: 44px !important;
     }
 
     .pickCardContent {
-        height: 65px;
-        font-size: 28px;
+        height: 55px;
+        font-size: 24px;
     }
 
     .pickCardLabel {
@@ -755,4 +760,54 @@
     .passCard {
         display: none !important;
     }
+
+    /* ---- BOTTOM NAV MOBILE ---- */
+    .bottomNav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background-color: #26289F;
+        z-index: 100;
+    }
+
+    .bottomNavItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        font-family: var(--font-gaming);
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        padding: 6px 20px;
+    }
+
+    .bottomNavItemActive {
+        color: #ffffff;
+    }
+
+    /* Remonter le contenu pour que la bottom nav ne cache pas la main */
+    .gamePage {
+        padding-bottom: 62px;
+    }
+
+    .handZoneWrapper {
+        min-height: 90px;
+        padding: 4px 5px;
+        padding-bottom: 5px;
+    }
+
+
 }
+
+

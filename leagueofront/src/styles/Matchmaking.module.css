@@ -244,7 +244,7 @@
 }
 
 /* ===== RESPONSIVE MOBILE ===== */
-@media (max-width: 768px) {
+@media (max-width: 890px) {
   .navbarDesktop { display: none; }
   .pageContent { display: none; }
 
@@ -403,4 +403,8 @@
   }
 
   .bottomNavItemActive { color: #fff; }
+ 
+  .headerTitle {
+  font-size: 24px;
+}
 }

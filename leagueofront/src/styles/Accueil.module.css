@@ -337,7 +337,7 @@
    RESPONSIVE MOBILE — max-width: 768px
    Fidèle à la maquette Figma mobile de Karim
    ============================================= */
-@media (max-width: 768px) {
+@media (max-width: 890px) {
 
   /* Masquer la navbar desktop */
   .navbarDesktop {
@@ -482,7 +482,7 @@
 }
 
 /* ===== TABLETTE (entre 768px et 1024px) ===== */
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1228px) {
   .pageContent {
     flex-direction: column;
     align-items: center;
