@@ -72,12 +72,15 @@ export default function Game() {
         }
     };
 
+    // stopper le polling quand le match est fini
     useEffect(() => {
-        if (!token) return;
+        if (!token || matchFinished) return;
+
         refreshMatch();
         const interval = setInterval(refreshMatch, 3000);
+
         return () => clearInterval(interval);
-    }, [token]);
+    }, [token, matchFinished]);
 
     useEffect(() => {
         if (isMyTurn && !lastTurnState) {
@@ -94,9 +97,19 @@ export default function Game() {
         return 'https://ddragon.leagueoflegends.com/cdn/img/champion/loading/' + key + '_0.jpg';
     };
 
+    const blockIfInvalidTurn = () => {
+        if (actionEnCours) return true;
+
+        if (!isMyTurn) {
+            setError("Ce n'est pas votre tour");
+            return true;
+        }
+
+        return false;
+    };
+
     const handlePick = async () => {
-        if (actionEnCours) return;
-        if (!isMyTurn) return setError('Ce n\'est pas votre tour');
+        if (blockIfInvalidTurn()) return;
         if (myPlayer.cardPicked) return setError('Vous avez déjà pioché une carte ce tour');
 
         setActionEnCours(true);
@@ -111,8 +124,7 @@ export default function Game() {
     };
 
     const handlePlayCard = async (cardKey) => {
-        if (actionEnCours) return;
-        if (!isMyTurn) return setError('Ce n\'est pas votre tour');
+        if (blockIfInvalidTurn()) return;
         if (myPlayer.board && myPlayer.board.length >= 5) return setError('Plateau plein (5 max)');
 
         setActionEnCours(true);
@@ -127,10 +139,10 @@ export default function Game() {
         }
     };
 
-    const handleEndTurn = async () => {
-        if (actionEnCours) return;
-        if (!isMyTurn) return setError('Ce n\'est pas votre tour');
 
+
+    const handleEndTurn = async () => {
+        if (blockIfInvalidTurn()) return;
         setActionEnCours(true);
         try {
             await endTurn();
@@ -144,9 +156,7 @@ export default function Game() {
     };
 
     const handleAttackCard = async (myCardKey, enemyCardKey) => {
-        if (actionEnCours) return;
-        if (!isMyTurn) return setError('Ce n\'est pas votre tour');
-
+        if (blockIfInvalidTurn()) return;
         if (playedThisTurn.includes(myCardKey)) return setError('Cette carte vient d\'être posée, elle doit attendre !');
         if (attackedThisTurn.includes(myCardKey)) return setError('Cette carte a déjà attaqué ce tour !');
 
@@ -174,8 +184,7 @@ export default function Game() {
     };
 
     const handleAttackPlayer = async (myCardKey) => {
-        if (actionEnCours) return;
-        if (!isMyTurn) return setError('Ce n\'est pas votre tour');
+        if (blockIfInvalidTurn()) return;
         if (enemyPlayer.board && enemyPlayer.board.length > 0) return setError('Le board adverse n\'est pas vide !');
 
         if (playedThisTurn.includes(myCardKey)) return setError('Cette carte vient d\'être posée, elle doit attendre !');
@@ -248,6 +257,13 @@ export default function Game() {
             {/* Header mobile — visible uniquement en mobile */}
             <div className={styles.mobileGameHeader}>
                 <span className={styles.mobileHeaderTitle}>League Of Stones</span>
+
+                <button
+                    className={styles.mobileProfileBtn}
+                    onClick={() => router.push('/profil')}
+                >
+                    {name || 'Profil'}
+                </button>
             </div>
 
             {(error || (myPlayer.hp <= 0 || enemyPlayer.hp <= 0)) && (
@@ -278,7 +294,7 @@ export default function Game() {
                         {enemyPlayer.board && enemyPlayer.board.map((card) => (
                             <div key={card.key} className={styles.cardSlot}>
                                 <img src={getCardImage(card.key)} alt={card.name}
-                                    className={`${styles.handCardImg} ${isMyTurn && myPlayer.board?.length > 0 ? styles.clickable : ''}`}
+                                    className={`${styles.cardImg} ${isMyTurn && myPlayer.board?.length > 0 ? styles.clickable : ''}`}
                                     onClick={() => {
                                         if (isMyTurn && selectedAttackCard) handleAttackCard(selectedAttackCard, card.key);
                                         else if (isMyTurn) setError("Sélectionnez d'abord votre carte");
@@ -365,7 +381,7 @@ export default function Game() {
                     {Array.isArray(myPlayer.hand) && myPlayer.hand.map((card, index) => {
                         const middle = (myPlayer.hand.length - 1) / 2;
                         return (
-                            <div key={card.key} className={styles.handCard} style={{ transform: 'rotate(' + (index - middle) * 6 + 'deg) translateY(' + Math.abs(index - middle) * 8 + 'px)', zIndex: index }}>
+                            <div key={card.key} className={styles.handCard} style={{ transform: 'rotate(' + (index - middle) * 3 + 'deg) translateY(' + Math.abs(index - middle) * 3 + 'px)', zIndex: index }}>
                                 <img src={getCardImage(card.key)} alt={card.name} className={`${styles.handCardImg} ${isMyTurn && (!myPlayer.board || myPlayer.board.length < 5) ? styles.clickable : ''}`}
                                     onClick={() => isMyTurn && handlePlayCard(card.key)} style={{ cursor: isMyTurn && (!myPlayer.board || myPlayer.board.length < 5) ? 'pointer' : 'default' }} />
                                 <div className={styles.handCardStats}>
@@ -392,15 +408,18 @@ export default function Game() {
                     <Layers size={24} />
                     <span>Decks</span>
                 </button>
-                <button className={styles.bottomNavItem} onClick={() => router.push('/Accueil')}>
+
+                <button className={`${styles.bottomNavItem} ${styles.bottomNavItemActive}`} onClick={() => router.push('/Accueil')}>
                     <Home size={24} />
                     <span>Home</span>
                 </button>
+
                 <button className={styles.bottomNavItem} onClick={() => router.push('/lobby')}>
                     <Users size={24} />
                     <span>Social</span>
                 </button>
             </nav>
+
         </div>
     );
 }

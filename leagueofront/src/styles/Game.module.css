@@ -21,6 +21,24 @@
 /* Mobile header — masqué en desktop */
 .mobileGameHeader {
     display: none;
+    position: relative;
+}
+
+.mobileProfileBtn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #ffffff;
+    color: #26289F;
+    border: none;
+    border-radius: 12px;
+    padding: 6px 12px;
+    font-family: var(--font-gaming);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.18);
 }
 
 /* === MESSAGES === */
@@ -529,6 +547,7 @@
         gap: 0;
         min-height: 100vh;
         overflow-x: hidden;
+        padding-bottom: 70px;
     }
 
     /* ---- MASQUER NAVBAR DESKTOP ---- */
@@ -556,35 +575,43 @@
     }
 
     /* ---- MESSAGES ---- */
-    .errorMsg {
-        font-size: 11px;
-        padding: 8px 16px;
-        top: 50px;
-    }
+.errorMsg {
+    font-size: 10px;
+    padding: 8px 14px;
+    top: 58px;
+    width: calc(100% - 24px);
+    max-width: 320px;
+    text-align: center;
+}
 
-    .attackMessageBox {
-        font-size: 16px;
-        padding: 14px 24px;
-    }
+.attackMessageBox {
+    font-size: 12px;
+    padding: 12px 16px;
+    width: calc(100% - 32px);
+    max-width: 300px;
+    text-align: center;
+}
 
     /* ---- PLATEAU ---- */
-    .boardContainer {
-        border: none;
-        border-radius: 0;
-        padding: 8px 10px;
-        background-color: transparent;
-        gap: 0;
-        flex: 1;
-    }
+.boardContainer {
+    border: none;
+    border-radius: 0;
+    padding: 6px 6px 0;
+    background-color: transparent;
+    gap: 0;
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+}
 
     /* ---- SECTIONS ADVERSAIRE & JOUEUR ---- */
-    .enemySection,
-    .mySection {
-        flex-direction: column;
-        align-items: center;
-        gap: 5px;
-        padding: 5px 0;
-    }
+.enemySection,
+.mySection {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 0;
+}
 
     /* ---- PLAYER INFO — badge horizontal ---- */
     .playerInfo {
@@ -596,17 +623,17 @@
         justify-content: center;
         background-color: rgba(255, 255, 255, 0.6);
         border-radius: 50px;
-        padding: 4px 12px;
+        padding: 6px 12px;
     }
 
-    .avatarEnemy,
-    .avatarMy {
-        width: 30px;
-        height: 30px;
-    }
+.avatarEnemy,
+.avatarMy {
+    width: 34px;
+    height: 34px;
+}
 
     .playerName {
-        font-size: 11px;
+        font-size: 12px;
         background-color: #26289F;
         color: #ffffff;
         padding: 3px 10px;
@@ -638,26 +665,27 @@
         flex-wrap: nowrap;
     }
 
-    .cardSlot {
-        width: 50px;
-    }
+.cardSlot {
+    width: 66px;
+}
 
-    .emptySlot {
-        width: 55px;
-        height: 70px;
-        border-radius: 8px;
-        border: 2px solid rgba(200, 200, 200, 0.4);
-    }
+.emptySlot {
+    width: 66px;
+    height: 90px;
+}
 
-    .cardImg,
+.cardImg {
+    height: 76px;
+}
+
     .handCardImg {
-        height: 55px;
-    }
+    height: 64px;
+}
 
-    .cardStats {
-        font-size: 8px;
-        padding: 2px 3px;
-    }
+.cardStats {
+    font-size: 9px;
+    padding: 2px 4px;
+}
 
     /* ---- INDICATEUR DE TOUR ---- */
     .turnDivider {
@@ -707,31 +735,38 @@
     }
 
     /* ---- ZONE MAIN DU JOUEUR ---- */
-    .handZoneWrapper {
-        gap: 8px;
-        padding: 8px 5px;
-        height: auto;
-        min-height: 120px;
-        align-items: flex-end;
-        justify-content: center;
-        width: 100%;
-        max-width: 100%;
-    }
+.handZoneWrapper {
+    gap: 8px;
+    padding: 0 8px 72px;
+    height: auto;
+    min-height: 132px;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    margin-top: -6px;
+}
 
-    .handZone {
-        height: 85px;
-        flex: 1;
-    }
+.handZone {
+    height: 118px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    overflow: visible;
+    padding: 0;
+    gap: 0;
+}   
 
-    .handCard {
-        width: 52px;
-        margin: 0 -8px;
-        border-radius: 8px;
-    }
+.handCard {
+    width: 68px;
+    margin: 0 -10px;
+    border-radius: 8px;
+}
 
-    .handCardImg {
-        height: 55px;
-    }
+.handCardImg {
+    height: 82px;
+}
 
     .handCardStats {
         font-size: 7px;
@@ -743,14 +778,14 @@
     }
 
     /* ---- PIOCHER — plus petit en mobile ---- */
-    .pickCard {
-        width: 44px !important;
-    }
+.pickCard {
+    width: 56px !important;
+}
 
-    .pickCardContent {
-        height: 55px;
-        font-size: 24px;
-    }
+.pickCardContent {
+    height: 72px;
+    font-size: 28px;
+}
 
     .pickCardLabel {
         font-size: 7px;
@@ -790,22 +825,17 @@
         letter-spacing: 1px;
         cursor: pointer;
         padding: 6px 20px;
+        color: #ffffff;
+        opacity: 1;
     }
 
     .bottomNavItemActive {
         color: #ffffff;
     }
 
-    /* Remonter le contenu pour que la bottom nav ne cache pas la main */
-    .gamePage {
-        padding-bottom: 62px;
-    }
-
-    .handZoneWrapper {
-        min-height: 90px;
-        padding: 4px 5px;
-        padding-bottom: 5px;
-    }
+    .bottomNavItemActive svg {
+    transform: scale(1.08);
+}
 
 
 }

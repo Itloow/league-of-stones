@@ -1,6 +1,6 @@
 /* ============================================
    PAGE PROFIL — League Of Stones
-   Desktop (web) & Mobile RESPONSIVE
+   Desktop par défaut + 1 seul breakpoint mobile
    ============================================ */
 
 /* Navbar Wrapper */
@@ -8,131 +8,125 @@
   display: block;
 }
 
-/* DESKTOP (>768px) - Affiche le formulaire centré */
+/* ----- DESKTOP PAR DÉFAUT ----- */
 .desktopContainer {
-  display: none;
-}
-
-.mobileContainer {
   display: block;
 }
 
-@media (max-width: 768px) {
+.mobileContainer {
+  display: none;
+}
+
+/* Form desktop */
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-family: var(--font-gaming);
+  font-size: 13px;
+  font-weight: 900;
+  color: #26289F;
+  text-transform: uppercase;
+  padding-left: 15px;
+  letter-spacing: 0.5px;
+}
+
+.inputField {
+  border: 1px solid #999;
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  background-color: #ffffff;
+  color: #000000;
+  transition: border-color 0.3s ease;
+}
+
+.inputField:focus {
+  border-color: #26289F;
+  box-shadow: 0 0 0 3px rgba(38, 40, 159, 0.1);
+}
+
+.submitButton,
+.deleteButton,
+.unsubscribeButton,
+.backButton {
+  font-family: var(--font-gaming);
+  border: none;
+  border-radius: 50px;
+  padding: 15px 30px;
+  font-weight: 900;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-transform: uppercase;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.submitButton {
+  background-color: #26289F;
+  color: white;
+}
+
+.submitButton:hover {
+  background-color: #13135a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(38, 40, 159, 0.3);
+}
+
+.deleteButton,
+.unsubscribeButton {
+  background-color: #a94444;
+  color: white;
+}
+
+.deleteButton:hover,
+.unsubscribeButton:hover {
+  background-color: #862c2c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(169, 68, 68, 0.3);
+}
+
+.backButton {
+  background-color: #26289F;
+  color: white;
+}
+
+.backButton:hover {
+  background-color: #13135a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(38, 40, 159, 0.3);
+}
+
+/* ----- MOBILE UNIQUEMENT ----- */
+@media (max-width: 950px) {
   .navbarWrapper {
     display: none;
   }
-}
 
-@media (min-width: 769px) {
   .desktopContainer {
-    display: block;
-  }
-  
-  .mobileContainer {
     display: none;
   }
 
-  /* Styles Desktop/Web */
-  .form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 500px;
-    gap: 20px;
-  }
-
-  .inputGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .label {
-    font-size: 13px;
-    font-weight: 900;
-    color: #3b00b3;
-    text-transform: uppercase;
-    padding-left: 15px;
-    letter-spacing: 0.5px;
-  }
-
-  .inputField {
-    border: 1px solid #999;
-    border-radius: 50px;
-    padding: 12px 20px;
-    font-size: 14px;
-    width: 100%;
-    box-sizing: border-box;
-    outline: none;
-    background-color: #ffffff;
-    color: #000000;
-    transition: border-color 0.3s ease;
-  }
-
-  .inputField:focus {
-    border-color: #3b00b3;
-    box-shadow: 0 0 0 3px rgba(59, 0, 179, 0.1);
-  }
-
-  .submitButton,
-  .deleteButton,
-  .unsubscribeButton,
-  .backButton {
-    border: none;
-    border-radius: 50px;
-    padding: 15px 30px;
-    font-weight: 900;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    text-transform: uppercase;
-    width: 100%;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-    letter-spacing: 0.5px;
-  }
-
-  .submitButton {
-    background-color: #3b00b3;
-    color: white;
-  }
-
-  .submitButton:hover {
-    background-color: #2a0080;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 0, 179, 0.3);
-  }
-
-  .deleteButton,
-  .unsubscribeButton {
-    background-color: #a94444;
-    color: white;
-  }
-
-  .deleteButton:hover,
-  .unsubscribeButton:hover {
-    background-color: #862c2c;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(169, 68, 68, 0.3);
-  }
-
-  .backButton {
-    background-color: #3b00b3;
-    color: white;
-  }
-
-  .backButton:hover {
-    background-color: #2a0080;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 0, 179, 0.3);
-  }
-}
-
-/* ===== MOBILE (≤768px) - Affiche le profil complet ===== */
-@media (max-width: 768px) {
   .mobileContainer {
     display: flex;
     flex-direction: column;
@@ -140,13 +134,14 @@
     justify-content: center;
     padding: 20px;
     padding-bottom: 90px;
-    background-color: #ffffff;
-    min-height: calc(100vh - 70px);
+    min-height: 100vh;
     gap: 25px;
     position: relative;
+    background: transparent;
+    font-family: var(--font-gaming);
   }
 
-  /* Onglet Social en haut */
+  /* Onglet haut */
   .mobileTopTab {
     position: fixed;
     top: 0;
@@ -158,17 +153,18 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background-color: #3b00b3;
+    background-color: #26289F;
     color: #ffffff;
     border: none;
     border-radius: 0 0 12px 12px;
     padding: 14px 28px;
+    font-family: var(--font-gaming);
     font-weight: 800;
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(59, 0, 179, 0.3);
+    box-shadow: 0 4px 10px rgba(38, 40, 159, 0.3);
   }
 
   /* Header profil */
@@ -183,32 +179,36 @@
   }
 
   .profileTitle {
+    font-family: var(--font-gaming);
     font-weight: 900;
     font-size: 32px;
-    color: #3b00b3;
+    color: #26289F;
     text-transform: uppercase;
     letter-spacing: 3px;
   }
 
-  /* Info utilisateur */
+  /* Infos */
   .profileInfo {
     text-align: center;
   }
 
   .userName {
+    font-family: var(--font-gaming);
     font-weight: 900;
     font-size: 20px;
-    color: #3b00b3;
+    color: #26289F;
     text-transform: uppercase;
   }
 
   .userEmail {
+    font-family: var(--font-gaming);
     font-size: 13px;
     color: #999;
     margin-top: 4px;
+    text-transform: none;
   }
 
-  /* Boutons Mobile */
+  /* Boutons */
   .buttonsContainer {
     display: flex;
     flex-direction: column;
@@ -218,85 +218,53 @@
     max-width: 350px;
   }
 
-  .btnModify {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    background-color: #3b00b3;
-    color: #ffffff;
-    border: none;
-    border-radius: 50px;
-    padding: 14px 20px;
-    font-weight: 800;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    cursor: pointer;
-    box-shadow: 0 4px 0px #1e005a;
-    transition: all 0.2s ease;
-  }
-
-  .btnModify:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0px #1e005a;
-  }
-
-  .btnDelete {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    background-color: #a33;
-    color: #ffffff;
-    border: none;
-    border-radius: 50px;
-    padding: 14px 20px;
-    font-weight: 800;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    cursor: pointer;
-    box-shadow: 0 4px 0px #6b1111;
-    transition: all 0.2s ease;
-  }
-
-  .btnDelete:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0px #6b1111;
-  }
-
+  .btnModify,
+  .btnDelete,
   .btnLogout {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     width: 100%;
-    background-color: #a33;
     color: #ffffff;
     border: none;
     border-radius: 50px;
     padding: 14px 20px;
+    font-family: var(--font-gaming);
     font-weight: 800;
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     cursor: pointer;
-    box-shadow: 0 4px 0px #6b1111;
     transition: all 0.2s ease;
   }
 
+  .btnModify {
+    background-color: #26289F;
+    box-shadow: 0 4px 0px #13135a;
+  }
+
+  .btnModify:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0px #13135a;
+  }
+
+  .btnDelete,
+  .btnLogout {
+    background-color: #a33;
+    box-shadow: 0 4px 0px #6b1111;
+  }
+
+  .btnDelete:active,
   .btnLogout:active {
     transform: translateY(2px);
     box-shadow: 0 2px 0px #6b1111;
   }
 
-  /* Modal suppression */
+  /* Modal */
   .modalOverlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0;
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
@@ -317,6 +285,7 @@
   }
 
   .modalTitle {
+    font-family: var(--font-gaming);
     font-weight: 900;
     font-size: 18px;
     color: #a33;
@@ -324,8 +293,8 @@
   }
 
   .modalText {
-    color: #666;
     font-size: 13px;
+    color: #666;
   }
 
   .modalButtons {
@@ -342,6 +311,7 @@
     border-radius: 50px;
     background: transparent;
     color: #999;
+    font-family: var(--font-gaming);
     font-weight: 700;
     font-size: 12px;
     text-transform: uppercase;
@@ -355,6 +325,7 @@
     border-radius: 50px;
     background-color: #a33;
     color: #fff;
+    font-family: var(--font-gaming);
     font-weight: 700;
     font-size: 12px;
     text-transform: uppercase;
@@ -367,9 +338,11 @@
     justify-content: space-around;
     align-items: center;
     position: fixed;
-    bottom: 0; left: 0; right: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 70px;
-    background-color: #3b00b3;
+    background-color: #26289F;
     z-index: 100;
   }
 
@@ -381,10 +354,13 @@
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.6);
+    font-family: var(--font-gaming);
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
     padding: 8px 20px;
+    transition: all 0.2s ease;
   }
 }
