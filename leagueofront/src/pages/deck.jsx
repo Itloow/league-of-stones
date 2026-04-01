@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import styles from '../styles/Deck.module.css';
 import { useAuthStore } from '../store/authStore';
 import { getCards } from '../services/api';
-import { Layers, Home, User, Users } from 'lucide-react';
+import { Layers, Home, User } from 'lucide-react';
 
 export default function Deck() {
     const router = useRouter();
@@ -14,7 +14,7 @@ export default function Deck() {
     const [currentDeck, setCurrentDeck] = useState([]);
     const [savedDecks, setSavedDecks] = useState([null, null, null]);
     const [error, setError] = useState('');
-    const [mobileEditing, setMobileEditing] = useState(false); // Toggle mobile : deck view / edit view
+    const [mobileEditing, setMobileEditing] = useState(false);
 
     useEffect(() => {
         if (!token) router.push('/');
@@ -33,15 +33,29 @@ export default function Deck() {
         if (token) fetchCards();
 
         const saved = localStorage.getItem('savedDecks_' + name);
-        if (saved) { try { setSavedDecks(JSON.parse(saved)); } catch (e) {} }
+        if (saved) {
+            try {
+                setSavedDecks(JSON.parse(saved));
+            } catch (e) {}
+        }
 
-        const activeDeck = localStorage.getItem('myDeck_' + name)
-        if (activeDeck) { try { setCurrentDeck(JSON.parse(activeDeck)); } catch (e) {} }
-    }, [token]);
+        const activeDeck = localStorage.getItem('myDeck_' + name);
+        if (activeDeck) {
+            try {
+                setCurrentDeck(JSON.parse(activeDeck));
+            } catch (e) {}
+        }
+    }, [token, name]);
 
     const handleAddToDeck = (card) => {
-        if (currentDeck.length >= 20) { setError("Deck plein ! (max 20)"); return; }
-        if (currentDeck.find(c => c.key === card.key)) { setError("Carte déjà dans le deck !"); return; }
+        if (currentDeck.length >= 20) {
+            setError("Deck plein ! (max 20)");
+            return;
+        }
+        if (currentDeck.find(c => c.key === card.key)) {
+            setError("Carte déjà dans le deck !");
+            return;
+        }
         setError('');
         const newDeck = [...currentDeck, card];
         setCurrentDeck(newDeck);
@@ -55,7 +69,10 @@ export default function Deck() {
     };
 
     const handleSaveDeck = (slotIndex) => {
-        if (currentDeck.length === 0) { setError("Deck vide !"); return; }
+        if (currentDeck.length === 0) {
+            setError("Deck vide !");
+            return;
+        }
         const newSaved = [...savedDecks];
         newSaved[slotIndex] = [...currentDeck];
         setSavedDecks(newSaved);
@@ -84,16 +101,13 @@ export default function Deck() {
 
     return (
         <>
-            {/* ===== NAVBAR DESKTOP ===== */}
             <div className={styles.navbarDesktop}>
                 <Navbar />
             </div>
 
-            {/* ===== CONTENU DESKTOP — 3 colonnes (inchangé) ===== */}
             <div className={styles.pageContent}>
                 {error && <div className={styles.errorMessage}>{error}</div>}
 
-                {/* Collection */}
                 <div className={styles.column}>
                     <h2 className={styles.sectionTitle}>Ma Collection</h2>
                     <div className={styles.collectionContainer}>
@@ -111,7 +125,6 @@ export default function Deck() {
                     </div>
                 </div>
 
-                {/* Deck actif */}
                 <div className={styles.column}>
                     <h2 className={styles.sectionTitle}>
                         Votre Deck <span className={styles.deckCount}>({currentDeck.length}/20)</span>
@@ -131,7 +144,6 @@ export default function Deck() {
                     </div>
                 </div>
 
-                {/* Decks sauvegardés */}
                 <div className={styles.column}>
                     <h2 className={styles.sectionTitle}>Mes Decks</h2>
                     <div className={styles.savedDecksContainer}>
@@ -163,14 +175,12 @@ export default function Deck() {
                 </div>
             </div>
 
-            {/* Bouton retour desktop */}
             <div className={styles.bottomBarDesktop}>
                 <button className={styles.btnRetour} onClick={() => router.push('/Accueil')}>
                     🏠 Retour au menu
                 </button>
             </div>
 
-            {/* ===== MOBILE — VUE DECK (écran 1) ===== */}
             <div className={`${styles.mobileView} ${mobileEditing ? styles.mobileHidden : ''}`}>
                 <div className={styles.mobileTopTab}>
                     <button className={styles.btnTopTab} onClick={() => router.push('/profil')}>
@@ -196,7 +206,6 @@ export default function Deck() {
                 </button>
             </div>
 
-            {/* ===== MOBILE — VUE COLLECTION/EDIT (écran 2) ===== */}
             <div className={`${styles.mobileView} ${!mobileEditing ? styles.mobileHidden : ''}`}>
                 <div className={styles.mobileTopTab}>
                     <button className={styles.btnTopTab} onClick={() => router.push('/profil')}>
@@ -238,7 +247,6 @@ export default function Deck() {
                 </button>
             </div>
 
-            {/* ===== BOTTOM NAV MOBILE ===== */}
             <nav className={styles.bottomNav}>
                 <button className={`${styles.bottomNavItem} ${styles.bottomNavItemActive}`}>
                     <Layers size={24} />
@@ -247,10 +255,6 @@ export default function Deck() {
                 <button className={styles.bottomNavItem} onClick={() => router.push('/Accueil')}>
                     <Home size={24} />
                     <span>Home</span>
-                </button>
-                <button className={styles.bottomNavItem} onClick={() => router.push('/lobby')}>
-                    <Users size={24} />
-                    <span>Social</span>
                 </button>
             </nav>
         </>

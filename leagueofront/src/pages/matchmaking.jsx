@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import styles from '../styles/Matchmaking.module.css';
 import { useAuthStore } from '../store/authStore';
 import { participate, getAllPlayers, sendRequest, acceptRequest, getMatch } from '../services/api';
-import { Layers, Home, User, Users } from 'lucide-react';
+import { Layers, Home, User } from 'lucide-react';
 
 export default function Matchmaking() {
     const router = useRouter();
@@ -16,16 +16,13 @@ export default function Matchmaking() {
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
-    // Refs pour gérer le cycle de vie du polling
     const hasRedirected = useRef(false);
     const intervalRef = useRef(null);
 
-    // Sécurité : redirection si pas connecté
     useEffect(() => {
         if (!token) router.push('/');
     }, [token, router]);
 
-    // ÉTAPE 1 : S'inscrire au matchmaking dès l'arrivée sur la page
     useEffect(() => {
         if (!token || isJoined) return;
 
@@ -46,25 +43,21 @@ export default function Matchmaking() {
         joinMatchmaking();
     }, [token, isJoined]);
 
-    // ÉTAPE 2 : Polling régulier une fois inscrit
     useEffect(() => {
         if (!token || !isJoined) return;
 
         const poll = async () => {
             try {
-                // Rafraîchir les demandes reçues
                 const partData = await participate();
                 if (partData && partData.request && Array.isArray(partData.request)) {
                     setRequestsReceived(partData.request);
                 }
 
-                // Récupérer la liste des joueurs en attente
                 const players = await getAllPlayers();
                 if (players && Array.isArray(players)) {
                     setPlayersList(players);
                 }
 
-                // Vérifier si un match a été créé (l'adversaire a accepté notre défi)
                 if (!hasRedirected.current) {
                     const matchData = await getMatch();
                     if (matchData && matchData.player1 && matchData.player2) {
@@ -79,17 +72,12 @@ export default function Matchmaking() {
             }
         };
 
-        // Premier poll immédiat
         poll();
-
-        // Puis toutes les 5 secondes
         intervalRef.current = setInterval(poll, 5000);
 
-        // Cleanup au démontage du composant (changement de page, etc.)
         return () => stopPolling();
     }, [token, isJoined, router]);
 
-    // Fonction utilitaire pour stopper le polling proprement
     const stopPolling = () => {
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
@@ -97,14 +85,12 @@ export default function Matchmaking() {
         }
     };
 
-    // RETOUR : stopper le polling et quitter la page
     const handleLeave = () => {
         stopPolling();
         setIsJoined(false);
         router.push('/Accueil');
     };
 
-    // Envoyer un défi à un joueur
     const handleSendRequest = async (matchmakingId, playerName) => {
         try {
             await sendRequest(matchmakingId);
@@ -116,7 +102,6 @@ export default function Matchmaking() {
         }
     };
 
-    // Accepter un défi reçu → le match est créé côté backend
     const handleAccept = async (matchmakingId, playerName) => {
         try {
             const data = await acceptRequest(matchmakingId);
@@ -131,7 +116,6 @@ export default function Matchmaking() {
         }
     };
 
-    // Effacer les messages d'erreur
     useEffect(() => {
         if (error) {
             const timer = setTimeout(() => setError(''), 3000);
@@ -141,12 +125,10 @@ export default function Matchmaking() {
 
     return (
         <>
-            {/* Desktop navbar */}
             <div className={styles.navbarDesktop}>
                 <Navbar />
             </div>
 
-            {/* ===== CONTENU DESKTOP ===== */}
             <div className={styles.pageContent}>
                 <div className={styles.header}>
                     <span className={styles.headerIcon}>💎</span>
@@ -172,14 +154,12 @@ export default function Matchmaking() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {/* Moi en premier */}
                                     <tr className={styles.myRow}>
                                         <td className={styles.playerName}>🎮 {name || 'Moi'}</td>
                                         <td><span className={styles.statusReady}>Prêt <span className={styles.dotGreen}>●</span></span></td>
                                         <td className={styles.emptyCell}>—</td>
                                     </tr>
 
-                                    {/* Séparateur VS */}
                                     {playersList.length > 0 && (
                                         <tr>
                                             <td colSpan="3" className={styles.vsRow}>
@@ -188,7 +168,6 @@ export default function Matchmaking() {
                                         </tr>
                                     )}
 
-                                    {/* Autres joueurs */}
                                     {playersList.length > 0 ? (
                                         playersList.map((player, index) => (
                                             <tr key={player.matchmakingId || index}>
@@ -210,7 +189,6 @@ export default function Matchmaking() {
                             </table>
                         </div>
 
-                        {/* Défis reçus */}
                         {requestsReceived && requestsReceived.length > 0 && (
                             <div className={styles.requestsSection}>
                                 <h3 className={styles.sectionTitle}>Défis reçus</h3>
@@ -234,13 +212,13 @@ export default function Matchmaking() {
                 </div>
             </div>
 
-            {/* ===== MOBILE ===== */}
             <div className={styles.mobileContent}>
                 <div className={styles.mobileTopTab}>
                     <button className={styles.btnTopTab} onClick={() => router.push('/profil')}>
                         <User size={16} /> Profil
                     </button>
                 </div>
+
                 <div className={styles.header}>
                     <span className={styles.headerIcon}>💎</span>
                     <h1 className={styles.headerTitle}>Matchmaking</h1>
@@ -302,16 +280,12 @@ export default function Matchmaking() {
                 </button>
             </div>
 
-            {/* Bottom nav mobile */}
             <nav className={styles.bottomNav}>
                 <button className={styles.bottomNavItem} onClick={() => { stopPolling(); router.push('/deck'); }}>
                     <Layers size={24} /><span>Decks</span>
                 </button>
                 <button className={styles.bottomNavItem} onClick={handleLeave}>
                     <Home size={24} /><span>Home</span>
-                </button>
-                <button className={styles.bottomNavItem} onClick={() => { stopPolling(); router.push('/lobby'); }}>
-                    <Users size={24} /><span>Social</span>
                 </button>
             </nav>
         </>

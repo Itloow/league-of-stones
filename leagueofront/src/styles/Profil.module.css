@@ -141,7 +141,6 @@
     font-family: var(--font-gaming);
   }
 
-  /* Onglet haut */
   .mobileTopTab {
     position: fixed;
     top: 0;
@@ -167,7 +166,6 @@
     box-shadow: 0 4px 10px rgba(38, 40, 159, 0.3);
   }
 
-  /* Header profil */
   .profileHeader {
     display: flex;
     align-items: center;
@@ -187,7 +185,6 @@
     letter-spacing: 3px;
   }
 
-  /* Infos */
   .profileInfo {
     text-align: center;
   }
@@ -208,7 +205,6 @@
     text-transform: none;
   }
 
-  /* Boutons */
   .buttonsContainer {
     display: flex;
     flex-direction: column;
@@ -261,77 +257,6 @@
     box-shadow: 0 2px 0px #6b1111;
   }
 
-  /* Modal */
-  .modalOverlay {
-    position: fixed;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-
-  .modalBox {
-    background-color: #fff;
-    border-radius: 20px;
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    border: 3px solid #a33;
-    min-width: 280px;
-  }
-
-  .modalTitle {
-    font-family: var(--font-gaming);
-    font-weight: 900;
-    font-size: 18px;
-    color: #a33;
-    text-transform: uppercase;
-  }
-
-  .modalText {
-    font-size: 13px;
-    color: #666;
-  }
-
-  .modalButtons {
-    display: flex;
-    gap: 12px;
-    width: 100%;
-    margin-top: 5px;
-  }
-
-  .btnModalCancel {
-    flex: 1;
-    padding: 10px;
-    border: 2px solid #ccc;
-    border-radius: 50px;
-    background: transparent;
-    color: #999;
-    font-family: var(--font-gaming);
-    font-weight: 700;
-    font-size: 12px;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-
-  .btnModalConfirm {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 50px;
-    background-color: #a33;
-    color: #fff;
-    font-family: var(--font-gaming);
-    font-weight: 700;
-    font-size: 12px;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-
-  /* Bottom nav */
   .bottomNav {
     display: flex;
     justify-content: space-around;
@@ -367,10 +292,7 @@
 /* ===== MODALE SUPPRESSION — desktop + mobile ===== */
 .modalOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
@@ -394,6 +316,7 @@
 }
 
 .modalTitle {
+  font-family: var(--font-gaming);
   font-weight: 900;
   font-size: 20px;
   color: #a33;
@@ -444,6 +367,7 @@
   border-radius: 50px;
   background: transparent;
   color: #999;
+  font-family: var(--font-gaming);
   font-weight: 700;
   font-size: 13px;
   text-transform: uppercase;
@@ -463,6 +387,7 @@
   border-radius: 50px;
   background-color: #a33;
   color: #fff;
+  font-family: var(--font-gaming);
   font-weight: 700;
   font-size: 13px;
   text-transform: uppercase;

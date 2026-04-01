@@ -80,13 +80,8 @@
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .btnRetour {
@@ -279,12 +274,10 @@
         transform: translate(-50%, -50%) scale(0.8);
         opacity: 0;
     }
-
     50% {
         transform: translate(-50%, -50%) scale(1.1);
         opacity: 1;
     }
-
     100% {
         transform: translate(-50%, -50%) scale(1);
         opacity: 1;
@@ -322,14 +315,13 @@
     display: block;
 }
 
-/* Bouton fin de tour intégré au turnDivider — masqué en desktop (on a la carte PASSER) */
+/* Bouton fin de tour intégré au turnDivider — masqué en desktop */
 .btnEndTurn {
     display: none;
 }
 
 /* ============================================
    BOUTON ATTAQUER JOUEUR DIRECTEMENT
-   Apparaît quand le board adverse est vide
    ============================================ */
 .btnAttackPlayer {
     background: linear-gradient(135deg, #cc0000 0%, #8b0000 100%);
@@ -361,15 +353,8 @@
 }
 
 @keyframes attackPulseBtn {
-
-    0%,
-    100% {
-        box-shadow: 0 3px 0px #5a0000, 0 0 12px rgba(204, 0, 0, 0.4);
-    }
-
-    50% {
-        box-shadow: 0 3px 0px #5a0000, 0 0 25px rgba(204, 0, 0, 0.7);
-    }
+    0%, 100% { box-shadow: 0 3px 0px #5a0000, 0 0 12px rgba(204, 0, 0, 0.4); }
+    50% { box-shadow: 0 3px 0px #5a0000, 0 0 25px rgba(204, 0, 0, 0.7); }
 }
 
 /* ============================================
@@ -529,8 +514,7 @@
         padding: 12px;
     }
 
-    .cardSlot,
-    .emptySlot {
+    .cardSlot, .emptySlot {
         width: 80px;
     }
 
@@ -553,11 +537,8 @@
 
 /* ============================================
    RESPONSIVE MOBILE — Layout vertical complet
-   Inspiré de la maquette Karim (image de ref)
    ============================================ */
 @media (max-width: 950px) {
-
-    /* ---- PAGE ---- */
     .gamePage {
         padding: 0;
         gap: 0;
@@ -566,12 +547,10 @@
         padding-bottom: 70px;
     }
 
-    /* ---- MASQUER NAVBAR DESKTOP ---- */
     .navbarDesktop {
         display: none;
     }
 
-    /* ---- HEADER MOBILE ---- */
     .mobileGameHeader {
         display: flex;
         justify-content: center;
@@ -590,7 +569,6 @@
         letter-spacing: 2px;
     }
 
-    /* ---- MESSAGES ---- */
     .errorMsg {
         font-size: 10px;
         padding: 8px 14px;
@@ -608,7 +586,6 @@
         text-align: center;
     }
 
-    /* ---- PLATEAU ---- */
     .boardContainer {
         border: none;
         border-radius: 0;
@@ -620,7 +597,6 @@
         max-width: 100%;
     }
 
-    /* ---- SECTIONS ADVERSAIRE & JOUEUR ---- */
     .enemySection,
     .mySection {
         flex-direction: column;
@@ -629,7 +605,6 @@
         padding: 2px 0;
     }
 
-    /* ---- PLAYER INFO — badge horizontal ---- */
     .playerInfo {
         flex-direction: row;
         align-items: center;
@@ -665,7 +640,6 @@
         border: 2px solid currentColor;
     }
 
-    /* ---- DECK INFO ---- */
     .deckInfo {
         font-size: 9px;
         min-width: unset;
@@ -675,7 +649,6 @@
         border-radius: 6px;
     }
 
-    /* ---- BOARD SLOTS ---- */
     .slotsRow {
         gap: 4px;
         flex-wrap: nowrap;
@@ -694,16 +667,11 @@
         height: 76px;
     }
 
-    .handCardImg {
-        height: 64px;
-    }
-
     .cardStats {
         font-size: 9px;
         padding: 2px 4px;
     }
 
-    /* ---- INDICATEUR DE TOUR ---- */
     .turnDivider {
         flex-direction: column;
         gap: 4px;
@@ -718,7 +686,6 @@
         letter-spacing: 2px;
     }
 
-    /* Bouton fin de tour — VISIBLE en mobile */
     .btnEndTurn {
         display: inline-flex;
         align-items: center;
@@ -743,14 +710,12 @@
         box-shadow: 0 1px 0px #13135a;
     }
 
-    /* ---- BOUTON ATTAQUER JOUEUR ---- */
     .btnAttackPlayer {
         padding: 6px 14px;
         font-size: 8px;
         letter-spacing: 1px;
     }
 
-    /* ---- ZONE MAIN DU JOUEUR ---- */
     .handZoneWrapper {
         gap: 8px;
         padding: 0 8px 72px;
@@ -793,7 +758,6 @@
         transform: translateY(-12px) scale(1.08) !important;
     }
 
-    /* ---- PIOCHER — plus petit en mobile ---- */
     .pickCard {
         width: 56px !important;
     }
@@ -807,12 +771,10 @@
         font-size: 7px;
     }
 
-    /* ---- PASSER — masqué en mobile (remplacé par btnEndTurn) ---- */
     .passCard {
         display: none !important;
     }
 
-    /* ---- BOTTOM NAV MOBILE ---- */
     .bottomNav {
         display: flex;
         justify-content: space-around;
@@ -833,7 +795,7 @@
         gap: 3px;
         background: none;
         border: none;
-        color: rgba(255, 255, 255, 0.6);
+        color: #ffffff;
         font-family: var(--font-gaming);
         font-size: 9px;
         font-weight: 700;
@@ -841,7 +803,6 @@
         letter-spacing: 1px;
         cursor: pointer;
         padding: 6px 20px;
-        color: #ffffff;
         opacity: 1;
     }
 
@@ -849,6 +810,9 @@
         color: #ffffff;
     }
 
+    .bottomNavItemActive svg {
+        transform: scale(1.08);
+    }
 }
 
 /* ============================================
@@ -933,13 +897,8 @@
 }
 
 @keyframes fadeInOverlay {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes bounceIn {
@@ -947,11 +906,9 @@
         transform: scale(0);
         opacity: 0;
     }
-
     60% {
         transform: scale(1.3);
     }
-
     100% {
         transform: scale(1);
         opacity: 1;
@@ -963,7 +920,6 @@
         transform: translateY(30px);
         opacity: 0;
     }
-
     to {
         transform: translateY(0);
         opacity: 1;

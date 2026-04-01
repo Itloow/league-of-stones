@@ -30,12 +30,13 @@ export default function Profil() {
       setDeleteError("Veuillez entrer votre mot de passe");
       return;
     }
+
     try {
       await unsubscribe(email, deletePassword);
       logout();
       router.push('/');
     } catch (err) {
-      setDeleteError(err.message || "Erreur lors de la suppression");
+      setDeleteError("Mot de passe incorrect");
     }
   };
 
@@ -57,7 +58,6 @@ export default function Profil() {
         <Navbar />
       </div>
 
-      {/* VERSION WEB/DESKTOP */}
       <div className={styles.desktopContainer}>
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - 80px)' }}>
           <div className={styles.form}>
@@ -91,7 +91,6 @@ export default function Profil() {
         </div>
       </div>
 
-      {/* VERSION MOBILE */}
       <div className={styles.mobileContainer}>
         <div className={styles.profileHeader}>
           <span className={styles.profileIcon}>💎</span>
@@ -108,6 +107,7 @@ export default function Profil() {
             <Trash2 size={18} />
             Supprimer le compte
           </button>
+
           <button className={styles.btnLogout} onClick={handleLogout}>
             <LogOut size={18} />
             Déconnexion
@@ -116,20 +116,25 @@ export default function Profil() {
 
         <nav className={styles.bottomNav}>
           <button className={styles.bottomNavItem} onClick={() => router.push('/deck')}>
-            <Layers size={24} /><span>Decks</span>
+            <Layers size={24} />
+            <span>Decks</span>
           </button>
+
           <button className={styles.bottomNavItem} onClick={() => router.push('/Accueil')}>
-            <Home size={24} /><span>Home</span>
+            <Home size={24} />
+            <span>Home</span>
           </button>
         </nav>
       </div>
 
-      {/* MODALE DE CONFIRMATION — partagée desktop + mobile */}
       {showConfirm && (
         <div className={styles.modalOverlay} onClick={() => setShowConfirm(false)}>
           <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
             <h3 className={styles.modalTitle}>Supprimer le compte ?</h3>
-            <p className={styles.modalText}>Cette action est irréversible. Entrez votre mot de passe pour confirmer.</p>
+            <p className={styles.modalText}>
+              Cette action est irréversible. Entrez votre mot de passe pour confirmer.
+            </p>
+
             <input
               type="password"
               value={deletePassword}
@@ -137,7 +142,9 @@ export default function Profil() {
               placeholder="Votre mot de passe"
               className={styles.modalInput}
             />
+
             {deleteError && <p className={styles.modalError}>{deleteError}</p>}
+
             <div className={styles.modalButtons}>
               <button className={styles.btnModalCancel} onClick={() => setShowConfirm(false)}>
                 Annuler
