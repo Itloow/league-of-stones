@@ -62,8 +62,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .btnRetour {
@@ -256,10 +261,12 @@
         transform: translate(-50%, -50%) scale(0.8);
         opacity: 0;
     }
+
     50% {
         transform: translate(-50%, -50%) scale(1.1);
         opacity: 1;
     }
+
     100% {
         transform: translate(-50%, -50%) scale(1);
         opacity: 1;
@@ -336,8 +343,15 @@
 }
 
 @keyframes attackPulseBtn {
-    0%, 100% { box-shadow: 0 3px 0px #5a0000, 0 0 12px rgba(204, 0, 0, 0.4); }
-    50% { box-shadow: 0 3px 0px #5a0000, 0 0 25px rgba(204, 0, 0, 0.7); }
+
+    0%,
+    100% {
+        box-shadow: 0 3px 0px #5a0000, 0 0 12px rgba(204, 0, 0, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 3px 0px #5a0000, 0 0 25px rgba(204, 0, 0, 0.7);
+    }
 }
 
 /* ============================================
@@ -393,6 +407,7 @@
     height: 100px;
     object-fit: cover;
 }
+
 .handCardImg.clickable {
     cursor: pointer;
     transition: transform 0.2s ease, filter 0.2s ease;
@@ -496,7 +511,8 @@
         padding: 12px;
     }
 
-    .cardSlot, .emptySlot {
+    .cardSlot,
+    .emptySlot {
         width: 80px;
     }
 
@@ -806,8 +822,123 @@
         padding: 4px 5px;
         padding-bottom: 5px;
     }
-
-
 }
 
+/* ============================================
+   OVERLAY VICTOIRE / DÉFAITE
+   ============================================ */
+.endOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeInOverlay 0.5s ease;
+}
 
+.endOverlayVictory {
+    background: radial-gradient(ellipse at center, rgba(11, 219, 56, 0.3) 0%, rgba(0, 0, 0, 0.85) 70%);
+}
+
+.endOverlayDefeat {
+    background: radial-gradient(ellipse at center, rgba(204, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.85) 70%);
+}
+
+.endIcon {
+    font-size: 80px;
+    animation: bounceIn 0.6s ease;
+}
+
+.endTitle {
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 48px;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    margin-top: 15px;
+    text-shadow: 0 0 30px currentColor;
+    animation: slideUp 0.6s ease 0.2s both;
+}
+
+.endTitleVictory {
+    color: #d4af37;
+}
+
+.endTitleDefeat {
+    color: #ff4444;
+}
+
+.endSubtitle {
+    font-family: var(--font-gaming);
+    font-weight: 700;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 10px;
+    animation: slideUp 0.6s ease 0.4s both;
+}
+
+.endBtn {
+    margin-top: 30px;
+    background-color: #26289F;
+    color: #fff;
+    border: 2px solid #d4af37;
+    border-radius: 50px;
+    padding: 14px 40px;
+    font-family: var(--font-gaming);
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    animation: slideUp 0.6s ease 0.6s both;
+}
+
+.endBtn:hover {
+    background-color: #1a1a66;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(38, 40, 159, 0.5);
+}
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

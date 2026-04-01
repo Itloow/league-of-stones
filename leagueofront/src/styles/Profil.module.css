@@ -27,7 +27,7 @@
   .desktopContainer {
     display: block;
   }
-  
+
   .mobileContainer {
     display: none;
   }
@@ -296,7 +296,10 @@
   /* Modal suppression */
   .modalOverlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
@@ -367,7 +370,9 @@
     justify-content: space-around;
     align-items: center;
     position: fixed;
-    bottom: 0; left: 0; right: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 70px;
     background-color: #3b00b3;
     z-index: 100;
@@ -387,4 +392,116 @@
     cursor: pointer;
     padding: 8px 20px;
   }
+}
+
+/* ===== MODALE SUPPRESSION — desktop + mobile ===== */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modalBox {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  border: 3px solid #a33;
+  min-width: 320px;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modalTitle {
+  font-weight: 900;
+  font-size: 20px;
+  color: #a33;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.modalText {
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.modalInput {
+  width: 100%;
+  border: 2px solid #ddd;
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.modalInput:focus {
+  border-color: #a33;
+  box-shadow: 0 0 0 3px rgba(170, 51, 51, 0.15);
+}
+
+.modalError {
+  color: #a33;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.modalButtons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.btnModalCancel {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #ccc;
+  border-radius: 50px;
+  background: transparent;
+  color: #999;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnModalCancel:hover {
+  border-color: #999;
+  color: #666;
+}
+
+.btnModalConfirm {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 50px;
+  background-color: #a33;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnModalConfirm:hover {
+  background-color: #862020;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(170, 51, 51, 0.3);
 }

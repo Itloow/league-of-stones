@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/authStore';
 import { initDeck, getMatch, pickCard, playCard, endTurn, attack, attackPlayer, finishMatch } from '../services/api';
 import Navbar from '@/components/Navbar';
 import styles from '../styles/Game.module.css';
-import { Layers, Home, Users } from 'lucide-react';
+import { Layers, Home, User } from 'lucide-react';
 
 export default function Game() {
     const router = useRouter();
@@ -211,11 +211,10 @@ export default function Game() {
             const timer = setTimeout(async () => {
                 try {
                     await finishMatch();
-                    router.push('/Accueil');
                 } catch (err) {
-                    router.push('/Accueil');
+                    // match déjà terminé par l'adversaire
                 }
-            }, 3000);
+            }, 1000);
             return () => clearTimeout(timer);
         }
     }, [myPlayer?.hp, enemyPlayer?.hp, matchFinished]);
@@ -240,6 +239,23 @@ export default function Game() {
 
     return (
         <div className={styles.gamePage}>
+
+            {/* ====== OVERLAY FIN DE MATCH ====== */}
+            {matchFinished && myPlayer && enemyPlayer && (
+                <div className={`${styles.endOverlay} ${myPlayer.hp > 0 ? styles.endOverlayVictory : styles.endOverlayDefeat}`}>
+                    <span className={styles.endIcon}>{myPlayer.hp > 0 ? '🏆' : '💀'}</span>
+                    <h1 className={`${styles.endTitle} ${myPlayer.hp > 0 ? styles.endTitleVictory : styles.endTitleDefeat}`}>
+                        {myPlayer.hp > 0 ? 'Victoire !' : 'Défaite...'}
+                    </h1>
+                    <p className={styles.endSubtitle}>
+                        {myPlayer.hp > 0 ? enemyName + ' a été vaincu' : 'Vous avez été vaincu par ' + enemyName}
+                    </p>
+                    <button className={styles.endBtn} onClick={() => router.push('/Accueil')}>
+                        {"Retour à l'accueil"}
+                    </button>
+                </div>
+            )}
+
             {/* Navbar desktop — masquée en mobile */}
             <div className={styles.navbarDesktop}>
                 <Navbar />
@@ -250,10 +266,8 @@ export default function Game() {
                 <span className={styles.mobileHeaderTitle}>League Of Stones</span>
             </div>
 
-            {(error || (myPlayer.hp <= 0 || enemyPlayer.hp <= 0)) && (
-                <div className={styles.errorMsg}>
-                    {myPlayer.hp <= 0 || enemyPlayer.hp <= 0 ? (myPlayer.hp > 0 ? 'Vous avez gagné !' : 'Vous avez perdu !') : error}
-                </div>
+            {error && !matchFinished && (
+                <div className={styles.errorMsg}>{error}</div>
             )}
             {attackMessage && <div className={styles.attackMessageBox}>{attackMessage}</div>}
 
@@ -396,9 +410,9 @@ export default function Game() {
                     <Home size={24} />
                     <span>Home</span>
                 </button>
-                <button className={styles.bottomNavItem} onClick={() => router.push('/lobby')}>
-                    <Users size={24} />
-                    <span>Social</span>
+                <button className={styles.bottomNavItem} onClick={() => router.push('/profil')}>
+                    <User size={24} />
+                    <span>Profil</span>
                 </button>
             </nav>
         </div>

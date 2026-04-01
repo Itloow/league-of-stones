@@ -93,17 +93,26 @@ export const updateProfil = async (email, name, password) => {
 };
 
 
-export const unsubscribe = async () => {
+export const unsubscribe = async (email, password) => {
     try {
-        const reponse = await fetch(API_URL + "/users/unsubscribe", {
-            headers: {
-                "WWW-Authenticate": getToken(),
-            },
-        });
+        const reponse = await fetch(
+            API_URL + "/users/unsubscribe?email=" + encodeURIComponent(email) + "&password=" + encodeURIComponent(password),
+            {
+                headers: {
+                    "WWW-Authenticate": getToken(),
+                },
+            }
+        );
         if (!reponse.ok) throw new Error(`Erreur HTTP : ${reponse.status}`);
-        return await reponse.json();
+        const text = await reponse.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            return text;
+        }
     } catch (error) {
         console.error(`Impossible de supprimer le compte : ${error}`);
+        throw error;
     }
 };
 
@@ -276,7 +285,7 @@ export const attack = async (card, ennemyCard) => {
             throw new Error(`Erreur HTTP : ${reponse.status}`);
         }
         const json = await reponse.json();
-         console.log('Réponse attaque:', json);
+        console.log('Réponse attaque:', json);
         return json;
     } catch (error) {
         console.error(`Impossible d'attaquer : ${error}`);

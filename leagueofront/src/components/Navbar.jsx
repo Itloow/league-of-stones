@@ -1,4 +1,4 @@
-import { Home, Layers, Users } from 'lucide-react';
+import { Home, Layers } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from '../styles/Navbar.module.css';
@@ -10,11 +10,9 @@ export default function Navbar() {
   const router = useRouter();
   const { token, name, logout } = useAuthStore();
 
-  // Déterminer l'onglet actif en fonction de la route actuelle
   const getActiveTab = () => {
     const path = router.pathname;
     if (path === '/deck') return 'DECKS';
-    if (path === '/lobby') return 'SOCIAL';
     return 'ACCUEIL';
   };
 
@@ -27,15 +25,9 @@ export default function Navbar() {
     router.push('/');
   };
 
-  const handleUnsubscribe = async () => {
-    alert("Fonctionnalité à venir");
-  };
-
-  // Chaque onglet a maintenant sa route de navigation
   const navItems = [
     { id: 'ACCUEIL', label: 'ACCUEIL', icon: Home, route: '/Accueil' },
     { id: 'DECKS', label: 'DECKS', icon: Layers, route: '/deck' },
-    { id: 'SOCIAL', label: 'SOCIAL', icon: Users, route: '/lobby' },
   ];
 
   const handleNavClick = (item) => {
@@ -88,76 +80,11 @@ export default function Navbar() {
                   }
                   return 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Thresh_0.jpg';
                 })()}
-
                 alt="avatar"
                 style={{ width: '30px', height: '30px', borderRadius: '50%', objectFit: 'cover' }}
               />
               {name}
             </button>
-
-            {menuOpen
-              ? <div style={{
-                position: 'absolute',
-                top: '55px',
-                right: '0',
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
-                padding: '10px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '5px',
-                minWidth: '180px',
-                zIndex: 50,
-              }}>
-                <button
-                  onClick={() => { setMenuOpen(false); alert('Fonctionnalité à venir'); }}
-                  style={{
-                    padding: '10px 15px',
-                    border: 'none',
-                    borderRadius: '8px',
-                    backgroundColor: 'transparent',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    color: '#26289F',
-                    textAlign: 'left',
-                  }}
-                >
-                  Modifier les informations
-                </button>
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    padding: '10px 15px',
-                    border: 'none',
-                    borderRadius: '8px',
-                    backgroundColor: 'transparent',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    color: '#26289F',
-                    textAlign: 'left',
-                  }}
-                >
-                  Déconnexion
-                </button>
-                <button
-                  onClick={handleUnsubscribe}
-                  style={{
-                    padding: '10px 15px',
-                    border: 'none',
-                    borderRadius: '8px',
-                    backgroundColor: 'transparent',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    color: 'red',
-                    textAlign: 'left',
-                  }}
-                >
-                  Supprimer le compte
-                </button>
-              </div>
-              : null
-            }
           </div>
           : <button
             className={styles.loginButton}

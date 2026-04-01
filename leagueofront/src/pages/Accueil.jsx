@@ -1,16 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Navbar from "@/components/Navbar";
 import styles from '../styles/Accueil.module.css';
 import { useAuthStore } from '../store/authStore';
 import { getAllPlayers, participate, getMatch } from '../services/api';
-import { Layers, Home, User, Users } from 'lucide-react';
+import { Layers, Home, User } from 'lucide-react';
 
 export default function Accueil() {
     const router = useRouter();
     const { token, name } = useAuthStore();
     const [deckCards, setDeckCards] = useState([]);
     const [onlinePlayers, setOnlinePlayers] = useState([]);
+    const [deckError, setDeckError] = useState('');
 
     // Overlay matchmaking
     const [isSearching, setIsSearching] = useState(false);
@@ -72,6 +73,10 @@ export default function Accueil() {
 
     // Lancer une partie : overlay → participate() → redirection
     const handleLancerPartie = async () => {
+        if (deckCards.length !== 20) {
+            setDeckError("Votre deck doit contenir exactement 20 cartes (" + deckCards.length + "/20). Modifiez votre deck avant de lancer une partie.");
+            return;
+        }
         setIsSearching(true);
         try {
             await participate();
@@ -139,6 +144,21 @@ export default function Accueil() {
                         <p className={styles.matchmakingText}>Recherche d'un adversaire...</p>
                         <button className={styles.btnCancel} onClick={handleCancel}>
                             ✕ Annuler
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {deckError && (
+                <div className={styles.matchmakingOverlay} onClick={() => setDeckError('')}>
+                    <div className={styles.matchmakingBox} onClick={(e) => e.stopPropagation()} style={{ backgroundColor: '#fff', padding: '40px', borderRadius: '20px', boxShadow: '0 20px 60px rgba(0,0,0,0.4)', border: '3px solid #3b00b3' }}>
+                        <h2 className={styles.matchmakingTitle} style={{ color: '#3b00b3' }}>⚠️ Deck incomplet</h2>
+                        <p className={styles.matchmakingText} style={{ color: '#333', marginTop: '10px' }}>{deckError}</p>
+                        <button className={styles.btnModifierDeck} onClick={() => { setDeckError(''); router.push('/deck'); }} style={{ marginTop: '20px' }}>
+                            📋 Modifier le deck
+                        </button>
+                        <button className={styles.btnCancel} onClick={() => setDeckError('')} style={{ marginTop: '10px' }}>
+                            ✕ Fermer
                         </button>
                     </div>
                 </div>
@@ -236,10 +256,6 @@ export default function Accueil() {
                 <button className={`${styles.bottomNavItem} ${styles.bottomNavItemActive}`}>
                     <Home size={24} />
                     <span>Home</span>
-                </button>
-                <button className={styles.bottomNavItem} onClick={() => router.push('/lobby')}>
-                    <Users size={24} />
-                    <span>Social</span>
                 </button>
             </nav>
         </>
