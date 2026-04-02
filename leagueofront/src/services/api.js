@@ -1,4 +1,3 @@
-
 const API_URL = "http://localhost:3001";
 function getToken() {
     return localStorage.getItem("token");
@@ -165,7 +164,6 @@ export const getAllPlayers = async () => {
 export const sendRequest = async (matchmakingId) => {
     try {
         const token = getToken();
-        console.log('sendRequest token:', token); // DEBUG
         const reponse = await fetch(API_URL + "/matchmaking/request?matchmakingId=" + matchmakingId, {
             headers: {
                 "WWW-Authenticate": token,

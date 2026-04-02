@@ -50,7 +50,7 @@ export default function Game() {
                 }
                 // On n'envoie que les key comme demandé par le backend (cahier des charges §3.4.3)
                 const deckKeys = deck.map(card => ({ key: card.key }));
-                await initDeck(deck);
+                await initDeck(deckKeys);
                 setDeckSent(true);
             } catch (err) {
                 console.error("Erreur initDeck:", err);
