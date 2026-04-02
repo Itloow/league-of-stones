@@ -1,55 +1,3 @@
-## 🚀 Comment lancer le projet en local
-
-Ce projet est "Full-Stack". Il faut donc ouvrir **deux terminaux séparés** pour faire tourner le serveur (Backend) et l'interface (Frontend) en même temps.
-
-### 1. Lancer le Serveur (Backend)
-
-Ouvrez un premier terminal et placez-vous dans le dossier principal du serveur :
-```bash 
-cd league-of-stones
-```
-Installez les dépendances (nécessaire uniquement la première fois) :
-```bash
-npm install
-```
-
-Démarrez le serveur :
-```bash 
-node app.js
-```
-> Le serveur est prêt lorsqu'il affiche "MONGO DB initialised" et tourne sur le port 3001. Ne fermez pas ce terminal.
-
----
-
-### 2. Lancer l'Interface (Frontend)
-
-Ouvrez un deuxième terminal et placez-vous dans le dossier de l'interface React :
-```bash
-cd leagueofront
-```
-Installez les dépendances (nécessaire uniquement la première fois) :
-```bash
-npm install
-```
-Démarrez le site :
-```bash
-npm run dev
-```
-> Le frontend est prêt lorsqu'il indique "Ready" et tourne sur le port 3000.
-
----
-
-### 3. Accéder au jeu
-
-Ouvrez votre navigateur web et accédez à l'adresse suivante :
-http://localhost:3000
-
-Pour tout arrêter, faites `Ctrl + C` dans chacun de vos deux terminaux.
-
-
-
-
-
 # 🐉 League of Stones
 
 > Jeu de cartes en ligne — Mashup entre Hearthstone et League of Legends  
@@ -316,7 +264,13 @@ Le plateau affiche :
   - 🏆 **Victoire !** si l'adversaire est à 0 HP
   - 💀 **Défaite...** si vous êtes à 0 HP
 - Cliquer sur **Retour à l'accueil** pour revenir au dashboard
-- Les deux joueurs sont retirés du matchmaking et peuvent relancer une partie
+
+> ⚠️ **Limitation connue — pour rejouer une nouvelle partie :**  
+> Après une partie, il n'est pas possible de relancer directement un nouveau match.  
+> Tenter de le faire redirige les joueurs vers l'écran de fin (victoire/défaite).  
+> **Solution : les deux joueurs doivent se déconnecter puis se reconnecter**  
+> avant de pouvoir lancer une nouvelle partie.  
+> (Profil → DÉCONNEXION → puis se reconnecter normalement)
 
 ---
 
