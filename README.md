@@ -319,7 +319,7 @@ GET /match/finishMatch          → Clôturer le match terminé
 L'application est déployée sur le serveur de la faculté à l'adresse suivante :
 
 ```
-https://mi-phpmut.univ-tlse2.fr/~COMPTE_ENT/projet_web_L3/
+https://mi-phpmut.univ-tlse2.fr/~olti.mjeku/webL3/out
 ```
 
 ---
