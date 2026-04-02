@@ -215,7 +215,6 @@ export default function Accueil() {
                                                 <button
                                                     className={styles.btnInviter}
                                                     onClick={() => {
-                                                        // Vérifie le deck avant de lancer
                                                         if (deckCards.length !== 20) {
                                                             setDeckError(
                                                                 "Votre deck doit contenir exactement 20 cartes (" +
@@ -224,7 +223,6 @@ export default function Accueil() {
                                                             );
                                                             return;
                                                         }
-                                                        // On participe puis on redirige vers le matchmaking
                                                         participate().then(() => {
                                                             sessionStorage.setItem('los_waiting_match', '1');
                                                             router.push('/matchmaking');
@@ -254,7 +252,7 @@ export default function Accueil() {
                 </div>
 
                 <div className={styles.mobileLogo}>
-                    <img src="/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px' }} />
+                    <img src="/~olti.mjeku/webL3/out/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px' }} />
                     <h1 className={styles.mobileLogoText}>League Of Stones</h1>
                 </div>
 

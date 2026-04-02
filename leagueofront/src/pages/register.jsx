@@ -32,12 +32,10 @@ export default function Register() {
 
     setIsLoading(true);
     try {
-      // On utilise la fonction d'Olti (elle prend les 3 arguments séparément)
       const data = await inscription(email, name, password);
 
       if (!data) throw new Error("Le serveur n'a pas répondu ou une erreur est survenue.");
 
-      // Si on a un succès, redirection vers ta page de confirmation
       router.push('/success');
     } catch (err) {
       setError(err.message);
@@ -50,10 +48,10 @@ export default function Register() {
     <div className={styles.container}>
       <div className={styles.headerText}>
         <div className={styles.welcome}>Bienvenue sur</div>
-              <div className={styles.logoSection}>
-        <img src="/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px', mixBlendMode: 'multiply' }} />
-        <div className={styles.logoText}>LEAGUE OF STONES</div>
-      </div>
+        <div className={styles.logoSection}>
+          <img src="/~olti.mjeku/webL3/out/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px', mixBlendMode: 'multiply' }} />
+          <div className={styles.logoText}>LEAGUE OF STONES</div>
+        </div>
       </div>
 
       <div className={styles.creationTitle}>CRÉATION DE COMPTE</div>

@@ -39,7 +39,7 @@ export default function Navbar() {
       <nav className={styles.navbar}>
         {/* Logo Section */}
         <div className={styles.logoSection}>
-          <img src="/dragon.jpeg" alt="logo" style={{ width: '52px', height: '52px', marginRight: '20px' }} />
+          <img src="/~olti.mjeku/webL3/out/dragon.jpeg" alt="logo" style={{ width: '52px', height: '52px', marginRight: '20px' }} />
           <span className={styles.logoText}>LEAGUE OF STONES</span>
         </div>
 

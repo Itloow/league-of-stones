@@ -22,7 +22,7 @@ export default function Home() {
         <title>League of Stones</title>
         <meta name="description" content="League of Stones - Jeu de cartes" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/~olti.mjeku/webL3/out/favicon.ico" />
       </Head>
 
       <Login />

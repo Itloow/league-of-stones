@@ -40,7 +40,7 @@ export default function Login() {
       </Head>
 
       <div className={styles.logoSection}>
-        <img src="/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px', mixBlendMode: 'multiply' }} />
+        <img src="/~olti.mjeku/webL3/out/dragon.jpeg" alt="logo" style={{ width: '60px', height: '60px', mixBlendMode: 'multiply' }} />
         <div className={styles.logoText}>LEAGUE OF STONES</div>
       </div>
 
