@@ -316,12 +316,24 @@ GET /match/finishMatch          → Clôturer le match terminé
 
 ## Déploiement
 
-L'application est déployée sur le serveur de la faculté à l'adresse suivante :
-
+L'application frontend est déployée sur le serveur de la faculté à l'adresse suivante :
 ```
-https://mi-phpmut.univ-tlse2.fr/~olti.mjeku/webL3/out
+https://mi-phpmut.univ-tlse2.fr/~COMPTE_ENT/projet_web_L3/
 ```
 
----
+> ⚠️ **Accéder au site ne suffit pas pour jouer.**  
+> Le backend doit obligatoirement tourner en local sur votre machine.  
+> Sans le serveur backend lancé, les cartes et toutes les fonctionnalités du jeu seront inaccessibles.
 
-*League of Stones — Groupe 6 — L3 MIASHS — Université Toulouse 2 Jean Jaurès — 2026*
+**Pour que le jeu fonctionne, vous devez au préalable :**
+
+1. Avoir **MongoDB** lancé sur votre machine
+2. Lancer le serveur backend en local :
+```bash
+   cd league-of-stones
+   npm start
+```
+3. Vérifier que le backend tourne bien sur **http://localhost:3001**
+4. Puis ouvrir le site déployé dans votre navigateur
+
+Le client web déployé communique avec votre serveur backend local via `http://localhost:3001`.
